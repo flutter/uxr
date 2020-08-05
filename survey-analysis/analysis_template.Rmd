@@ -3,16 +3,41 @@ title: "analysis_template"
 author: "jayounglee@"
 ---
 
-## About
+# About
 
 This is a template for quaterly survey analysis. Copy this file each quarter to start an analysis.
 
-```{r setup}
 
+
+# Set up
+
+```{r setup}
+# Load libraries
+# TODO: Add libraries to be used 
+
+# Load functions
+source("plot_functions.R")
+source("data_download_functions.R")
 ```
 
 
+## Get the data
+
+The following block reads survey data file directly from the Qualtrics server. The file will be saved under `data/` directory. (The `data/` will be ignored when you push changes to the repository.)
+
+Before running the block, if you haven't already, add your Qualtrics API Token and the Survey ID information to the system environment. See the example below. Keep your token to your local environment.
+```
+# Sys.setenv(QualtricsApiToken = "your_Qualtrics_API_token")
+# Sys.setenv(QualtricsSurveyID = "your_survey_ID")
+```
+
+To locate your token and Survey ID on Qualtrics, check out this [support page](https://www.qualtrics.com/support/integrations/api-integration/finding-qualtrics-ids/).
+
+
 ```{r get_data}
+data <- downloadQualtricsData()
+```
+
 
 ```
 
