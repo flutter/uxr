@@ -12,7 +12,7 @@
 
 # To get and check environment varialbes, run the followings:
 # Sys.getenv("QualtricsApiToken")
-# Sys.getenv("QultricsSurveyID)
+# Sys.getenv("QultricsSurveyID")
 # Sys.getenv() # Displays all the environment variables
 
 downloadQualtricsData <- function() {
