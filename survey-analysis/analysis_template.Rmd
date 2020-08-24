@@ -7,17 +7,16 @@ author: "jayounglee@"
 
 This is a template for quaterly survey analysis. Copy this file each quarter to start an analysis.
 
-
-
 # Set up
 
 ```{r setup}
-# Load libraries
-# TODO: Add libraries to be used 
-
 # Load functions
-source("plot_functions.R")
 source("data_download_functions.R")
+source("plot_constants.R")
+source("plot_functions.R")
+
+# Create figures/ directory
+dir.create(file.path(getwd(), "figures"), showWarnings = FALSE)
 ```
 
 
@@ -26,6 +25,7 @@ source("data_download_functions.R")
 The following block reads survey data file directly from the Qualtrics server. The file will be saved under `data/` directory. (The `data/` will be ignored when you push changes to the repository.)
 
 Before running the block, if you haven't already, add your Qualtrics API Token and the Survey ID information to the system environment. See the example below. Keep your token to your local environment.
+
 ```
 # Sys.setenv(QualtricsApiToken = "your_Qualtrics_API_token")
 # Sys.setenv(QualtricsSurveyID = "your_survey_ID")
@@ -35,9 +35,127 @@ To locate your token and Survey ID on Qualtrics, check out this [support page](h
 
 
 ```{r get_data}
-data <- downloadQualtricsData()
+origin <- downloadQualtricsData()
+# If you get the warning "The request came back with status code: 400", 
+# check if your environment variables are set properly.
+```
+
+## Prepare the data
+
+```{r prep_data}
+questions <- origin[1, ] # Get questions
+all <- origin[c(-1, -2),] # Remove 
+```
+
+# Examples
+
+Before you start plotting, you need to know which question number you're going to plot (e.g., "Q2", "Q13", etc.), and what type of question it is (e.g., single answer, multiple answer, etc.) Refer to Qualtrics > Projects > Reports for this. The examples below are created based on the Q3 2020 survey design.
+
+TODO: This is not an ideal situation, update it in the next iteration.
+
+## Example 1A: Plotting a basic bar plot for a single-choice question
+
+Use the `f.singlechoice()` function.
+All the CSAT questions belong here. See examples below to learn how optional parameters work. 
+Refer to the `plot_functions.R` file for detailed explanation.
+
+```{r example_1}
+f.singlechoice("Q5") 
+f.singlechoice("Q5", filename = "csat_animation") # Saves the plot with the filename, under the figures/ directory
+f.singlechoice("Q5", data = all %>% filter(Q58 == "India")) # Use only a subset
+f.singlechoice("Q5", title = "This is a new title.") # Replaces the title
+f.singlechoice("Q5", orders = satisfaction_plus1) # Changes the sorting order. Common orders are in the plot_constants.R file
+f.singlechoice("Q5", colors = color_palette_monochrome) # Changes the coloring. It takes a vector of HEX values, and preset palettes are in plot_constants.R
+f.singlechoice("Q5", topbox = TRUE) # Adds the top-box percentage to the title. Top-box here is the first two items.
+f.singlechoice("Q5", topbox = TRUE, orders = satisfaction_plus1) # To make the top-box meaningful, you have to order the options correctly. 
+f.singlechoice("Q5", exclude = c("I don’t have enough experience with it to answer this question")) # Exclude those who selected a certain option. 
+# Note that there are different types of apostrophes. ' is different from ’. 
+# When there are five leveles to display in total, the default color palette is `color_palette_flutter_5`. Check in the plot_constants.R
+
+# My final chart will be:
+f.singlechoice("Q5", 
+               filename = "csat_animation", 
+               topbox = TRUE,
+               exclude = c("I don’t have enough experience with it to answer this question"))
+```
+
+```{r}
+# Note that the title is too long sometimes.
+# Change the width of the saved chart using `width` parameter, or
+# rewrite the title.
+
+# Check the question
+questions$Q34
+
+# Rewrite the new title (a shorter version)
+f.singlechoice("Q34", 
+               exclude = c("I don’t have enough experience with it to answer this question", "What is release mode or profile mode?"),
+               title = "How satisfied are you with the performance of Flutter apps on the web?") 
 ```
 
 
+## Example 2: Plotting a basic bar plot for a multiple-choice question
+
+Multiple choice questions need a different function, `f.multiplechoice()`, as its data is recorded across multiple columns. 
+However, this function works almost identically to the f.singlechoice() function. 
+
+TODO: Merge `f.multiplechoice()` and `f.singlechoice()`
+
+```{r}
+f.multiplechoice("Q36", filename= "web_performance_issues", colors = color_palette_monochrome) 
 ```
 
+## Example 3: Plotting a stacked bar plot for a single-choice question (breaakdown)
+
+Sometimes you want to see a breakout of a single choice question, by another single choice question.
+The example below shows the satisfaction with Web performance (Q34), breakout by the rendering backend (Q35). 
+
+```{r}
+f.singlechoice_breakout("Q34", "Q35")
+
+# Exluded "I'm not sure" option from the breakout question Q35
+f.singlechoice_breakout("Q34", "Q35",
+                        bo_exclude = "I’m not sure",
+                        title = "Web performance satisfaction by rendering backend") 
+
+# Labels for the legend are too long. Use preset `satisfaction_wrap` labels in the `plot_constants.R` file.
+f.singlechoice_breakout("Q34", "Q35",
+                        bo_exclude = "I’m not sure",
+                        title = "Web performance satisfaction by rendering backend:",
+                        labels = satisfaction_wrap) 
+
+```
+
+## Example 4: PLotting a stacked bar plot for a matrix question 
+
+Some questions are in the matrix format, and it requires another function, `f.matrix()`
+
+```{r}
+# Plot the default 
+f.matrix("Q31")
+
+# Issues:
+# The options are not ordered --> use "orders"
+# The options are too long --> use "lables"
+# I reversed the orders and colors to show Android on the top
+
+q31_orders = rev(c("I have published a complete production Flutter app that is available for end users on this platform",
+               "I have completed a demo/beta Flutter app on this platform (internal or external)",
+               "I have evaluated Flutter on this platform for potential production use",
+               "I have casually experimented with functionality of Flutter on this platform",
+               "I am not developing an app for this platform in Flutter"))
+
+q31_labels = rev(c("Complete production",
+               "Demo app",
+               "Eval for production",
+               "Casual experiments",
+               "Not developing"))
+
+f.matrix("Q31", 
+        orders = q31_orders,
+        labels = q31_labels,
+        colors = rev(color_palette_flutter_5),
+        filename = "bg_development_stage",
+        width = 9,
+        title = "What is the furthest stage of Flutter app development that your team has achieved?")
+```
