@@ -129,7 +129,8 @@ downloadQualtricsData <- function() {
           sep = ""
     ),
     header = FALSE,
-    skip = 3
+    skip = 1,
+    stringsAsFactors = F
   )
   variableNames <- read.csv(
     paste(
