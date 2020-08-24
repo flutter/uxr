@@ -1,5 +1,6 @@
 # Data files
 data/
+figures/
 
 # History files
 .Rhistory
