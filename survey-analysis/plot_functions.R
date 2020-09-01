@@ -335,7 +335,7 @@ f.matrix <- function(qNum,
   set <- set.wide %>% 
     gather("category") %>% 
     group_by(category, value) %>% 
-    filter(value != "", !value %in% exclude) %>% 
+    filter(value != "", !value %in% exclude, !category %in% exclude) %>% 
     tally() %>% 
     mutate(p = n/sum(n)) %>% 
     mutate(me = 1.96 * sqrt(p * (1-p) / n))
