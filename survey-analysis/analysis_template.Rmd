@@ -5,7 +5,7 @@ author: "jayounglee@"
 
 # About
 
-This is a template for quaterly survey analysis. Copy this file each quarter to start an analysis.
+This is a template for quarterly survey analysis. Copy this file each quarter to start an analysis.
 
 # Set up
 
@@ -70,7 +70,7 @@ f.singlechoice("Q5", topbox = TRUE) # Adds the top-box percentage to the title. 
 f.singlechoice("Q5", topbox = TRUE, orders = satisfaction_plus1) # To make the top-box meaningful, you have to order the options correctly. 
 f.singlechoice("Q5", exclude = c("I don’t have enough experience with it to answer this question")) # Exclude those who selected a certain option. 
 # Note that there are different types of apostrophes. ' is different from ’. 
-# When there are five leveles to display in total, the default color palette is `color_palette_flutter_5`. Check in the plot_constants.R
+# When there are five levels to display in total, the default color palette is `color_palette_flutter_5`. Check in the plot_constants.R
 
 # My final chart will be:
 f.singlechoice("Q5", 
@@ -105,7 +105,7 @@ TODO: Merge `f.multiplechoice()` and `f.singlechoice()`
 f.multiplechoice("Q36", filename= "web_performance_issues", colors = color_palette_monochrome) 
 ```
 
-## Example 3: Plotting a stacked bar plot for a single-choice question (breaakdown)
+## Example 3: Plotting a stacked bar plot for a single-choice question (breakdown)
 
 Sometimes you want to see a breakout of a single choice question, by another single choice question.
 The example below shows the satisfaction with Web performance (Q34), breakout by the rendering backend (Q35). 
@@ -126,7 +126,7 @@ f.singlechoice_breakout("Q34", "Q35",
 
 ```
 
-## Example 4: PLotting a stacked bar plot for a matrix question 
+## Example 4: Plotting a stacked bar plot for a matrix question 
 
 Some questions are in the matrix format, and it requires another function, `f.matrix()`
 
