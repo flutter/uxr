@@ -201,7 +201,7 @@ f.singlechoice_breakout <- function(qNum,
   
   p <- ggplot(set, aes(x = category.n, y = p, fill = rating)) +
     geom_bar(position = "fill", stat = "identity", width = 0.8) +
-    ggtitle(plot_title)+
+    ggtitle(plot_title) +
     scale_fill_manual(values = palette, labels = labels) +
     guides(fill = guide_legend(reverse = T)) +
     add_text_stacked + add_percent_scale + 
@@ -241,10 +241,12 @@ f.multiplechoice <- function(qNum,
   
   if(is.null(data)) data <- all
   
-  choices <- sub('.+-(.+)', 
-                 '\\1', 
-                 questions %>% 
-                   select(starts_with(qNum), -ends_with("TEXT"), -ends_with("RANK")))
+  choices <- str_remove(
+    str_extract(
+      questions %>% 
+        select(starts_with(qNum), -ends_with("TEXT"), -ends_with("RANK")),
+      "[.]-[:alpha:].+"), 
+    ".-")
   
   set.wide <- data %>% 
     select(starts_with(qNum)) %>% 
@@ -319,10 +321,13 @@ f.matrix <- function(qNum,
                      height = 4) {
   
   if(is.null(data)) data <- all
-  
-  choices <- sub('.+-(.+)', 
-                 '\\1', 
-                 questions %>% dplyr::select(starts_with(qNum)) %>% dplyr::select(-ends_with("TEXT")))
+
+  choices <- str_remove(
+    str_extract(
+      questions %>% 
+        select(starts_with(qNum), -ends_with("TEXT"), -ends_with("RANK")),
+      "-[:Upper:].+"), 
+    "-")
   
   set.wide <- data %>% 
     select(starts_with(qNum)) %>% 
