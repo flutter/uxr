@@ -17,16 +17,16 @@ Custom Pages / Custom transition animations | ✅ | ✅ - slovnicki/beamer#51 (T
 ## Packages Included in the Analysis  
 Learn more about the packcages inluded in this analysis on Github:  
   
-[auto_route](https://github.com/Milad-Akarie/auto_route_library)
-[beamer](https://github.com/slovnicki/beamer)
-[flit-router](https://github.com/polyflection/flit_router)
-[flouter](https://github.com/Kleak/flouter)
-[fluro](https://github.com/lukepighetti/fluro)
-[flutter_modular](https://github.com/Flutterando/modular)
-[page_router](https://github.com/johnpryan/page_router)
-[qlevar_router](https://github.com/SchabanBo/qlevar_router)
-[routemaster](https://github.com/tomgilder/routemaster)
-[vrouter](https://github.com/lulupointu/vrouter)
+- [auto_route](https://github.com/Milad-Akarie/auto_route_library)
+- [beamer](https://github.com/slovnicki/beamer)
+- [flit-router](https://github.com/polyflection/flit_router)
+- [flouter](https://github.com/Kleak/flouter)
+- [fluro](https://github.com/lukepighetti/fluro)
+- [flutter_modular](https://github.com/Flutterando/modular)
+- [page_router](https://github.com/johnpryan/page_router)
+- [qlevar_router](https://github.com/SchabanBo/qlevar_router)
+- [routemaster](https://github.com/tomgilder/routemaster)
+- [vrouter](https://github.com/lulupointu/vrouter)
  
 ## Acknowledgment  
 Authors of the abovementioned packages shared their feedback on the analysis via email and Github [comments](https://github.com/flutter/uxr/issues/13). We appreciate your contributions.  
