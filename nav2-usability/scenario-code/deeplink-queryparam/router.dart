@@ -53,14 +53,11 @@ class BookRouteInformationParser extends RouteInformationParser<BookRoutePath> {
   RouteInformation restoreRouteInformation(BookRoutePath path) {
     late final String location;
     var filter = path.filter;
-    if (filter != null) {
-      location = '/?filter=$filter';
-    } else {
-      location = '/';
-    }
+    Uri uri = Uri(
+        path: '/', queryParameters: <String, dynamic>{'filter': filter});
     print('restoreRouteInformation');
-    print('location = $location');
-    return RouteInformation(location: location);
+    print('location = ${uri.path}');
+    return RouteInformation(location: uri.toString());
   }
 }
 
