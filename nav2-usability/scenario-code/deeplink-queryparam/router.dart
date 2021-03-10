@@ -43,8 +43,6 @@ class BookRouteInformationParser extends RouteInformationParser<BookRoutePath> {
   Future<BookRoutePath> parseRouteInformation(
       RouteInformation routeInformation) async {
     final uri = Uri.parse(routeInformation.location!);
-    print('parseRouteInformation');
-    print('location = ${uri.path}');
     var filter = uri.queryParameters['filter'];
     return BookRoutePath(filter);
   }
@@ -55,8 +53,6 @@ class BookRouteInformationParser extends RouteInformationParser<BookRoutePath> {
     var filter = path.filter;
     Uri uri = Uri(
         path: '/', queryParameters: <String, dynamic>{'filter': filter});
-    print('restoreRouteInformation');
-    print('location = ${uri.path}');
     return RouteInformation(location: uri.toString());
   }
 }
@@ -128,7 +124,6 @@ class BooksListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final filter = this.filter;
-    print('filter = $filter');
     return Scaffold(
       appBar: AppBar(),
       body: ListView(

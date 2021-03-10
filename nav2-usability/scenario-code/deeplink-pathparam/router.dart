@@ -43,8 +43,6 @@ class BookRouteInformationParser extends RouteInformationParser<BookRoutePath> {
   Future<BookRoutePath> parseRouteInformation(
       RouteInformation routeInformation) async {
     final uri = Uri.parse(routeInformation.location!);
-    print('parseRouteInformation');
-    print('location = ${uri.path}');
     // Handle '/'
     if (uri.pathSegments.length == 0) {
       return BookRoutePath.home();
@@ -75,8 +73,6 @@ class BookRouteInformationParser extends RouteInformationParser<BookRoutePath> {
     if (path.isDetailsPage) {
       location = '/book/${path.id}';
     }
-    print('restoreRouteInformation');
-    print('location = $location');
     return RouteInformation(location: location);
   }
 }
