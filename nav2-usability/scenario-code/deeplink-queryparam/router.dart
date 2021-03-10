@@ -137,7 +137,7 @@ class BooksListScreen extends StatelessWidget {
             decoration: InputDecoration(
               hintText: 'filter',
             ),
-            onChanged: this.onFilterChanged,
+            onSubmitted: this.onFilterChanged,
           ),
           for (var book in books)
             if (filter == null || book.title.toLowerCase().contains(filter))
