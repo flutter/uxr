@@ -54,7 +54,7 @@ class BookRouteInformationParser extends RouteInformationParser<BookRoutePath> {
     late final String location;
     var filter = path.filter;
     if (filter != null) {
-      location = '/?filter=${filter}';
+      location = '/?filter=$filter';
     } else {
       location = '/';
     }
