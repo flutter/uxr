@@ -99,10 +99,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
             wishlists: appState.wishlists,
             onTapped: _handleTapped,
             onCreate: (newId) {
-              var wishlist = Wishlist(newId);
-              appState.wishlists.add(wishlist);
-              appState.selectedWishlist = wishlist;
-              notifyListeners();
+              setNewRoutePath(AppRoutePath(id: newId));
             },
           ),
         ),
@@ -143,10 +140,11 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
       }
     }
     if (wishlist == null) {
-      appState.wishlists.add(Wishlist(pathId));
-    } else {
-      appState.selectedWishlist = wishlist;
+      wishlist = Wishlist(pathId);
+      appState.wishlists.add(wishlist);
     }
+
+    appState.selectedWishlist = wishlist;
     notifyListeners();
   }
 
