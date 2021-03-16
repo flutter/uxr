@@ -29,6 +29,12 @@ class _BooksAppState extends State<BooksApp> {
   BookRouteInformationParser();
 
   @override
+  void dispose() {
+    _routerDelegate.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Books App',

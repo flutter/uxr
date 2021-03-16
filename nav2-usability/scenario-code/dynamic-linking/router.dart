@@ -44,6 +44,12 @@ class _WishlistAppState extends State<WishlistApp> {
   BookRouteInformationParser();
 
   @override
+  void dispose() {
+    _routerDelegate.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Books App',
@@ -95,6 +101,12 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
 
   BookRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
     appState.addListener(() => notifyListeners());
+  }
+
+  @override
+  void dispose() {
+    appState.dispose();
+    super.dispose();
   }
 
   @override
