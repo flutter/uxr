@@ -29,6 +29,12 @@ class _BooksAppState extends State<BooksApp> {
   BookRouteInformationParser();
 
   @override
+  void dispose() {
+    _routerDelegate.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Books App',
@@ -49,16 +55,16 @@ class BookRouteInformationParser extends RouteInformationParser<BookRoutePath> {
 
   @override
   RouteInformation restoreRouteInformation(BookRoutePath path) {
-    late final String location;
     var filter = path.filter;
-    Uri uri = Uri(
-        path: '/', queryParameters: <String, dynamic>{'filter': filter});
+    var uri =
+    Uri(path: '/', queryParameters: <String, dynamic>{'filter': filter});
     return RouteInformation(location: uri.toString());
   }
 }
 
 class BookRouterDelegate extends RouterDelegate<BookRoutePath>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<BookRoutePath> {
+  @override
   final GlobalKey<NavigatorState> navigatorKey;
 
   List<Book> books = [
@@ -71,6 +77,7 @@ class BookRouterDelegate extends RouterDelegate<BookRoutePath>
 
   BookRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>();
 
+  @override
   BookRoutePath get currentConfiguration {
     return BookRoutePath(filter);
   }
@@ -132,7 +139,7 @@ class BooksListScreen extends StatelessWidget {
             decoration: InputDecoration(
               hintText: 'filter',
             ),
-            onSubmitted: this.onFilterChanged,
+            onSubmitted: onFilterChanged,
           ),
           for (var book in books)
             if (filter == null || book.title.toLowerCase().contains(filter))
