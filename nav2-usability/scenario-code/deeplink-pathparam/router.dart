@@ -44,7 +44,7 @@ class BookRouteInformationParser extends RouteInformationParser<BookRoutePath> {
       RouteInformation routeInformation) async {
     final uri = Uri.parse(routeInformation.location!);
     // Handle '/'
-    if (uri.pathSegments.length == 0) {
+    if (uri.pathSegments.isEmpty) {
       return BookRoutePath.home();
     }
 
@@ -79,6 +79,7 @@ class BookRouteInformationParser extends RouteInformationParser<BookRoutePath> {
 
 class BookRouterDelegate extends RouterDelegate<BookRoutePath>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<BookRoutePath> {
+  @override
   final GlobalKey<NavigatorState> navigatorKey;
 
   Book? _selectedBook;
@@ -92,6 +93,7 @@ class BookRouterDelegate extends RouterDelegate<BookRoutePath>
 
   BookRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>();
 
+  @override
   BookRoutePath get currentConfiguration {
     if (show404) {
       return BookRoutePath.unknown();
@@ -173,6 +175,7 @@ class BookDetailsPage extends Page<dynamic> {
     required this.book,
   }) : super(key: ValueKey(book));
 
+  @override
   Route<dynamic> createRoute(BuildContext context) {
     return MaterialPageRoute(
       settings: this,
