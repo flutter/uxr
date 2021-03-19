@@ -25,30 +25,43 @@ class Book {
 }
 
 class AppState extends ChangeNotifier {
-  Book? _selectedBook;
+  int? _selectedBookId;
 
-  Book? get selectedBook => _selectedBook;
+  int? get selectedBookId => _selectedBookId;
 
-  set selectedBook(Book? book) {
-    _selectedBook = book;
+  set selectedBookId(int? id) {
+    _selectedBookId = id;
     notifyListeners();
   }
 
-  int getId(Book book) {
-    return books.indexOf(book);
+  Book? get selectedBook {
+    var idx = _selectedBookId;
+    if (idx == null) {
+      return null;
+    }
+    return books[idx];
   }
 
-  bool setSelected(int? id) {
-    if (id == null || id < 0 || id > books.length - 1) {
-      return false;
+  set selectedBook(Book? book) {
+    if (book == null) {
+      _selectedBookId = null;
+      notifyListeners();
+      return;
     }
 
-    selectedBook = books[id];
-    return true;
+    var id = books.indexOf(book);
+    if (id == -1) {
+      _selectedBookId = null;
+    } else {
+      _selectedBookId = id;
+    }
+
+    notifyListeners();
   }
 
   void clearSelectedBook() {
-    selectedBook = null;
+    _selectedBookId = null;
+    notifyListeners();
   }
 }
 
@@ -132,11 +145,11 @@ class BookRouterDelegate extends RouterDelegate<BookRoutePath>
 
   @override
   BookRoutePath get currentConfiguration {
-    final selectedBook = _appState.selectedBook;
-    if (selectedBook == null) {
+    final id = _appState.selectedBookId;
+    if (id == null) {
       return BookRoutePath.home();
     } else {
-      return BookRoutePath.details(_appState.getId(selectedBook));
+      return BookRoutePath.details(id);
     }
   }
 
@@ -172,14 +185,14 @@ class BookRouterDelegate extends RouterDelegate<BookRoutePath>
   Future<void> setNewRoutePath(BookRoutePath path) async {
     if (path.isDetailsPage) {
       final id = path.id;
-      _appState.setSelected(id);
+      _appState.selectedBookId = id;
     } else {
       _appState.clearSelectedBook();
     }
   }
 
-  void _handleBookTapped(Book book) {
-    _appState.selectedBook = book;
+  void _handleBookTapped(int bookId) {
+    _appState.selectedBookId = bookId;
   }
 }
 
@@ -215,7 +228,7 @@ class BookRoutePath {
 
 class BooksListScreen extends StatelessWidget {
   final List<Book> books;
-  final ValueChanged<Book> onTapped;
+  final ValueChanged<int> onTapped;
 
   BooksListScreen({
     required this.books,
@@ -232,7 +245,7 @@ class BooksListScreen extends StatelessWidget {
             ListTile(
               title: Text(book.title),
               subtitle: Text(book.author),
-              onTap: () => onTapped(book),
+              onTap: () => onTapped(books.indexOf(book)),
             )
         ],
       ),
