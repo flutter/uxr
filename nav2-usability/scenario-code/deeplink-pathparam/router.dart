@@ -7,6 +7,12 @@
 /// [Navigator].
 import 'package:flutter/material.dart';
 
+final List<Book> books = [
+  Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
+  Book('Foundation', 'Isaac Asimov'),
+  Book('Fahrenheit 451', 'Ray Bradbury'),
+];
+
 void main() {
   runApp(BooksApp());
 }
@@ -27,12 +33,6 @@ class AppState extends ChangeNotifier {
     _selectedBook = book;
     notifyListeners();
   }
-
-  final List<Book> books = [
-    Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
-    Book('Foundation', 'Isaac Asimov'),
-    Book('Fahrenheit 451', 'Ray Bradbury'),
-  ];
 
   int getId(Book book) {
     return books.indexOf(book);
@@ -149,7 +149,7 @@ class BookRouterDelegate extends RouterDelegate<BookRoutePath>
         MaterialPage(
           key: ValueKey('BooksListPage'),
           child: BooksListScreen(
-            books: _appState.books,
+            books: books,
             onTapped: _handleBookTapped,
           ),
         ),
