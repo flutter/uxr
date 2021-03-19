@@ -4,6 +4,16 @@
 
 import 'package:flutter/material.dart';
 
+final List<Book> books = [
+  Book('Stranger in a Strange Land', Author('Robert A. Heinlein')),
+  Book('Foundation', Author('Isaac Asimov')),
+  Book('Fahrenheit 451', Author('Ray Bradbury')),
+];
+
+List<Author> get authors => [
+  ...books.map((book) => book.author),
+];
+
 void main() {
   runApp(BooksApp());
 }
@@ -23,32 +33,65 @@ class Author {
 
 class AppState extends ChangeNotifier {
   bool _showAuthorsPage = false;
-  Book? _selectedBook;
-  Author? _selectedAuthor;
-  final List<Book> books = [
-    Book('Stranger in a Strange Land', Author('Robert A. Heinlein')),
-    Book('Foundation', Author('Isaac Asimov')),
-    Book('Fahrenheit 451', Author('Ray Bradbury')),
-  ];
+  int? _selectedBookId;
+  int? _selectedAuthorId;
 
-  List<Author> get authors => [
-    ...books.map((book) => book.author),
-  ];
+  int? get selectedBookId => _selectedBookId;
 
-  Book? get selectedBook => _selectedBook;
+  int? get selectedAuthorId => _selectedAuthorId;
 
-  set selectedBook(Book? book) {
-    _selectedBook = book;
-    clearSelectedAuthor();
+  Book? get selectedBook {
+    var idx = _selectedBookId;
+    if (idx == null) {
+      return null;
+    }
+    return books[idx];
+  }
+
+  set selectedBookId(int? id) {
+    if (id == null || id < 0 || id > books.length - 1) {
+      return;
+    }
+
+    _showAuthorsPage = false;
+    _selectedBookId = id;
+    _selectedAuthorId = null;
     notifyListeners();
   }
 
-  Author? get selectedAuthor => _selectedAuthor;
+  set selectedBook(Book? book) {
+    if (book == null) {
+      selectedBookId = null;
+      return;
+    }
+    selectedBookId = books.indexOf(book);
+  }
+
+  Author? get selectedAuthor {
+    var idx = _selectedAuthorId;
+    if (idx == null) {
+      return null;
+    }
+    return authors[idx];
+  }
+
+  set selectedAuthorId(int? id) {
+    if (id == null || id < 0 || id > books.length - 1) {
+      return;
+    }
+
+    _selectedAuthorId = id;
+    _showAuthorsPage = false;
+    _selectedBookId = null;
+    notifyListeners();
+  }
 
   set selectedAuthor(Author? author) {
-    _selectedAuthor = author;
-    clearSelectedBook();
-    notifyListeners();
+    if (author == null) {
+      selectedAuthorId = null;
+      return;
+    }
+    selectedAuthorId = authors.indexOf(author);
   }
 
   set showAuthorsPage(bool show) {
@@ -58,43 +101,13 @@ class AppState extends ChangeNotifier {
 
   bool get showAuthorsPage => _showAuthorsPage;
 
-  int getBookId(Book book) {
-    return books.indexOf(book);
-  }
-
-  int getAuthorId(Author author) {
-    return books.indexWhere((book) => book.author == author);
-  }
-
-  bool setSelectedBook(int? id) {
-    if (id == null || id < 0 || id > books.length - 1) {
-      return false;
-    }
-
-    _showAuthorsPage = false;
-    selectedBook = books[id];
-    clearSelectedAuthor();
-    return true;
-  }
-
-  bool setSelectedAuthor(int? id) {
-    if (id == null || id < 0 || id > books.length - 1) {
-      return false;
-    }
-
-    _showAuthorsPage = false;
-    selectedAuthor = books[id].author;
-    clearSelectedBook();
-    return true;
-  }
-
   void clearSelectedBook() {
-    _selectedBook = null;
+    _selectedBookId = null;
     notifyListeners();
   }
 
   void clearSelectedAuthor() {
-    _selectedAuthor = null;
+    _selectedAuthorId = null;
     notifyListeners();
   }
 }
@@ -190,18 +203,22 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
 
   @override
   AppRoutePath get currentConfiguration {
-    final selectedBook = _appState.selectedBook;
-    final selectedAuthor = _appState.selectedAuthor;
+    final selectedBookId = _appState.selectedBookId;
+    final selectedAuthorId = _appState.selectedAuthorId;
     final showAuthorsPage = _appState.showAuthorsPage;
+
     if (showAuthorsPage) {
       return AuthorsRoutePath();
     }
-    if (selectedAuthor != null) {
-      return AuthorRoutePath(_appState.getAuthorId(selectedAuthor));
+
+    if (selectedAuthorId != null) {
+      return AuthorRoutePath(selectedAuthorId);
     }
-    if (selectedBook != null) {
-      return BookRoutePath(_appState.getBookId(selectedBook));
+
+    if (selectedBookId != null) {
+      return BookRoutePath(selectedBookId);
     }
+
     return AppRoutePath();
   }
 
@@ -216,7 +233,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
           MaterialPage(
             key: ValueKey('AuthorsListPage'),
             child: AuthorsListScreen(
-              authors: _appState.authors,
+              authors: authors,
               onTapped: _handleAuthorTapped,
               onGoToBooksTapped: _handleGoToBooksTapped,
             ),
@@ -228,7 +245,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
           MaterialPage(
             key: ValueKey('BooksListPage'),
             child: BooksListScreen(
-              books: _appState.books,
+              books: books,
               onTapped: _handleBookTapped,
             ),
           ),
@@ -240,7 +257,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
           MaterialPage(
             key: ValueKey('AuthorsListPage'),
             child: AuthorsListScreen(
-              authors: _appState.authors,
+              authors: authors,
               onTapped: _handleAuthorTapped,
               onGoToBooksTapped: _handleGoToBooksTapped,
             ),
@@ -249,7 +266,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
           MaterialPage(
             key: ValueKey('BooksListPage'),
             child: BooksListScreen(
-              books: _appState.books,
+              books: books,
               onTapped: _handleBookTapped,
             ),
           ),
@@ -274,11 +291,11 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
   @override
   Future<void> setNewRoutePath(AppRoutePath path) async {
     if (path is AuthorRoutePath) {
-      _appState.setSelectedAuthor(path.id);
+      _appState.selectedAuthorId = path.id;
     } else if (path is AuthorsRoutePath) {
       _appState.showAuthorsPage = true;
     } else if (path is BookRoutePath) {
-      _appState.setSelectedBook(path.id);
+      _appState.selectedBookId = path.id;
     } else {
       _appState.clearSelectedBook();
       _appState.clearSelectedAuthor();
