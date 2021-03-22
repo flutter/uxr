@@ -1,5 +1,5 @@
 # Flutter Router Package Comparative Analysis  
-As part of the [Navigator 2.0 API Usability Research](https://github.com/flutter/uxr/wiki/Navigator-2.0-API-Usability-Research), we have conducted a [preliminary comparative analysis](https://github.com/flutter/uxr/issues/13) of existing router packages Flutter community has produced around common navigation scenarios ([PDF](https://github.com/flutter/uxr/files/5953028/PUBLIC.Flutter.Navigator.API.Scenarios.-.Storyboards.pdf)) the Flutter UX Research team has identified through previous user studies.  
+As part of the [Navigator 2.0 API Usability Research](https://github.com/flutter/uxr/wiki/Navigator-2.0-API-Usability-Research), we have conducted a [preliminary comparative analysis](https://github.com/flutter/uxr/issues/13) of existing router packages Flutter community has produced around common navigation scenarios ([PDF](https://github.com/flutter/uxr/blob/master/nav2-usability/storyboards/%5BPublic%5D%20Flutter%20Navigator%20Scenarios%20Storyboards%20v2.pdf)) the Flutter UX Research team has identified through previous user studies.  
   
 ## Analysis  
 Scroll right to see all >
