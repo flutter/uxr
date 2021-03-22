@@ -2,16 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-/// Full sample that shows a custom RouteInformationParser and RouterDelegate
-/// parsing named routes and declaratively building the stack of pages for the
-/// [Navigator].
 import 'package:flutter/material.dart';
-
-final List<Book> books = [
-  Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
-  Book('Foundation', 'Isaac Asimov'),
-  Book('Fahrenheit 451', 'Ray Bradbury'),
-];
 
 void main() {
   runApp(BooksApp());
@@ -25,6 +16,12 @@ class Book {
 }
 
 class AppState extends ChangeNotifier {
+  final List<Book> _books = [
+    Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
+    Book('Foundation', 'Isaac Asimov'),
+    Book('Fahrenheit 451', 'Ray Bradbury'),
+  ];
+
   int? _selectedBookId;
 
   int? get selectedBookId => _selectedBookId;
@@ -39,25 +36,10 @@ class AppState extends ChangeNotifier {
     if (idx == null) {
       return null;
     }
-    return books[idx];
+    return _books[idx];
   }
 
-  set selectedBook(Book? book) {
-    if (book == null) {
-      _selectedBookId = null;
-      notifyListeners();
-      return;
-    }
-
-    var id = books.indexOf(book);
-    if (id == -1) {
-      _selectedBookId = null;
-    } else {
-      _selectedBookId = id;
-    }
-
-    notifyListeners();
-  }
+  List<Book> get allBooks => _books;
 
   void clearSelectedBook() {
     _selectedBookId = null;
@@ -162,7 +144,7 @@ class BookRouterDelegate extends RouterDelegate<BookRoutePath>
         MaterialPage(
           key: ValueKey('BooksListPage'),
           child: BooksListScreen(
-            books: books,
+            books: _appState.allBooks,
             onTapped: _handleBookTapped,
           ),
         ),
