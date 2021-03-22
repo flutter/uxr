@@ -4,19 +4,54 @@ void main() {
   runApp(BooksApp());
 }
 
+class Credentials {
+  final String username;
+  final String password;
+
+  Credentials(this.username, this.password);
+}
+
+abstract class Authentication {
+  bool isSignedIn();
+
+  void signOut();
+
+  Future<bool> signIn(String username, String password);
+}
+
+class MockAuthentication implements Authentication {
+  bool _signedIn = false;
+
+  @override
+  bool isSignedIn() {
+    return _signedIn;
+  }
+
+  @override
+  void signOut() {
+    _signedIn = false;
+  }
+
+  @override
+  Future<bool> signIn(String username, String password) async {
+    return _signedIn = true;
+  }
+}
+
 class BooksApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _BooksAppState();
 }
 
 class AppState extends ChangeNotifier {
-  bool _isLoggedIn = false;
+  final Authentication auth;
 
-  bool get isLoggedIn => _isLoggedIn;
+  AppState(this.auth);
 
-  set isLoggedIn(bool value) {
-    _isLoggedIn = value;
+  Future<bool> signIn(String username, String password) async {
+    var success = await auth.signIn(username, password);
     notifyListeners();
+    return success;
   }
 
   bool _viewingBooks = false;
@@ -89,7 +124,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppRoutePath> {
   @override
   final GlobalKey<NavigatorState> navigatorKey;
-  final AppState _appState = AppState();
+  final AppState _appState = AppState(MockAuthentication());
 
   BookRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
     _appState.addListener(() => notifyListeners());
@@ -103,7 +138,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
 
   @override
   AppRoutePath get currentConfiguration {
-    if (!_appState.isLoggedIn) {
+    if (!_appState.auth.isSignedIn()) {
       return LoginRoutePath();
     } else if (_appState.viewingBooks) {
       return BooksRoutePath();
@@ -114,7 +149,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
 
   @override
   Widget build(BuildContext context) {
-    final isLoggedIn = _appState.isLoggedIn;
+    final isLoggedIn = _appState.auth.isSignedIn();
     final viewingBooksScreen = _appState.viewingBooks;
     return Navigator(
       key: navigatorKey,
@@ -162,7 +197,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
     } else if (path is LoginRoutePath) {
       // Log out
       _appState.viewingBooks = false;
-      _appState.isLoggedIn = false;
+      _appState.auth.signOut();
     }
   }
 
@@ -170,8 +205,8 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
     _appState.viewingBooks = true;
   }
 
-  void _handleLoggedIn() {
-    _appState.isLoggedIn = true;
+  Future _handleLoggedIn(Credentials credentials) async {
+    await _appState.signIn(credentials.username, credentials.password);
   }
 }
 
@@ -204,21 +239,42 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class LoginScreen extends StatelessWidget {
-  final VoidCallback onLoggedIn;
+class LoginScreen extends StatefulWidget {
+  final ValueChanged<Credentials> onLoggedIn;
 
   LoginScreen({
     required this.onLoggedIn,
   });
 
   @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  String _username = '';
+  String _password = '';
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: Center(
-        child: ElevatedButton(
-          onPressed: onLoggedIn,
-          child: Text('Log in'),
+        child: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(hintText: 'username (any)'),
+              onChanged: (s) => _username = s,
+            ),
+            TextField(
+              decoration: InputDecoration(hintText: 'password (any)'),
+              onChanged: (s) => _password = s,
+            ),
+            ElevatedButton(
+              onPressed: () =>
+                  widget.onLoggedIn(Credentials(_username, _password)),
+              child: Text('Log in'),
+            ),
+          ],
         ),
       ),
     );
