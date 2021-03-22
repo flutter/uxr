@@ -4,15 +4,6 @@
 
 import 'package:flutter/material.dart';
 
-final List<Book> books = [
-  Book('Stranger in a Strange Land', Author('Robert A. Heinlein')),
-  Book('Foundation', Author('Isaac Asimov')),
-  Book('Fahrenheit 451', Author('Ray Bradbury')),
-];
-
-List<Author> get authors => [
-  ...books.map((book) => book.author),
-];
 
 void main() {
   runApp(BooksApp());
@@ -32,13 +23,53 @@ class Author {
 }
 
 class AppState extends ChangeNotifier {
-  bool _showAuthorsPage = false;
+  final List<Book> books = [
+    Book('Stranger in a Strange Land', Author('Robert A. Heinlein')),
+    Book('Foundation', Author('Isaac Asimov')),
+    Book('Fahrenheit 451', Author('Ray Bradbury')),
+  ];
+
+  bool _isViewingAuthorsPage = false;
   int? _selectedBookId;
   int? _selectedAuthorId;
 
+
+  List<Author> get authors => [
+    ...books.map((book) => book.author),
+  ];
+
+  bool get isViewingAuthorsPage => _isViewingAuthorsPage;
+
+  set isViewingAuthorsPage(bool show) {
+    _isViewingAuthorsPage = show;
+    notifyListeners();
+  }
+
   int? get selectedBookId => _selectedBookId;
 
+  set selectedBookId(int? id) {
+    if (id == null || id < 0 || id > books.length - 1) {
+      return;
+    }
+
+    _isViewingAuthorsPage = false;
+    _selectedBookId = id;
+    _selectedAuthorId = null;
+    notifyListeners();
+  }
+
   int? get selectedAuthorId => _selectedAuthorId;
+
+  set selectedAuthorId(int? id) {
+    if (id == null || id < 0 || id > books.length - 1) {
+      return;
+    }
+
+    _selectedAuthorId = id;
+    _isViewingAuthorsPage = false;
+    _selectedBookId = null;
+    notifyListeners();
+  }
 
   Book? get selectedBook {
     var idx = _selectedBookId;
@@ -46,17 +77,6 @@ class AppState extends ChangeNotifier {
       return null;
     }
     return books[idx];
-  }
-
-  set selectedBookId(int? id) {
-    if (id == null || id < 0 || id > books.length - 1) {
-      return;
-    }
-
-    _showAuthorsPage = false;
-    _selectedBookId = id;
-    _selectedAuthorId = null;
-    notifyListeners();
   }
 
   set selectedBook(Book? book) {
@@ -75,17 +95,6 @@ class AppState extends ChangeNotifier {
     return authors[idx];
   }
 
-  set selectedAuthorId(int? id) {
-    if (id == null || id < 0 || id > books.length - 1) {
-      return;
-    }
-
-    _selectedAuthorId = id;
-    _showAuthorsPage = false;
-    _selectedBookId = null;
-    notifyListeners();
-  }
-
   set selectedAuthor(Author? author) {
     if (author == null) {
       selectedAuthorId = null;
@@ -93,13 +102,6 @@ class AppState extends ChangeNotifier {
     }
     selectedAuthorId = authors.indexOf(author);
   }
-
-  set showAuthorsPage(bool show) {
-    _showAuthorsPage = show;
-    notifyListeners();
-  }
-
-  bool get showAuthorsPage => _showAuthorsPage;
 
   void clearSelectedBook() {
     _selectedBookId = null;
@@ -205,7 +207,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
   AppRoutePath get currentConfiguration {
     final selectedBookId = _appState.selectedBookId;
     final selectedAuthorId = _appState.selectedAuthorId;
-    final showAuthorsPage = _appState.showAuthorsPage;
+    final showAuthorsPage = _appState.isViewingAuthorsPage;
 
     if (showAuthorsPage) {
       return AuthorsRoutePath();
@@ -233,7 +235,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
           MaterialPage(
             key: ValueKey('AuthorsListPage'),
             child: AuthorsListScreen(
-              authors: authors,
+              authors: _appState.authors,
               onTapped: _handleAuthorTapped,
               onGoToBooksTapped: _handleGoToBooksTapped,
             ),
@@ -245,7 +247,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
           MaterialPage(
             key: ValueKey('BooksListPage'),
             child: BooksListScreen(
-              books: books,
+              books: _appState.books,
               onTapped: _handleBookTapped,
             ),
           ),
@@ -253,11 +255,11 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
             book: selectedBook,
             onAuthorTapped: _handleAuthorTapped,
           )
-        ] else if (_appState.showAuthorsPage)
+        ] else if (_appState.isViewingAuthorsPage)
           MaterialPage(
             key: ValueKey('AuthorsListPage'),
             child: AuthorsListScreen(
-              authors: authors,
+              authors: _appState.authors,
               onTapped: _handleAuthorTapped,
               onGoToBooksTapped: _handleGoToBooksTapped,
             ),
@@ -266,7 +268,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
           MaterialPage(
             key: ValueKey('BooksListPage'),
             child: BooksListScreen(
-              books: books,
+              books: _appState.books,
               onTapped: _handleBookTapped,
             ),
           ),
@@ -277,7 +279,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
         }
 
         if (_appState.selectedAuthor != null) {
-          _appState.showAuthorsPage = true;
+          _appState.isViewingAuthorsPage = true;
         }
 
         _appState.clearSelectedBook();
@@ -293,12 +295,13 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
     if (path is AuthorRoutePath) {
       _appState.selectedAuthorId = path.id;
     } else if (path is AuthorsRoutePath) {
-      _appState.showAuthorsPage = true;
+      _appState.isViewingAuthorsPage = true;
     } else if (path is BookRoutePath) {
       _appState.selectedBookId = path.id;
     } else {
       _appState.clearSelectedBook();
       _appState.clearSelectedAuthor();
+      _appState.isViewingAuthorsPage = false;
     }
   }
 
@@ -311,7 +314,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
   }
 
   void _handleGoToBooksTapped() {
-    _appState.showAuthorsPage = false;
+    _appState.isViewingAuthorsPage = false;
     _appState.clearSelectedAuthor();
     _appState.clearSelectedBook();
   }
