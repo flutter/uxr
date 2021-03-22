@@ -97,8 +97,8 @@ class BookRouteInformationParser extends RouteInformationParser<AppRoutePath> {
     }
 
     if (uri.pathSegments.length == 1) {
-      // Handle '/login'
-      if (uri.pathSegments[0] == 'login') return LoginRoutePath();
+      // Handle '/signin'
+      if (uri.pathSegments[0] == 'signin') return SignInRoutePath();
       if (uri.pathSegments[0] == 'books') return BooksRoutePath();
     }
 
@@ -113,8 +113,8 @@ class BookRouteInformationParser extends RouteInformationParser<AppRoutePath> {
       location = '/';
     } else if (path is BooksRoutePath) {
       location = '/books';
-    } else if (path is LoginRoutePath) {
-      location = '/login';
+    } else if (path is SignInRoutePath) {
+      location = '/signin';
     }
     return RouteInformation(location: location);
   }
@@ -139,7 +139,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
   @override
   AppRoutePath get currentConfiguration {
     if (!_appState.auth.isSignedIn()) {
-      return LoginRoutePath();
+      return SignInRoutePath();
     } else if (_appState.viewingBooks) {
       return BooksRoutePath();
     } else {
@@ -149,12 +149,12 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
 
   @override
   Widget build(BuildContext context) {
-    final isLoggedIn = _appState.auth.isSignedIn();
+    final isSignedIn = _appState.auth.isSignedIn();
     final viewingBooksScreen = _appState.viewingBooks;
     return Navigator(
       key: navigatorKey,
       pages: [
-        if (isLoggedIn) ...[
+        if (isSignedIn) ...[
           MaterialPage(
             key: ValueKey('HomeScreen'),
             child: HomeScreen(
@@ -168,9 +168,9 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
             ),
         ] else
           MaterialPage(
-            key: ValueKey('LoginScreen'),
-            child: LoginScreen(
-              onLoggedIn: _handleLoggedIn,
+            key: ValueKey('SignInScreen'),
+            child: SignInScreen(
+              onSignedIn: _handleSignedIn,
             ),
           )
       ],
@@ -194,8 +194,8 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
       _appState.viewingBooks = false;
     } else if (path is BooksRoutePath) {
       _appState.viewingBooks = true;
-    } else if (path is LoginRoutePath) {
-      // Log out
+    } else if (path is SignInRoutePath) {
+      // Sign out
       _appState.viewingBooks = false;
       _appState.auth.signOut();
     }
@@ -205,7 +205,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
     _appState.viewingBooks = true;
   }
 
-  Future _handleLoggedIn(Credentials credentials) async {
+  Future _handleSignedIn(Credentials credentials) async {
     await _appState.signIn(credentials.username, credentials.password);
   }
 }
@@ -214,7 +214,7 @@ class AppRoutePath {}
 
 class HomeRoutePath extends AppRoutePath {}
 
-class LoginRoutePath extends AppRoutePath {}
+class SignInRoutePath extends AppRoutePath {}
 
 class BooksRoutePath extends AppRoutePath {}
 
@@ -239,18 +239,18 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class LoginScreen extends StatefulWidget {
-  final ValueChanged<Credentials> onLoggedIn;
+class SignInScreen extends StatefulWidget {
+  final ValueChanged<Credentials> onSignedIn;
 
-  LoginScreen({
-    required this.onLoggedIn,
+  SignInScreen({
+    required this.onSignedIn,
   });
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignInScreenState createState() => _SignInScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignInScreenState extends State<SignInScreen> {
   String _username = '';
   String _password = '';
 
@@ -271,8 +271,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             ElevatedButton(
               onPressed: () =>
-                  widget.onLoggedIn(Credentials(_username, _password)),
-              child: Text('Log in'),
+                  widget.onSignedIn(Credentials(_username, _password)),
+              child: Text('Sign in'),
             ),
           ],
         ),
