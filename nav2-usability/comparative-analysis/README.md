@@ -4,19 +4,19 @@ As part of the [Navigator 2.0 API Usability Research](https://github.com/flutter
 ## Analysis  
 Scroll right to see all >
 
-  | auto_route | beamer | flit-router | flouter | flow_builder | fluro | flutter_modular | page_router | qlevar_router | routemaster | vrouter | flow_builder
--- | -- | -- | -- | -- | -- | -- | -- | -- | -- | --
-**Deep Linking - Path Parameters** | ✅ | ✅ | ✅ | ✅ | ✅* (= in progress) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ 
+  | auto_route | beamer | flit-router | flouter | flow_builder | fluro | flutter_modular | page_router | qlevar_router | routemaster | vrouter 
+-- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | --
+**Deep Linking - Path Parameters** | ✅ | ✅ | ✅ | ✅ | ✅ * (= in progress) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ 
   | | | | | | | | | | | [code snippet](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/path_parameters.dart)
-**Deep Linking - Query Parameters** | ✅ | ✅ | ✅ | ✅ | ✅* | 🆇 | ✅ | 🆇 | ✅ | ✅ | ✅ 
+**Deep Linking - Query Parameters** | ✅ | ✅ | ✅ | ✅ | ✅ * | ✅ | ✅ | 🆇 | ✅ | ✅ | ✅ 
   | | | | | | | | | | | [code snippet](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/query_parameters.dart)
-**Dynamic Linking** | ✅ | ✅ | ✅ | ✅ | ✅* | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ 
+**Dynamic Linking** | ✅ | ✅ | ✅ | ✅ | ✅ * | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ 
   | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/dynamic_linking.dart)
-**Validation (Login/Logout/Sign-up Routing)** | ✅ - route validation happens at the route pattern level, but no custom validators (e.g. check if id is valid before routing) | ✅ - BeamGuard | 🆇 - in TODO list | 🆇 | ✅ | 🆇 - in TODO list | ✅ | ✅ - no way to specify "default" route when validation fails (e.g. go to login/ screen if user is logged out) | ✅ | ✅ | ✅- VNavigationGuard | ✅ 
+**Validation (Login/Logout/Sign-up Routing)** | ✅ - route validation happens at the route pattern level, but no custom validators (e.g. check if id is valid before routing) | ✅ - BeamGuard | 🆇 - in TODO list | 🆇 | ✅ | 🆇 - in TODO list | ✅ | ✅ - no way to specify "default" route when validation fails (e.g. go to login/ screen if user is logged out) | ✅ | ✅ | ✅- VNavigationGuard 
   | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/login_logout.dart)
 **Nested Routing** | ✅ | ✅ | 🆇 - in TODO list (highest priority) | 🆇 - in TODO list | ✅ | 🆇 - in TODO list | ✅ | 🆇 | ✅ | ✅ | ✅ 
   | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/nested_routing.dart)
-**Skipping Stacks** | ✅ | ✅ | ✅ | ✅ | ✅* | 🆇 | 🆇 | ✅ | ✅ | ✅ | ✅ 
+**Skipping Stacks** | ✅ | ✅ | ✅ | ✅ | ✅ * | 🆇 | 🆇 | ✅ | ✅ | ✅ | ✅ 
   | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/skipping_stacks.dart)
 **Custom Pages / Custom transition animations** | ✅ | ✅ - slovnicki/beamer#51 (TODO: slovnicki/beamer#108) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅- Custom transitions are supported, but custom Page objects aren't (it currently hard-codes MaterialPage) 
   | | | | | | | | | | | 
@@ -28,13 +28,13 @@ Learn more about the packcages inluded in this analysis on Github:
 - [beamer](https://github.com/slovnicki/beamer)
 - [flit-router](https://github.com/polyflection/flit_router)
 - [flouter](https://github.com/Kleak/flouter)
+- [flow_builder](https://github.com/felangel/flow_builder)
 - [fluro](https://github.com/lukepighetti/fluro)
 - [flutter_modular](https://github.com/Flutterando/modular)
 - [page_router](https://github.com/johnpryan/page_router)
 - [qlevar_router](https://github.com/SchabanBo/qlevar_router)
 - [routemaster](https://github.com/tomgilder/routemaster)
 - [vrouter](https://github.com/lulupointu/vrouter)
-- [flow_builder](https://github.com/felangel/flow_builder)
  
 ## Acknowledgment  
 Authors of the abovementioned packages shared their feedback on the analysis via email and Github [comments](https://github.com/flutter/uxr/issues/13). We appreciate your contributions.  
