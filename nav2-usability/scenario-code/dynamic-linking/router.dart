@@ -96,22 +96,21 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppRoutePath> {
   @override
   final GlobalKey<NavigatorState> navigatorKey;
-
-  AppState appState = AppState();
+  final AppState _appState = AppState();
 
   BookRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
-    appState.addListener(() => notifyListeners());
+    _appState.addListener(() => notifyListeners());
   }
 
   @override
   void dispose() {
-    appState.dispose();
+    _appState.dispose();
     super.dispose();
   }
 
   @override
   AppRoutePath get currentConfiguration {
-    final selected = appState.selectedWishlist;
+    final selected = _appState.selectedWishlist;
     if (selected == null) {
       return AppRoutePath();
     } else {
@@ -121,14 +120,14 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
 
   @override
   Widget build(BuildContext context) {
-    final selectedWishlist = appState.selectedWishlist;
+    final selectedWishlist = _appState.selectedWishlist;
     return Navigator(
       key: navigatorKey,
       pages: [
         MaterialPage(
           key: ValueKey('WishlistListPage'),
           child: WishlistListScreen(
-            wishlists: appState.wishlists,
+            wishlists: _appState.wishlists,
             onTapped: _handleTapped,
             onCreate: (newId) {
               setNewRoutePath(AppRoutePath(id: newId));
@@ -147,7 +146,7 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
         }
 
         // Update the list of pages by setting selected wishlist to null
-        appState.selectedWishlist = null;
+        _appState.selectedWishlist = null;
 
         return true;
       },
@@ -158,27 +157,27 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
   Future<void> setNewRoutePath(AppRoutePath path) async {
     var pathId = path.id;
     if (pathId == null) {
-      appState.selectedWishlist = null;
+      _appState.selectedWishlist = null;
       return;
     }
 
     // Create a wishlist with the given ID if none exists
     Wishlist? wishlist;
-    for (var w in appState.wishlists) {
+    for (var w in _appState.wishlists) {
       if (w.id == path.id) {
         wishlist = w;
       }
     }
     if (wishlist == null) {
       wishlist = Wishlist(pathId);
-      appState.addWishlist(wishlist);
+      _appState.addWishlist(wishlist);
     }
 
-    appState.selectedWishlist = wishlist;
+    _appState.selectedWishlist = wishlist;
   }
 
   void _handleTapped(Wishlist wishlist) {
-    appState.selectedWishlist = wishlist;
+    _appState.selectedWishlist = wishlist;
   }
 }
 
