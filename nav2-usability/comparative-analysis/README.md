@@ -7,19 +7,19 @@ Scroll right to see all >
   | auto_route | beamer | flit-router | flouter | flow_builder | fluro | flutter_modular | page_router | qlevar_router | routemaster | vrouter 
 -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | --
 **Deep Linking - Path Parameters** | ✅ | ✅ | ✅ | ✅ | 🆇 - in TODO list  | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ 
-  | | | | | | | | | | | [code snippet](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/path_parameters.dart)
+  | | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/path_parameters.dart)
 **Deep Linking - Query Parameters** | ✅ | ✅ | ✅ | ✅ | 🆇 | ✅ | ✅ | 🆇 - in TODO list | ✅ | ✅ | ✅ 
-  | | | | | | | | | | | [code snippet](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/query_parameters.dart)
+  | | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/query_parameters.dart)
 **Dynamic Linking** | ✅ | ✅ | ✅ | ✅ | 🆇 - in TODO list  | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ 
-  | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/dynamic_linking.dart)
+  | | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/dynamic_linking.dart)
 **Validation (Login/Logout/Sign-up Routing)** | ✅ - route validation happens at the route pattern level, but no custom validators (e.g. check if id is valid before routing) | ✅ - BeamGuard | 🆇 - in TODO list | 🆇 | ✅ | 🆇 - in TODO list | ✅ | ✅ - no way to specify "default" route when validation fails (e.g. go to login/ screen if user is logged out) | ✅ | ✅ | ✅- VNavigationGuard 
-  | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/login_logout.dart)
+  | | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/login_logout.dart)
 **Nested Routing** | ✅ | ✅ | 🆇 - in TODO list (highest priority) | 🆇 - in TODO list | ✅ | 🆇 - in TODO list | ✅ | 🆇 | ✅ | ✅ | ✅ 
-  | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/nested_routing.dart)
-**Skipping Stacks** | ✅ | ✅ | ✅ | ✅ | ✅ * | 🆇 | 🆇 | ✅ | ✅ | ✅ | ✅ 
-  | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/skipping_stacks.dart)
+  | | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/nested_routing.dart)
+**Skipping Stacks** | ✅ | ✅ | ✅ | ✅ | ✅ | 🆇 | 🆇 | ✅ | ✅ | ✅ | ✅ 
+  | | | | | | | | | | | |[code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/skipping_stacks.dart)
 **Custom Pages / Custom transition animations** | ✅ | ✅ - slovnicki/beamer#51 (TODO: slovnicki/beamer#108) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅- Custom transitions are supported, but custom Page objects aren't (it currently hard-codes MaterialPage) 
-  | | | | | | | | | | | 
+  | | | | | | | | | | |
 
 ## Packages Included in the Analysis  
 Learn more about the packcages inluded in this analysis on Github:  
