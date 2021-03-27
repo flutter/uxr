@@ -6,10 +6,10 @@ Scroll right to see all >
 
 |  | auto_route | beamer | flit-router | flouter | flow_builder | fluro | flutter_modular | navi | page_router | qlevar_router | routemaster | vrouter |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| **Deep Linking - Path Parameters** | ✅ | ✅ | ✅ | ✅ | 🆇 - in TODO list | ✅ | ✅ | TODO - currently only work for root stack | ✅ | ✅ | ✅ | ✅ |
-|  |  |  |  |  |  |  |  |  |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/path_parameters.dart) |
-| **Deep Linking - Query Parameters** | ✅ | ✅ | ✅ | ✅ | 🆇 | ✅ | ✅ | TODO - currently only work for root stack | 🆇 - in TODO list | ✅ | ✅ | ✅ |
-|  |  |  |  |  |  |  |  |  |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/query_parameters.dart) |
+| **Deep Linking - Path Parameters** | ✅ | ✅ | ✅ | ✅ | 🆇 - in TODO list | ✅ | ✅ | ✅ - currently only work for root stack. Support for child stacks is in TODO list | ✅ | ✅ | ✅ | ✅ |
+|  |  |  |  |  |  |  |  | [example app](https://github.com/zenonine/navi/tree/master/examples/uxr/1-deep-linking-path-parameters) |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/path_parameters.dart) |
+| **Deep Linking - Query Parameters** | ✅ | ✅ | ✅ | ✅ | 🆇 | ✅ | ✅ | ✅ - currently only work for root stack. Support for child stacks is in TODO list | 🆇 - in TODO list | ✅ | ✅ | ✅ |
+|  |  |  |  |  |  |  |  | [example app](https://github.com/zenonine/navi/tree/master/examples/uxr/2-deep-linking-query-parameters) |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/query_parameters.dart) |
 | **Dynamic Linking** | ✅ | ✅ | ✅ | ✅ | 🆇 - in TODO list | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 |  |  |  |  |  |  |  |  |  |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/dynamic_linking.dart) |
 | **Validation (Login/Logout/Sign-up Routing)** | ✅ - route validation happens at the route pattern level, but no custom validators (e.g. check if id is valid before routing) | ✅ - BeamGuard | 🆇 - in TODO list | 🆇 | ✅ | 🆇 - in TODO list | ✅ | ✅ | ✅ - no way to specify "default" route when validation fails (e.g. go to login/ screen if user is logged out) | ✅ | ✅ | ✅- VNavigationGuard |
