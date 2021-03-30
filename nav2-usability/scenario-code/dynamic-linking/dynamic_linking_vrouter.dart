@@ -35,23 +35,40 @@ class WishlistApp extends StatefulWidget {
 }
 
 class _WishlistAppState extends State<WishlistApp> {
-  final AppState appState = AppState();
-  final vRouterKey = GlobalKey<VRouterState>();
+  final AppState _appState = AppState();
+  final vRouterKey;
+
+  _WishlistAppState() : vRouterKey = GlobalKey<VRouterState>() {
+    _appState.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _appState.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return VRouter(
+      key: vRouterKey,
       routes: [
         VWidget(
           path: '/',
-          widget: WishlistListScreen(wishlists: appState.wishlists, onCreate: onCreate),
-        ),
-        VWidget(
-          path: r'/wishlist/:id(\d+)',
-          widget: WishlistScreen(
-              wishlist: appState.wishlists.firstWhere(
-                    (element) => element.id == vRouterKey.currentState!.pathParameters['id'],
-              )),
+          widget: WishlistListScreen(wishlists: _appState.wishlists, onCreate: onCreate),
+          stackedRoutes: [
+            VWidget(
+              path: r'wishlist/:id(\d+)',
+              widget: Builder(
+                builder: (context) => WishlistScreen(
+                    wishlist: _appState.wishlists.firstWhere(
+                            (element) => element.id == context.vRouter.pathParameters['id']
+                    )),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -59,7 +76,7 @@ class _WishlistAppState extends State<WishlistApp> {
 
   void onCreate(String value) {
     final wishlist = Wishlist(value);
-    appState.addWishlist(wishlist);
+    _appState.addWishlist(wishlist);
     vRouterKey.currentState!.push('/wishlist/$value');
   }
 }
@@ -98,8 +115,7 @@ class WishlistListScreen extends StatelessWidget {
             ListTile(
               title: Text('Wishlist ${i + 1}'),
               subtitle: Text(wishlists[i].id),
-              onTap: () =>
-                  context.vRouter.push('/wishlist/${wishlists[i].id}');,
+              onTap: () => context.vRouter.push('/wishlist/${wishlists[i].id}'),
             )
         ],
       ),
