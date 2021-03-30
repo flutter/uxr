@@ -44,6 +44,18 @@ class _WishlistAppState extends State<WishlistApp> {
     });
   }
 
+  void onCreate(String value) {
+    final wishlist = Wishlist(value);
+    _appState.addWishlist(wishlist);
+    vRouterKey.currentState!.push('/wishlist/$value');
+  }
+
+  void createIfNotExist(String value) {
+    if (_appState.wishlists.indexWhere((element) => element.id == value) == -1) {
+      _appState.addWishlist(Wishlist(value));
+    }
+  }
+
   @override
   void dispose() {
     _appState.dispose();
@@ -60,15 +72,17 @@ class _WishlistAppState extends State<WishlistApp> {
           widget: WishlistListScreen(wishlists: _appState.wishlists, onCreate: onCreate),
           stackedRoutes: [
             VGuard(
-              beforeEnter: (vRedirector) async => createIfNotExist(vRedirector.newVRouterData!.pathParameters['id']!),
-              beforeUpdate: (vRedirector) async => createIfNotExist(vRedirector.newVRouterData!.pathParameters['id']!),
+              beforeEnter: (vRedirector) async =>
+                  createIfNotExist(vRedirector.newVRouterData!.pathParameters['id']!),
+              beforeUpdate: (vRedirector) async =>
+                  createIfNotExist(vRedirector.newVRouterData!.pathParameters['id']!),
               stackedRoutes: [
                 VWidget(
                   path: r'wishlist/:id(\d+)',
                   widget: Builder(
                     builder: (context) => WishlistScreen(
                         wishlist: _appState.wishlists.firstWhere(
-                                (element) => element.id == context.vRouter.pathParameters['id'])),
+                            (element) => element.id == context.vRouter.pathParameters['id'])),
                   ),
                 ),
               ],
@@ -77,18 +91,6 @@ class _WishlistAppState extends State<WishlistApp> {
         ),
       ],
     );
-  }
-
-  void onCreate(String value) {
-    final wishlist = Wishlist(value);
-    _appState.addWishlist(wishlist);
-    vRouterKey.currentState!.push('/wishlist/$value');
-  }
-
-  void createIfNotExist(String value) {
-    if (_appState.wishlists.indexWhere((element) => element.id == value) == -1) {
-      _appState.addWishlist(Wishlist(value));
-    }
   }
 }
 
