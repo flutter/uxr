@@ -44,6 +44,7 @@ class BooksApp extends StatelessWidget {
             ),
           ],
         ),
+        VRouteRedirector(path: ':_(.+)', redirectTo: '/'),
       ],
     );
   }
