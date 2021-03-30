@@ -34,17 +34,14 @@ class BooksApp extends StatelessWidget {
           path: '/',
           widget: BooksListScreen(books: books),
           stackedRoutes: [
-            stackedRoutes: [
-              VWidget(
-                path: r'book/:id(\d+)',
-                widget: Builder(
-                  builder: (context) =>
-                      BookDetailsScreen(
-                        book: books[int.parse(context.vRouter.pathParameters['id']!)],
-                      ),
+            VWidget(
+              path: r'book/:id(\d+)',
+              widget: Builder(
+                builder: (context) => BookDetailsScreen(
+                  book: books[int.parse(context.vRouter.pathParameters['id']!)],
                 ),
               ),
-            ],
+            ),
           ],
         ),
       ],
@@ -96,14 +93,8 @@ class BookDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(book.title, style: Theme
-                .of(context)
-                .textTheme
-                .headline6),
-            Text(book.author, style: Theme
-                .of(context)
-                .textTheme
-                .subtitle1),
+            Text(book.title, style: Theme.of(context).textTheme.headline6),
+            Text(book.author, style: Theme.of(context).textTheme.subtitle1),
           ],
         ),
       ),
