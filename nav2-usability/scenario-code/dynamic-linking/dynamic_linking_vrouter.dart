@@ -60,8 +60,8 @@ class _WishlistAppState extends State<WishlistApp> {
           widget: WishlistListScreen(wishlists: _appState.wishlists, onCreate: onCreate),
           stackedRoutes: [
             VGuard(
-              beforeEnter: (vRedirector) async => checkIfValid(vRedirector.newVRouterData!.pathParameters['id']!),
-              beforeUpdate: (vRedirector) async => checkIfValid(vRedirector.newVRouterData!.pathParameters['id']!),
+              beforeEnter: (vRedirector) async => createIfNotExist(vRedirector.newVRouterData!.pathParameters['id']!),
+              beforeUpdate: (vRedirector) async => createIfNotExist(vRedirector.newVRouterData!.pathParameters['id']!),
               stackedRoutes: [
                 VWidget(
                   path: r'wishlist/:id(\d+)',
@@ -85,7 +85,7 @@ class _WishlistAppState extends State<WishlistApp> {
     vRouterKey.currentState!.push('/wishlist/$value');
   }
 
-  void checkIfValid(String value) {
+  void createIfNotExist(String value) {
     if (_appState.wishlists.indexWhere((element) => element.id == value) == -1) {
       _appState.addWishlist(Wishlist(value));
     }
