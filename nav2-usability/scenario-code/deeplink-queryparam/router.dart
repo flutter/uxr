@@ -2,9 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-/// Full sample that shows a custom RouteInformationParser and RouterDelegate
-/// parsing named routes and declaratively building the stack of pages for the
-/// [Navigator].
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,6 +13,22 @@ class Book {
   final String author;
 
   Book(this.title, this.author);
+}
+
+class AppState extends ChangeNotifier {
+  List<Book> books = [
+    Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
+    Book('Foundation', 'Isaac Asimov'),
+    Book('Fahrenheit 451', 'Ray Bradbury'),
+  ];
+  String? _filter;
+
+  String? get filter => _filter;
+
+  set filter(String? filter) {
+    _filter = filter;
+    notifyListeners();
+  }
 }
 
 class BooksApp extends StatefulWidget {
@@ -66,20 +79,17 @@ class BookRouterDelegate extends RouterDelegate<BookRoutePath>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<BookRoutePath> {
   @override
   final GlobalKey<NavigatorState> navigatorKey;
+  final AppState _appState;
 
-  List<Book> books = [
-    Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
-    Book('Foundation', 'Isaac Asimov'),
-    Book('Fahrenheit 451', 'Ray Bradbury'),
-  ];
-
-  String? filter;
-
-  BookRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>();
+  BookRouterDelegate()
+      : navigatorKey = GlobalKey<NavigatorState>(),
+        _appState = AppState() {
+    _appState.addListener(() => notifyListeners());
+  }
 
   @override
   BookRoutePath get currentConfiguration {
-    return BookRoutePath(filter);
+    return BookRoutePath(_appState.filter);
   }
 
   @override
@@ -90,11 +100,10 @@ class BookRouterDelegate extends RouterDelegate<BookRoutePath>
         MaterialPage(
           key: ValueKey('BooksListPage'),
           child: BooksListScreen(
-            books: books,
-            filter: filter,
+            books: _appState.books,
+            filter: _appState.filter,
             onFilterChanged: (filter) {
-              this.filter = filter;
-              notifyListeners();
+              _appState.filter = filter;
             },
           ),
         ),
@@ -107,7 +116,7 @@ class BookRouterDelegate extends RouterDelegate<BookRoutePath>
 
   @override
   Future<void> setNewRoutePath(BookRoutePath path) async {
-    filter = path.filter;
+    _appState.filter = path.filter;
   }
 }
 
