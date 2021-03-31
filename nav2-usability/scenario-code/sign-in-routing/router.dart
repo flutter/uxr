@@ -12,9 +12,9 @@ class Credentials {
 }
 
 abstract class Authentication {
-  bool isSignedIn();
+  Future<bool> isSignedIn();
 
-  void signOut();
+  Future<void> signOut();
 
   Future<bool> signIn(String username, String password);
 }
@@ -23,12 +23,12 @@ class MockAuthentication implements Authentication {
   bool _signedIn = false;
 
   @override
-  bool isSignedIn() {
+  Future<bool> isSignedIn() async {
     return _signedIn;
   }
 
   @override
-  void signOut() {
+  Future<void> signOut() async {
     _signedIn = false;
   }
 
@@ -45,29 +45,54 @@ class BooksApp extends StatefulWidget {
 
 class AppState extends ChangeNotifier {
   final Authentication auth;
+  bool _isViewingBooks = false;
+  bool _isViewingSignIn = false;
 
   AppState(this.auth);
 
   Future<bool> signIn(String username, String password) async {
     var success = await auth.signIn(username, password);
+    if (success) {
+      _isViewingSignIn = false;
+    }
     notifyListeners();
     return success;
   }
 
-  bool _viewingBooks = false;
+  Future<void> signOut() async {
+    await auth.signOut();
+    _isViewingSignIn = true;
+    notifyListeners();
+  }
 
-  bool get viewingBooks => _viewingBooks;
+  bool get isViewingBooks => _isViewingBooks;
 
-  set viewingBooks(bool value) {
-    _viewingBooks = value;
+  set isViewingBooks(bool value) {
+    _isViewingBooks = value;
+    if (_isViewingBooks) {
+      _isViewingSignIn = false;
+    }
+
+    notifyListeners();
+  }
+
+  bool get isViewingSignIn => _isViewingSignIn;
+
+  set isViewingSignIn(bool value) {
+    _isViewingSignIn = value;
+    if (_isViewingSignIn) {
+      _isViewingBooks = false;
+    }
+
     notifyListeners();
   }
 }
 
 class _BooksAppState extends State<BooksApp> {
-  final BookRouterDelegate _routerDelegate = BookRouterDelegate();
-  final BookRouteInformationParser _routeInformationParser =
-  BookRouteInformationParser();
+  final AppState _appState = AppState(MockAuthentication());
+  late final BookRouterDelegate _routerDelegate = BookRouterDelegate(_appState);
+  late final BookRouteInformationParser _routeInformationParser =
+  BookRouteInformationParser(_appState);
 
   @override
   void dispose() {
@@ -86,20 +111,27 @@ class _BooksAppState extends State<BooksApp> {
 }
 
 class BookRouteInformationParser extends RouteInformationParser<AppRoutePath> {
+  final AppState _appState;
+
+  BookRouteInformationParser(this._appState);
+
   @override
   Future<AppRoutePath> parseRouteInformation(
       RouteInformation routeInformation) async {
     final uri = Uri.parse(routeInformation.location!);
+
+    // Check if the user is signed in.
+    if (!await _appState.auth.isSignedIn()) {
+      return SignInRoutePath();
+    }
 
     // Handle '/'
     if (uri.pathSegments.isEmpty) {
       return HomeRoutePath();
     }
 
-    if (uri.pathSegments.length == 1) {
-      // Handle '/signin'
-      if (uri.pathSegments[0] == 'signin') return SignInRoutePath();
-      if (uri.pathSegments[0] == 'books') return BooksRoutePath();
+    if (uri.pathSegments.length == 1 && uri.pathSegments[0] == 'books') {
+      return BooksRoutePath();
     }
 
     // Handle unknown routes
@@ -124,10 +156,23 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppRoutePath> {
   @override
   final GlobalKey<NavigatorState> navigatorKey;
-  final AppState _appState = AppState(MockAuthentication());
+  final AppState _appState;
 
-  BookRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
+  BookRouterDelegate(this._appState)
+      : navigatorKey = GlobalKey<NavigatorState>() {
     _appState.addListener(() => notifyListeners());
+  }
+
+  void _handleGoToBooks() {
+    _appState.isViewingBooks = true;
+  }
+
+  Future _handleSignOut() async {
+    await _appState.signOut();
+  }
+
+  Future _handleSignedIn(Credentials credentials) async {
+    await _appState.signIn(credentials.username, credentials.password);
   }
 
   @override
@@ -138,9 +183,9 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
 
   @override
   AppRoutePath get currentConfiguration {
-    if (!_appState.auth.isSignedIn()) {
+    if (_appState.isViewingSignIn) {
       return SignInRoutePath();
-    } else if (_appState.viewingBooks) {
+    } else if (_appState.isViewingBooks) {
       return BooksRoutePath();
     } else {
       return HomeRoutePath();
@@ -148,17 +193,39 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
   }
 
   @override
+  Future<void> setNewRoutePath(AppRoutePath path) async {
+    if (path is HomeRoutePath) {
+      _appState.isViewingBooks = false;
+      _appState.isViewingSignIn = false;
+    } else if (path is BooksRoutePath) {
+      _appState.isViewingBooks = true;
+      _appState.isViewingSignIn = false;
+    } else if (path is SignInRoutePath) {
+      _appState.isViewingSignIn = true;
+      _appState.isViewingBooks = false;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final isSignedIn = _appState.auth.isSignedIn();
-    final viewingBooksScreen = _appState.viewingBooks;
+    final viewingSignIn = _appState.isViewingSignIn;
+    final viewingBooksScreen = _appState.isViewingBooks;
     return Navigator(
       key: navigatorKey,
       pages: [
-        if (isSignedIn) ...[
+        if (viewingSignIn)
+          MaterialPage(
+            key: ValueKey('SignInScreen'),
+            child: SignInScreen(
+              onSignedIn: _handleSignedIn,
+            ),
+          )
+        else ...[
           MaterialPage(
             key: ValueKey('HomeScreen'),
             child: HomeScreen(
               onGoToBooks: _handleGoToBooks,
+              onSignOut: _handleSignOut,
             ),
           ),
           if (viewingBooksScreen)
@@ -166,47 +233,20 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
               key: ValueKey('BooksListPage'),
               child: BooksListScreen(),
             ),
-        ] else
-          MaterialPage(
-            key: ValueKey('SignInScreen'),
-            child: SignInScreen(
-              onSignedIn: _handleSignedIn,
-            ),
-          )
+        ]
       ],
       onPopPage: (route, result) {
         if (!route.didPop(result)) {
           return false;
         }
 
-        if (_appState.viewingBooks) {
-          _appState.viewingBooks = false;
+        if (_appState.isViewingBooks) {
+          _appState.isViewingBooks = false;
         }
 
         return true;
       },
     );
-  }
-
-  @override
-  Future<void> setNewRoutePath(AppRoutePath path) async {
-    if (path is HomeRoutePath) {
-      _appState.viewingBooks = false;
-    } else if (path is BooksRoutePath) {
-      _appState.viewingBooks = true;
-    } else if (path is SignInRoutePath) {
-      // Sign out
-      _appState.viewingBooks = false;
-      _appState.auth.signOut();
-    }
-  }
-
-  void _handleGoToBooks() {
-    _appState.viewingBooks = true;
-  }
-
-  Future _handleSignedIn(Credentials credentials) async {
-    await _appState.signIn(credentials.username, credentials.password);
   }
 }
 
@@ -220,9 +260,11 @@ class BooksRoutePath extends AppRoutePath {}
 
 class HomeScreen extends StatelessWidget {
   final VoidCallback onGoToBooks;
+  final VoidCallback onSignOut;
 
   HomeScreen({
     required this.onGoToBooks,
+    required this.onSignOut,
   });
 
   @override
@@ -230,9 +272,17 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: Center(
-        child: ElevatedButton(
-          onPressed: onGoToBooks,
-          child: Text('View my bookshelf'),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: onGoToBooks,
+              child: Text('View my bookshelf'),
+            ),
+            ElevatedButton(
+              onPressed: onSignOut,
+              child: Text('Sign out'),
+            ),
+          ],
         ),
       ),
     );
@@ -267,6 +317,7 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             TextField(
               decoration: InputDecoration(hintText: 'password (any)'),
+              obscureText: true,
               onChanged: (s) => _password = s,
             ),
             ElevatedButton(
