@@ -8,6 +8,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:navi/navi.dart';
 
 void main() {
   runApp(WishlistApp());
@@ -19,22 +20,7 @@ class Wishlist {
   Wishlist(this.id);
 }
 
-class AppState extends ChangeNotifier {
-  final List<Wishlist> wishlists = <Wishlist>[];
-  Wishlist? _selectedWishlist;
-
-  Wishlist? get selectedWishlist => _selectedWishlist;
-
-  set selectedWishlist(Wishlist? w) {
-    _selectedWishlist = w;
-    notifyListeners();
-  }
-
-  void addWishlist(Wishlist wishlist) {
-    wishlists.add(wishlist);
-    notifyListeners();
-  }
-}
+final List<Wishlist> wishlists = <Wishlist>[];
 
 class WishlistApp extends StatefulWidget {
   @override
@@ -42,9 +28,9 @@ class WishlistApp extends StatefulWidget {
 }
 
 class _WishlistAppState extends State<WishlistApp> {
-  final BookRouterDelegate _routerDelegate = BookRouterDelegate();
-  final BookRouteInformationParser _routeInformationParser =
-  BookRouteInformationParser();
+  final NaviRouterDelegate _routerDelegate =
+      NaviRouterDelegate.material(rootPage: RootPage());
+  final NaviInformationParser _routeInformationParser = NaviInformationParser();
 
   @override
   void dispose() {
@@ -62,143 +48,11 @@ class _WishlistAppState extends State<WishlistApp> {
   }
 }
 
-class BookRouteInformationParser extends RouteInformationParser<AppRoutePath> {
-  @override
-  Future<AppRoutePath> parseRouteInformation(
-      RouteInformation routeInformation) async {
-    final uri = Uri.parse(routeInformation.location!);
-    // Handle '/'
-    if (uri.pathSegments.isEmpty) {
-      return AppRoutePath();
-    }
-
-    // Handle '/wishlist/:id'
-    if (uri.pathSegments.length == 2) {
-      if (uri.pathSegments[0] != 'wishlist') return AppRoutePath();
-      final id = uri.pathSegments[1];
-      return AppRoutePath(id: id);
-    }
-
-    // Handle unknown routes
-    return AppRoutePath();
-  }
-
-  @override
-  RouteInformation restoreRouteInformation(AppRoutePath path) {
-    late final String location;
-    if (path.id == null) {
-      location = '/';
-    } else {
-      location = '/wishlist/${path.id}';
-    }
-    return RouteInformation(location: location);
-  }
-}
-
-class BookRouterDelegate extends RouterDelegate<AppRoutePath>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppRoutePath> {
-  @override
-  final GlobalKey<NavigatorState> navigatorKey;
-  final AppState _appState = AppState();
-
-  BookRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
-    _appState.addListener(() => notifyListeners());
-  }
-
-  @override
-  void dispose() {
-    _appState.dispose();
-    super.dispose();
-  }
-
-  @override
-  AppRoutePath get currentConfiguration {
-    final selected = _appState.selectedWishlist;
-    if (selected == null) {
-      return AppRoutePath();
-    } else {
-      return AppRoutePath(id: selected.id);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final selectedWishlist = _appState.selectedWishlist;
-    return Navigator(
-      key: navigatorKey,
-      pages: [
-        MaterialPage(
-          key: ValueKey('WishlistListPage'),
-          child: WishlistListScreen(
-            wishlists: _appState.wishlists,
-            onTapped: _handleTapped,
-            onCreate: (newId) {
-              setNewRoutePath(AppRoutePath(id: newId));
-            },
-          ),
-        ),
-        if (selectedWishlist != null)
-          MaterialPage(
-            key: ValueKey('WishPage'),
-            child: WishlistScreen(wishlist: selectedWishlist),
-          ),
-      ],
-      onPopPage: (route, result) {
-        if (!route.didPop(result)) {
-          return false;
-        }
-
-        // Update the list of pages by setting selected wishlist to null
-        _appState.selectedWishlist = null;
-
-        return true;
-      },
-    );
-  }
-
-  @override
-  Future<void> setNewRoutePath(AppRoutePath path) async {
-    var pathId = path.id;
-    if (pathId == null) {
-      _appState.selectedWishlist = null;
-      return;
-    }
-
-    // Create a wishlist with the given ID if none exists
-    Wishlist? wishlist;
-    for (var w in _appState.wishlists) {
-      if (w.id == path.id) {
-        wishlist = w;
-      }
-    }
-    if (wishlist == null) {
-      wishlist = Wishlist(pathId);
-      _appState.addWishlist(wishlist);
-    }
-
-    _appState.selectedWishlist = wishlist;
-  }
-
-  void _handleTapped(Wishlist wishlist) {
-    _appState.selectedWishlist = wishlist;
-  }
-}
-
-class AppRoutePath {
-  final String? id;
-
-  AppRoutePath({this.id});
-}
-
 class WishlistListScreen extends StatelessWidget {
   final List<Wishlist> wishlists;
-  final ValueChanged<Wishlist> onTapped;
-  final ValueChanged<String> onCreate;
 
   WishlistListScreen({
     required this.wishlists,
-    required this.onTapped,
-    required this.onCreate,
   });
 
   @override
@@ -210,15 +64,16 @@ class WishlistListScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child:
-            Text('Navigate to /wishlist/<ID> in the URL bar to dynamically '
-                'create a new wishlist.'),
+                Text('Navigate to /wishlist/<ID> in the URL bar to dynamically '
+                    'create a new wishlist.'),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
               onPressed: () {
                 var randomInt = Random().nextInt(10000);
-                onCreate('$randomInt');
+                context.navi.stack(WishlistStackMarker()).state =
+                    Wishlist('$randomInt');
               },
               child: Text('Create a new Wishlist'),
             ),
@@ -227,7 +82,9 @@ class WishlistListScreen extends StatelessWidget {
             ListTile(
               title: Text('Wishlist ${i + 1}'),
               subtitle: Text(wishlists[i].id),
-              onTap: () => onTapped(wishlists[i]),
+              onTap: () {
+                context.navi.stack(WishlistStackMarker()).state = wishlists[i];
+              },
             )
         ],
       ),
@@ -259,3 +116,46 @@ class WishlistScreen extends StatelessWidget {
     );
   }
 }
+
+class RootPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return RouteStack<Wishlist?>(
+      marker: WishlistStackMarker(),
+      pages: (context, state) => [
+        MaterialPage<dynamic>(
+          key: const ValueKey('Home'),
+          child: WishlistListScreen(wishlists: wishlists),
+        ),
+        if (state != null)
+          MaterialPage<dynamic>(
+            key: ValueKey(state.id),
+            child: WishlistScreen(wishlist: state),
+          ),
+      ],
+      updateStateOnNewRoute: (routeInfo) {
+        if (routeInfo.hasPrefixes(['wishlist'])) {
+          final id = routeInfo.pathSegmentAt(1);
+
+          if (id?.trim().isNotEmpty == true) {
+            return wishlists.firstWhere(
+              (w) => w.id == id,
+              orElse: () => Wishlist(id!),
+            );
+          }
+        }
+      },
+      updateRouteOnNewState: (state) {
+        if (state != null && !wishlists.contains(state)) {
+          wishlists.add(state);
+        }
+
+        return RouteInfo(
+            pathSegments: state == null ? [] : ['wishlist', state.id]);
+      },
+      updateStateBeforePop: (context, route, dynamic result, state) => null,
+    );
+  }
+}
+
+class WishlistStackMarker extends StackMarker<Wishlist?> {}
