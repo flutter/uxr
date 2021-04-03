@@ -4,22 +4,23 @@ As part of the [Navigator 2.0 API Usability Research](https://github.com/flutter
 ## Analysis  
 Scroll right to see all >
 
-  | auto_route | beamer | flit-router | flouter | flow_builder | fluro | flutter_modular | page_router | qlevar_router | routemaster | vrouter 
--- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | --
-**Deep Linking - Path Parameters** | ✅ | ✅ | ✅ | ✅ | 🆇 - in TODO list  | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ 
-  | | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/path_parameters.dart)
-**Deep Linking - Query Parameters** | ✅ | ✅ | ✅ | ✅ | 🆇 | ✅ | ✅ | 🆇 - in TODO list | ✅ | ✅ | ✅ 
-  | | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/query_parameters.dart)
-**Dynamic Linking** | ✅ | ✅ | ✅ | ✅ | 🆇 - in TODO list  | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ 
-  | | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/dynamic_linking.dart)
-**Validation (Login/Logout/Sign-up Routing)** | ✅ - route validation happens at the route pattern level, but no custom validators (e.g. check if id is valid before routing) | ✅ - BeamGuard | 🆇 - in TODO list | 🆇 | ✅ | 🆇 - in TODO list | ✅ | ✅ - no way to specify "default" route when validation fails (e.g. go to login/ screen if user is logged out) | ✅ | ✅ | ✅- VNavigationGuard 
-  | | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/login_logout.dart)
-**Nested Routing** | ✅ | ✅ | 🆇 - in TODO list (highest priority) | 🆇 - in TODO list | ✅ | 🆇 - in TODO list | ✅ | 🆇 | ✅ | ✅ | ✅ 
-  | | | | | | | | | | | | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/nested_routing.dart)
-**Skipping Stacks** | ✅ | ✅ | ✅ | ✅ | ✅ | 🆇 | 🆇 | ✅ | ✅ | ✅ | ✅ 
-  | | | | | | | | | | | |[code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/skipping_stacks.dart)
-**Custom Pages / Custom transition animations** | ✅ | ✅ - slovnicki/beamer#51 (TODO: slovnicki/beamer#108) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅- Custom transitions are supported, but custom Page objects aren't (it currently hard-codes MaterialPage) 
-  | | | | | | | | | | |
+|  | auto_route | beamer | flit-router | flouter | flow_builder | fluro | flutter_modular | navi | page_router | qlevar_router | routemaster | vrouter |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| **Deep Linking - Path Parameters** | ✅ | ✅ | ✅ | ✅ | 🆇 - in TODO list | ✅ | ✅ | ✅ - currently only work for root stack. Support for child stacks is in TODO list | ✅ | ✅ | ✅ | ✅ |
+|  |  |  |  |  |  |  |  | [example app](https://github.com/zenonine/navi/tree/master/examples/uxr/1-deep-linking-path-parameters) |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/path_parameters.dart) |
+| **Deep Linking - Query Parameters** | ✅ | ✅ | ✅ | ✅ | 🆇 | ✅ | ✅ | ✅ - currently only work for root stack. Support for child stacks is in TODO list | 🆇 - in TODO list | ✅ | ✅ | ✅ |
+|  |  |  |  |  |  |  |  | [example app](https://github.com/zenonine/navi/tree/master/examples/uxr/2-deep-linking-query-parameters) |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/query_parameters.dart) |
+| **Dynamic Linking** | ✅ | ✅ | ✅ | ✅ | 🆇 - in TODO list | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+|  |  |  |  |  |  |  |  |  |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/dynamic_linking.dart) |
+| **Validation (Login/Logout/Sign-up Routing)** | ✅ - route validation happens at the route pattern level, but no custom validators (e.g. check if id is valid before routing) | ✅ - BeamGuard | 🆇 - in TODO list | 🆇 | ✅ | 🆇 - in TODO list | ✅ | ✅ | ✅ - no way to specify "default" route when validation fails (e.g. go to login/ screen if user is logged out) | ✅ | ✅ | ✅- VNavigationGuard |
+|  |  |  |  |  |  |  |  | [example app](https://github.com/zenonine/navi/tree/master/examples/uxr/3a-authentication-home) |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/login_logout.dart) |
+| **Nested Routing** | ✅ | ✅ | 🆇 - in TODO list (highest priority) | 🆇 - in TODO list | ✅ | 🆇 - in TODO list | ✅ | ✅ - no web yet | 🆇 | ✅ | ✅ | ✅ |
+|  |  |  |  |  |  |  |  |  |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/nested_routing.dart) |
+| **Skipping Stacks** | ✅ | ✅ | ✅ | ✅ | ✅ | 🆇 | 🆇 | ✅ - currently only possible via updating `StackOutlet` witget. Update state to switch stack in TODO list.  | ✅ | ✅ | ✅ | ✅ |
+|  |  |  |  |  |  |  |  |  |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/skipping_stacks.dart) |
+| **Custom Pages / Custom transition animations** | ✅ | ✅ - slovnicki/beamer#51 (TODO: slovnicki/beamer#108) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅- Custom transitions are supported, but custom Page objects aren't (it currently hard-codes MaterialPage) |
+|  |  |  |  |  |  |  |  |  |  |  |  |  |
+
 
 ## Packages Included in the Analysis  
 Learn more about the packcages inluded in this analysis on Github:  
@@ -31,6 +32,7 @@ Learn more about the packcages inluded in this analysis on Github:
 - [flow_builder](https://github.com/felangel/flow_builder)
 - [fluro](https://github.com/lukepighetti/fluro)
 - [flutter_modular](https://github.com/Flutterando/modular)
+- [navi](https://github.com/zenonine/navi)
 - [page_router](https://github.com/johnpryan/page_router)
 - [qlevar_router](https://github.com/SchabanBo/qlevar_router)
 - [routemaster](https://github.com/tomgilder/routemaster)
