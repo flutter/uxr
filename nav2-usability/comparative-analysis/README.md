@@ -8,7 +8,7 @@ Scroll right to see all >
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | **Deep Linking - Path Parameters** | ✅ | ✅ | ✅ | ✅ | 🆇 - in TODO list | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 |  |  |  |  |  |  |  |  | [code snippets](https://github.com/flutter/uxr/blob/master/nav2-usability/scenario-code/deeplink-pathparam/deeplink_pathparam_navi.dart) |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/path_parameters.dart) |
-| **Deep Linking - Query Parameters** | ✅ | ✅ | ✅ | ✅ | 🆇 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Deep Linking - Query Parameters** | ✅ | ✅ | ✅ | ✅ | 🆇 | ✅ | ✅ | ✅ | 🆇 - in TODO list | ✅ | ✅ | ✅ |
 |  |  |  |  |  |  |  |  | [code snippets](https://github.com/flutter/uxr/blob/master/nav2-usability/scenario-code/deeplink-queryparam/deeplink_queryparam_navi.dart) |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/query_parameters.dart) |
 | **Dynamic Linking** | ✅ | ✅ | ✅ | ✅ | 🆇 - in TODO list | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 |  |  |  |  |  |  |  |  | [code snippets](https://github.com/flutter/uxr/blob/master/nav2-usability/scenario-code/dynamic-linking/dynamic_linking_navi.dart) |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/dynamic_linking.dart) |
