@@ -2,37 +2,27 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// This file is tested with Navi 0.1.0.
-// If it doesn't work with newer version, please check live version at https://github.com/zenonine/navi/tree/master/examples/uxr
-
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:navi/navi.dart';
 
 void main() {
   runApp(BooksApp());
 }
 
 class Book {
+  final String id;
   final String title;
   final String author;
 
-  Book(this.title, this.author);
+  Book(this.id, this.title, this.author);
 }
 
-class AppState extends ChangeNotifier {
-  List<Book> books = [
-    Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
-    Book('Foundation', 'Isaac Asimov'),
-    Book('Fahrenheit 451', 'Ray Bradbury'),
-  ];
-  String? _filter;
-
-  String? get filter => _filter;
-
-  set filter(String? filter) {
-    _filter = filter;
-    notifyListeners();
-  }
-}
+final List<Book> books = [
+  Book('0', 'Stranger in a Strange Land', 'Robert A. Heinlein'),
+  Book('1', 'Foundation', 'Isaac Asimov'),
+  Book('2', 'Fahrenheit 451', 'Ray Bradbury'),
+];
 
 class BooksApp extends StatefulWidget {
   @override
@@ -40,9 +30,9 @@ class BooksApp extends StatefulWidget {
 }
 
 class _BooksAppState extends State<BooksApp> {
-  final BookRouterDelegate _routerDelegate = BookRouterDelegate();
-  final BookRouteInformationParser _routeInformationParser =
-  BookRouteInformationParser();
+  final NaviRouterDelegate _routerDelegate =
+      NaviRouterDelegate.material(rootPage: RootPage());
+  final NaviInformationParser _routeInformationParser = NaviInformationParser();
 
   @override
   void dispose() {
@@ -60,83 +50,12 @@ class _BooksAppState extends State<BooksApp> {
   }
 }
 
-class BookRouteInformationParser extends RouteInformationParser<BookRoutePath> {
-  @override
-  Future<BookRoutePath> parseRouteInformation(
-      RouteInformation routeInformation) async {
-    final uri = Uri.parse(routeInformation.location!);
-    var filter = uri.queryParameters['filter'];
-    return BookRoutePath(filter);
-  }
-
-  @override
-  RouteInformation restoreRouteInformation(BookRoutePath path) {
-    var filter = path.filter;
-    var uri =
-    Uri(path: '/', queryParameters: <String, dynamic>{'filter': filter});
-    return RouteInformation(location: uri.toString());
-  }
-}
-
-class BookRouterDelegate extends RouterDelegate<BookRoutePath>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<BookRoutePath> {
-  @override
-  final GlobalKey<NavigatorState> navigatorKey;
-  final AppState _appState;
-
-  BookRouterDelegate()
-      : navigatorKey = GlobalKey<NavigatorState>(),
-        _appState = AppState() {
-    _appState.addListener(() => notifyListeners());
-  }
-
-  @override
-  BookRoutePath get currentConfiguration {
-    return BookRoutePath(_appState.filter);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Navigator(
-      key: navigatorKey,
-      pages: [
-        MaterialPage(
-          key: ValueKey('BooksListPage'),
-          child: BooksListScreen(
-            books: _appState.books,
-            filter: _appState.filter,
-            onFilterChanged: (filter) {
-              _appState.filter = filter;
-            },
-          ),
-        ),
-      ],
-      onPopPage: (route, result) {
-        return route.didPop(result);
-      },
-    );
-  }
-
-  @override
-  Future<void> setNewRoutePath(BookRoutePath path) async {
-    _appState.filter = path.filter;
-  }
-}
-
-class BookRoutePath {
-  String? filter;
-
-  BookRoutePath(this.filter);
-}
-
 class BooksListScreen extends StatelessWidget {
   final List<Book> books;
   final String? filter;
-  final ValueChanged onFilterChanged;
 
   BooksListScreen({
     required this.books,
-    required this.onFilterChanged,
     this.filter,
   });
 
@@ -151,7 +70,9 @@ class BooksListScreen extends StatelessWidget {
             decoration: InputDecoration(
               hintText: 'filter',
             ),
-            onSubmitted: onFilterChanged,
+            onSubmitted: (searchTerm) {
+              context.navi.stack(BookStackMarker()).state = searchTerm;
+            },
           ),
           for (var book in books)
             if (filter == null || book.title.toLowerCase().contains(filter))
@@ -164,3 +85,34 @@ class BooksListScreen extends StatelessWidget {
     );
   }
 }
+
+class RootPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return RouteStack<String?>(
+      marker: BookStackMarker(),
+      pages: (context, state) => [
+        MaterialPage<dynamic>(
+          key: const ValueKey('Books'),
+          child: BooksListScreen(books: books, filter: state),
+        ),
+      ],
+      updateStateOnNewRoute: (routeInfo) {
+        return routeInfo.queryParams['filter']?.firstOrNull?.trim();
+      },
+      updateRouteOnNewState: (state) {
+        if (state?.trim().isNotEmpty == true) {
+          return RouteInfo(
+            queryParams: {
+              'filter': [state!]
+            },
+          );
+        }
+
+        return const RouteInfo();
+      },
+    );
+  }
+}
+
+class BookStackMarker extends StackMarker<String?> {}
