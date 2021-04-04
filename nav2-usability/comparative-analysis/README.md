@@ -16,7 +16,7 @@ Scroll right to see all >
 |  |  |  |  |  |  |  |  | [code snippets](https://github.com/flutter/uxr/blob/master/nav2-usability/scenario-code/sign-in-routing/sign_in_routing_navi.dart) |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/login_logout.dart) |
 | **Nested Routing** | ✅ | ✅ | 🆇 - in TODO list (highest priority) | 🆇 - in TODO list | ✅ | 🆇 - in TODO list | ✅ | ✅ | 🆇 | ✅ | ✅ | ✅ | ✅ |
 |  |  |  |  |  |  |  |  |  |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/nested_routing.dart) |
-| **Skipping Stacks** | ✅ | ✅ | ✅ | ✅ | ✅ | 🆇 | 🆇 | ✅ - [BUG](https://github.com/zenonine/navi/issues/29)  | ✅ | ✅ | ✅ | ✅ |
+| **Skipping Stacks** | ✅ | ✅ | ✅ | ✅ | ✅ | 🆇 | 🆇 | ✅ | ✅ | ✅ | ✅ | ✅ |
 |  |  |  |  |  |  |  |  | [code snippets](https://github.com/flutter/uxr/blob/master/nav2-usability/scenario-code/skipping-stacks/skipping_stacks_navi.dart) |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/skipping_stacks.dart) |
 | **Custom Pages / Custom transition animations** | ✅ | ✅ - slovnicki/beamer#51 (TODO: slovnicki/beamer#108) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅- Custom transitions are supported, but custom Page objects aren't (it currently hard-codes MaterialPage) |
 |  |  |  |  |  |  |  |  |  |  |  |  |  |
