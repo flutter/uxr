@@ -32,7 +32,7 @@ Learn more about the packcages inluded in this analysis on Github:
 - [flow_builder](https://github.com/felangel/flow_builder)
 - [fluro](https://github.com/lukepighetti/fluro)
 - [flutter_modular](https://github.com/Flutterando/modular)
-- [navi](https://github.com/zenonine/navi) (since 0.2.0, manipulating stack state directly is not allowed. Update current URL will update stack state.)
+- [navi](https://github.com/zenonine/navi) (since 0.2.0, manipulating stack state directly is not allowed. Update current URL is required to update stack state.)
 - [page_router](https://github.com/johnpryan/page_router)
 - [qlevar_router](https://github.com/SchabanBo/qlevar_router)
 - [routemaster](https://github.com/tomgilder/routemaster)
