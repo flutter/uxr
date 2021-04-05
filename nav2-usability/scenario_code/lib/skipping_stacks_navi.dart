@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// This file is tested with Navi 0.1.0.
+// There was a bug on 0.1.0, which is fixed in 0.1.1.
 // If it doesn't work with newer version, please check live version at https://github.com/zenonine/navi/tree/master/examples/uxr
 
 import 'package:collection/collection.dart';
@@ -142,7 +142,6 @@ class BookDetailsScreen extends StatelessWidget {
             Text(book.title, style: Theme.of(context).textTheme.headline6),
             ElevatedButton(
               onPressed: () {
-                // TODO: https://github.com/zenonine/navi/issues/29 Wrong URL when switching to another stack
                 context.navi.byUrl('/authors/${book.author.id}');
               },
               child: Text(book.author.name),
