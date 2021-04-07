@@ -12,44 +12,11 @@ class Book {
   Book(this.title, this.author);
 }
 
-class BooksLocation extends BeamLocation {
-  BooksLocation(BeamState state) : super(state);
-
-  final List<Book> _books = [
-    Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
-    Book('Foundation', 'Isaac Asimov'),
-    Book('Fahrenheit 451', 'Ray Bradbury'),
-  ];
-
-  @override
-  List<String> get pathBlueprints => ['/books/:bookId'];
-
-  @override
-  List<BeamPage> pagesBuilder(BuildContext context, BeamState state) => [
-        BeamPage(
-          key: ValueKey('books'),
-          child: BooksListScreen(
-            books: _books,
-            onTapped: (index) => update(
-              (state) => state.copyWith(
-                pathBlueprintSegments: ['books', ':bookId'],
-                pathParameters: {'bookId': index.toString()},
-              ),
-            ),
-            // OR
-            // onTapped: (index) =>
-            //     Beamer.of(context).beamToNamed('/books/$index'),
-          ),
-        ),
-        if (state.pathParameters.containsKey('bookId'))
-          BeamPage(
-            key: ValueKey('book-${state.pathParameters['bookId']}'),
-            child: BookDetailsScreen(
-              book: _books[int.parse(state.pathParameters['bookId']!)],
-            ),
-          ),
-      ];
-}
+final List<Book> books = [
+  Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
+  Book('Foundation', 'Isaac Asimov'),
+  Book('Fahrenheit 451', 'Ray Bradbury'),
+];
 
 class BooksApp extends StatelessWidget {
   @override
@@ -57,7 +24,19 @@ class BooksApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Books App',
       routerDelegate: BeamerRouterDelegate(
-        locationBuilder: (state) => BooksLocation(state),
+        locationBuilder: SimpleLocationBuilder(
+          routes: {
+            '/': (context) => BooksListScreen(
+                  books: books,
+                  onTapped: (index) => context.beamToNamed('/books/$index'),
+                ),
+            '/books/:bookId': (context) => BookDetailsScreen(
+                  book: books[int.parse(
+                    context.currentBeamLocation.state.pathParameters['bookId']!,
+                  )],
+                ),
+          },
+        ),
       ),
       routeInformationParser: BeamerRouteInformationParser(),
     );
