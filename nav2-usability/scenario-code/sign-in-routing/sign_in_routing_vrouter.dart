@@ -71,8 +71,11 @@ class _BooksAppState extends State<BooksApp> {
       key: _appState.vRouterKey,
       routes: [
         VGuard(
-          beforeEnter: (vRedirector) async =>
-          (await _appState.auth.isSignedIn()) ? vRedirector.push('/') : null,
+          beforeEnter: (vRedirector) async {
+            if (await _appState.auth.isSignedIn()) {
+              vRedirector.push('/');
+            }
+          },
           stackedRoutes: [
             VWidget(
               path: '/signIn',
