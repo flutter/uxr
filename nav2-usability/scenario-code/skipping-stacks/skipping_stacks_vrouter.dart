@@ -70,12 +70,13 @@ class BooksApp extends StatelessWidget {
             VWidget(
               path: r'/author/:bookId(\d+)',
               widget: Builder(
-                builder: (context) => AuthorDetailsScreen(
-                  author: _appState
-                      .books[
-                  int.parse(context.vRouter.pathParameters['bookId']!)]
-                      .author,
-                ),
+                builder: (context) {
+                  final bookId =
+                      int.parse(context.vRouter.pathParameters['bookId']!);
+                  return AuthorDetailsScreen(
+                    author: _appState.books[bookId].author,
+                  );
+                },
               ),
             ),
           ],
