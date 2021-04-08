@@ -30,11 +30,13 @@ class BooksApp extends StatelessWidget {
                   books: books,
                   onTapped: (index) => context.beamToNamed('/books/$index'),
                 ),
-            '/books/:bookId': (context) => BookDetailsScreen(
-                  book: books[int.parse(
-                    context.currentBeamLocation.state.pathParameters['bookId']!,
-                  )],
-                ),
+            '/books/:bookId': (context) {
+              final bookId = int.parse(
+                  context.currentBeamLocation.state.pathParameters['bookId']!);
+              return BookDetailsScreen(
+                book: books[bookId],
+              );
+            },
           },
         ),
       ),
