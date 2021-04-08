@@ -18,7 +18,7 @@ Scroll right to see all >
 |  |  |  |  |  |  |  |  |  |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/nested_routing.dart) |
 | **Skipping Stacks** | ✅ | ✅ | ✅ | ✅ | ✅ | 🆇 | 🆇 | ✅ - currently only possible via updating `StackOutlet` witget. Update state to switch stack in TODO list.  | ✅ | ✅ | ✅ | ✅ |
 |  |  |  |  |  |  |  |  |  |  |  |  | [code snippets](https://github.com/lulupointu/vrouter_navigator_scenarios/blob/main/lib/skipping_stacks.dart) |
-| **Custom Pages / Custom transition animations** | ✅ | ✅ - slovnicki/beamer#51 (TODO: slovnicki/beamer#108) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅- Custom transitions are supported, but custom Page objects aren't (it currently hard-codes MaterialPage) |
+| **Custom Pages / Custom transition animations** | ✅ | ✅ - slovnicki/beamer#51 (TODO: slovnicki/beamer#108) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 |  |  |  |  |  |  |  |  |  |  |  |  |  |
 
 
