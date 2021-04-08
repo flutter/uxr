@@ -1,3 +1,10 @@
+// Copyright 2021, the Flutter project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
+/// Sign-in example
+/// Done using VRouter
+
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 
@@ -45,20 +52,17 @@ class BooksApp extends StatefulWidget {
 }
 
 class AppState {
-  final vRouterKey = GlobalKey<VRouterState>();
   final Authentication auth;
 
   AppState(this.auth);
 
   Future<bool> signIn(String username, String password) async {
     var success = await auth.signIn(username, password);
-    vRouterKey.currentState!.push('/');
     return success;
   }
 
   Future<void> signOut() async {
     await auth.signOut();
-    vRouterKey.currentState!.push('/signIn');
   }
 }
 
@@ -68,7 +72,6 @@ class _BooksAppState extends State<BooksApp> {
   @override
   Widget build(BuildContext context) {
     return VRouter(
-      key: _appState.vRouterKey,
       routes: [
         VGuard(
           beforeEnter: (vRedirector) async {
@@ -79,9 +82,13 @@ class _BooksAppState extends State<BooksApp> {
           stackedRoutes: [
             VWidget(
               path: '/signIn',
-              widget: SignInScreen(
-                onSignedIn: (Credentials credentials) =>
-                    _appState.signIn(credentials.username, credentials.password),
+              widget: Builder(
+                builder: (context) => SignInScreen(
+                  onSignedIn: (Credentials credentials) async {
+                    await _appState.signIn(credentials.username, credentials.password);
+                    context.vRouter.push('/');
+                  },
+                ),
               ),
             ),
           ],
@@ -95,7 +102,14 @@ class _BooksAppState extends State<BooksApp> {
           stackedRoutes: [
             VWidget(
               path: '/',
-              widget: HomeScreen(onSignOut: _appState.signOut),
+              widget: Builder(
+                builder: (context) => HomeScreen(
+                  onSignOut: () async {
+                    await _appState.signOut();
+                    context.vRouter.push('/signIn');
+                  },
+                ),
+              ),
               stackedRoutes: [
                 VWidget(path: 'books', widget: BooksListScreen()),
               ],
