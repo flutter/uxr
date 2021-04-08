@@ -36,17 +36,18 @@ class WishlistLocation extends BeamLocation {
       : _appState = appState,
         super(state) {
     _appState.addListener(
-      () => update(
-        (state) => (state.copyWith(
-          pathBlueprintSegments: _appState.selectedWishlist != null
-              ? ['wishlist', ':wishlistId']
-              : ['wishlist'],
-          pathParameters: _appState.selectedWishlist != null
-              ? {'wishlistId': _appState.selectedWishlist!.id}
-              : {},
-        )),
-      ),
+      () => update((state) {
+        var selectedWishlist = _appState.selectedWishlist;
+        if (selectedWishlist != null) {
+          return state.copyWith(
+              pathBlueprintSegments: ['wishlist', ':wishlistId'],
+              pathParameters: {'wishlistId': selectedWishlist.id});
+        }
+        return state
+            .copyWith(pathBlueprintSegments: ['wishlist'], pathParameters: {});
+      }),
     );
+
   }
 
   final AppState _appState;
