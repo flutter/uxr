@@ -46,7 +46,6 @@ class BooksApp extends StatefulWidget {
 
 class AppState {
   final vRouterKey = GlobalKey<VRouterState>();
-
   final Authentication auth;
 
   AppState(this.auth);
