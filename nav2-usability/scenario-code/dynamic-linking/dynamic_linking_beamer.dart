@@ -32,22 +32,21 @@ class AppState extends ChangeNotifier {
 }
 
 class WishlistLocation extends BeamLocation {
-  WishlistLocation(AppState appState, BeamState state)
+  WishlistLocation(AppState appState, BeamState beamState)
       : _appState = appState,
-        super(state) {
+        super(beamState) {
     _appState.addListener(
-      () => update((state) {
+      () => update((beamState) {
         var selectedWishlist = _appState.selectedWishlist;
         if (selectedWishlist != null) {
-          return state.copyWith(
+          return beamState.copyWith(
               pathBlueprintSegments: ['wishlist', ':wishlistId'],
               pathParameters: {'wishlistId': selectedWishlist.id});
         }
-        return state
+        return beamState
             .copyWith(pathBlueprintSegments: ['wishlist'], pathParameters: {});
       }),
     );
-
   }
 
   final AppState _appState;
@@ -56,7 +55,7 @@ class WishlistLocation extends BeamLocation {
   List<String> get pathBlueprints => ['/wishlist/:wishlistId'];
 
   @override
-  List<BeamPage> pagesBuilder(BuildContext context, BeamState state) => [
+  List<BeamPage> pagesBuilder(BuildContext context, BeamState beamState) => [
         BeamPage(
           key: ValueKey('wishlist-${_appState.wishlists.length}'),
           child: WishlistListScreen(
@@ -73,7 +72,8 @@ class WishlistLocation extends BeamLocation {
             key: ValueKey('wishlist-${state.pathParameters['wishlistId']}'),
             child: WishlistScreen(
               wishlist: _appState.wishlists.firstWhere(
-                (wishlist) => wishlist.id == state.pathParameters['wishlistId'],
+                (wishlist) =>
+                    wishlist.id == beamState.pathParameters['wishlistId'],
                 orElse: () {
                   final wishlist =
                       Wishlist(state.pathParameters['wishlistId']!);
@@ -94,7 +94,8 @@ class WishlistApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Wishlist App',
       routerDelegate: BeamerRouterDelegate(
-        locationBuilder: (state) => WishlistLocation(_appState, state),
+        transitionDelegate: NoAnimationTransitionDelegate(),
+        locationBuilder: (beamState) => WishlistLocation(_appState, beamState),
       ),
       routeInformationParser: BeamerRouteInformationParser(),
     );
