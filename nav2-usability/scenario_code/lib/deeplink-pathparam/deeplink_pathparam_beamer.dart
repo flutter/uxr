@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
+import 'package:flutter/scheduler.dart';
 
 void main() {
   runApp(BooksApp());
+  timeDilation = 3.0;
 }
 
 class Book {
