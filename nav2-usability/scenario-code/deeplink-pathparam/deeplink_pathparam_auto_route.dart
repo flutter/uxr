@@ -65,7 +65,7 @@ class _BooksListScreenState extends State<BooksListScreen> {
               title: Text(book.title),
               subtitle: Text(book.author),
               onTap: () =>
-                  context.router.pushPath("/book/${books.indexOf(book)}"),
+                  context.router.replace(BookDetailsRoute(id: books.indexOf(book))),
             )
         ],
       ),
