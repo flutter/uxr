@@ -94,9 +94,16 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
   @override
   final GlobalKey<NavigatorState> navigatorKey;
   final AppState _appState = AppState();
+  late final OverlayEntry _overlayEntry =
+  OverlayEntry(builder: _overlayEntryBuilder);
 
   BookRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
-    _appState.addListener(() => notifyListeners());
+    _appState.addListener(handleAppStateChanged);
+  }
+
+  void handleAppStateChanged() {
+    notifyListeners();
+    _overlayEntry.markNeedsBuild();
   }
 
   @override
@@ -128,84 +135,52 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
     return AppRoutePath();
   }
 
-  void _handleTabSelected(int idx) {
-    if (idx == 0) {
-      _appState.page = AppPage.newBooks;
-    } else {
-      _appState.page = AppPage.allBooks;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    late final Widget innerScreen;
-    if (_appState.page == AppPage.settings) {
-      innerScreen = SettingsScreen();
-    } else {
-      innerScreen = BooksScreen(
-        appPage: _appState.page,
-        onTabSelected: _handleTabSelected,
-      );
-    }
-
-    final bottomBarIndex =
-    _appState.page == AppPage.allBooks || _appState.page == AppPage.newBooks
-        ? 0
-        : 1;
-    return Navigator(
-      key: navigatorKey,
-      pages: [
-        MaterialPage(
-          key: ValueKey('BooksScreen'),
-          child: AppScaffold(
-            currentIndex: bottomBarIndex,
-            onIndexChanged: (idx) {
-              if (idx == 0) {
-                _appState.page = AppPage.newBooks;
-              } else {
-                _appState.page = AppPage.settings;
-              }
-            },
-            child: innerScreen,
-          ),
-        ),
-      ],
-      onPopPage: (route, result) {
-        return route.didPop(result);
-      },
+    return Overlay(
+      initialEntries: [_overlayEntry],
     );
   }
-}
 
-class AppRoutePath {}
-
-class NewBooksRoutePath extends AppRoutePath {}
-
-class AllBooksRoutePath extends AppRoutePath {}
-
-class SettingsRoutePath extends AppRoutePath {}
-
-class AppScaffold extends StatelessWidget {
-  final int currentIndex;
-  final ValueChanged<int> onIndexChanged;
-  final Widget child;
-
-  AppScaffold({
-    required this.currentIndex,
-    required this.onIndexChanged,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _overlayEntryBuilder(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: child,
+      body: Navigator(
+        key: navigatorKey,
+        pages: [
+          if (_appState.page == AppPage.settings)
+            FadeTransitionPage(
+              key: ValueKey('SettingsScreen'),
+              child: SettingsScreen(),
+            ),
+          if (_appState.page == AppPage.newBooks ||
+              _appState.page == AppPage.allBooks)
+            FadeTransitionPage(
+              key: ValueKey('BooksScreen'),
+              child: BooksScreen(
+                onTabSelected: (int idx) {
+                  if (idx == 0) {
+                    _appState.page = AppPage.newBooks;
+                  } else {
+                    _appState.page = AppPage.allBooks;
+                  }
+                },
+                appPage: _appState.page,
+              ),
+            ),
+        ],
+        onPopPage: (route, result) {
+          return route.didPop(result);
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: onIndexChanged,
+        currentIndex: _appState.page == AppPage.settings ? 1 : 0,
+        onTap: (idx) {
+          if (idx == 0) {
+            _appState.page = AppPage.newBooks;
+          } else {
+            _appState.page = AppPage.settings;
+          }
+        },
         items: [
           BottomNavigationBarItem(
             label: 'Books',
@@ -221,14 +196,23 @@ class AppScaffold extends StatelessWidget {
   }
 }
 
+class AppRoutePath {}
+
+class NewBooksRoutePath extends AppRoutePath {}
+
+class AllBooksRoutePath extends AppRoutePath {}
+
+class SettingsRoutePath extends AppRoutePath {}
+
 class BooksScreen extends StatefulWidget {
   final AppPage appPage;
   final ValueChanged<int> onTabSelected;
 
   BooksScreen({
+    Key? key,
     required this.appPage,
     required this.onTabSelected,
-  });
+  }) : super(key: key);
 
   @override
   _BooksScreenState createState() => _BooksScreenState();
@@ -241,7 +225,10 @@ class _BooksScreenState extends State<BooksScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    var initialIndex = widget.appPage == AppPage.newBooks ? 0 : 1;
+
+    _tabController =
+        TabController(length: 2, vsync: this, initialIndex: initialIndex);
   }
 
   @override
@@ -252,6 +239,11 @@ class _BooksScreenState extends State<BooksScreen>
     } else {
       _tabController.index = 1;
     }
+  }
+
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -284,8 +276,10 @@ class _BooksScreenState extends State<BooksScreen>
 class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Settings'),
+    return Scaffold(
+      body: Center(
+        child: Text('Settings'),
+      ),
     );
   }
 }
@@ -293,8 +287,10 @@ class SettingsScreen extends StatelessWidget {
 class AllBooksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('All Books'),
+    return Scaffold(
+      body: Center(
+        child: Text('All Books'),
+      ),
     );
   }
 }
@@ -302,8 +298,30 @@ class AllBooksScreen extends StatelessWidget {
 class NewBooksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('New Books'),
+    return Scaffold(
+      body: Center(
+        child: Text('New Books'),
+      ),
+    );
+  }
+}
+
+class FadeTransitionPage extends Page {
+  final Widget child;
+
+  FadeTransitionPage({LocalKey? key, required this.child}) : super(key: key);
+
+  @override
+  Route createRoute(BuildContext context) {
+    return PageRouteBuilder(
+      settings: this,
+      pageBuilder: (context, animation, animation2) {
+        var curveTween = CurveTween(curve: Curves.easeIn);
+        return FadeTransition(
+          opacity: animation.drive(curveTween),
+          child: child,
+        );
+      },
     );
   }
 }
