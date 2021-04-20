@@ -313,15 +313,41 @@ class FadeTransitionPage extends Page {
 
   @override
   Route createRoute(BuildContext context) {
-    return PageRouteBuilder(
-      settings: this,
-      pageBuilder: (context, animation, animation2) {
-        var curveTween = CurveTween(curve: Curves.easeIn);
-        return FadeTransition(
-          opacity: animation.drive(curveTween),
-          child: child,
-        );
-      },
+    return PageBasedFadeTransitionRoute(this);
+  }
+}
+
+class PageBasedFadeTransitionRoute extends PageRoute {
+  PageBasedFadeTransitionRoute(Page page)
+      : super(
+    settings: page,
+  );
+
+  @override
+  Color? get barrierColor => null;
+
+  @override
+  String? get barrierLabel => null;
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 300);
+
+  @override
+  bool get maintainState => true;
+
+  @override
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
+    var curveTween = CurveTween(curve: Curves.easeIn);
+    return FadeTransition(
+      opacity: animation.drive(curveTween),
+      child: (settings as FadeTransitionPage).child,
     );
+  }
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
+    return child;
   }
 }
