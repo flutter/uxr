@@ -1,0 +1,1 @@
+This folder includes files for the [Navigator 2.0 API Usability Research](https://github.com/flutter/uxr/wiki/Navigator-2.0-API-Usability-Research).
