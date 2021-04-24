@@ -34,7 +34,7 @@ class BooksApp extends StatefulWidget {
 class _BooksAppState extends State<BooksApp> {
   final BookRouterDelegate _routerDelegate = BookRouterDelegate();
   final BookRouteInformationParser _routeInformationParser =
-      BookRouteInformationParser();
+  BookRouteInformationParser();
 
   @override
   void dispose() {
@@ -138,28 +138,25 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
 
   @override
   Widget build(BuildContext context) {
-    final innerScreen = (_appState.page == AppPage.settings)
-        ? ScaffoldPage(
-            key: ValueKey('SettingsScreen'),
-            child: SettingsScreen(),
-          )
-        : ScaffoldPage(
-            key: ValueKey('BooksScreen'),
-            child: BooksScreen(
-              appPage: _appState.page,
-              onTabSelected: _handleTabSelected,
-            ),
-          );
+    late final Widget innerScreen;
+    if (_appState.page == AppPage.settings) {
+      innerScreen = SettingsScreen();
+    } else {
+      innerScreen = BooksScreen(
+        appPage: _appState.page,
+        onTabSelected: _handleTabSelected,
+      );
+    }
 
     final bottomBarIndex =
-        _appState.page == AppPage.allBooks || _appState.page == AppPage.newBooks
-            ? 0
-            : 1;
+    _appState.page == AppPage.allBooks || _appState.page == AppPage.newBooks
+        ? 0
+        : 1;
     return Navigator(
       key: navigatorKey,
       pages: [
         MaterialPage(
-          key: ValueKey('RootScreen'),
+          key: ValueKey('BooksScreen'),
           child: AppScaffold(
             currentIndex: bottomBarIndex,
             onIndexChanged: (idx) {
@@ -169,39 +166,13 @@ class BookRouterDelegate extends RouterDelegate<AppRoutePath>
                 _appState.page = AppPage.settings;
               }
             },
-            child: Navigator(
-              pages: [innerScreen],
-              onPopPage: (route, result) {
-                return route.didPop(result);
-              },
-            ),
+            child: innerScreen,
           ),
         ),
       ],
       onPopPage: (route, result) {
         return route.didPop(result);
       },
-    );
-  }
-}
-
-class ScaffoldPage extends Page {
-  @override
-  final LocalKey key;
-  final Widget child;
-
-  ScaffoldPage({required this.key, required this.child});
-
-  @override
-  Route createRoute(BuildContext context) {
-    return PageRouteBuilder(
-      settings: this,
-      pageBuilder: (context, animation, secondaryAnimation) => child,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-          FadeTransition(
-        opacity: animation,
-        child: child,
-      ),
     );
   }
 }
@@ -228,9 +199,7 @@ class AppScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Bookstore'),
-      ),
+      appBar: AppBar(),
       body: Center(
         child: child,
       ),
