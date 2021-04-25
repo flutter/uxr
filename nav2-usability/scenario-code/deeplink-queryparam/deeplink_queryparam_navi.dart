@@ -2,7 +2,12 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+// This file is tested with Navi 0.2.0.
+// If it doesn't work with newer version, please check live version at https://github.com/zenonine/navi/tree/master/examples/uxr
+
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:navi/navi.dart';
 
 void main() {
   runApp(BooksApp());
@@ -15,21 +20,11 @@ class Book {
   Book(this.title, this.author);
 }
 
-class AppState extends ChangeNotifier {
-  List<Book> books = [
-    Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
-    Book('Foundation', 'Isaac Asimov'),
-    Book('Fahrenheit 451', 'Ray Bradbury'),
-  ];
-  String? _filter;
-
-  String? get filter => _filter;
-
-  set filter(String? filter) {
-    _filter = filter;
-    notifyListeners();
-  }
-}
+List<Book> books = [
+  Book('Stranger in a Strange Land', 'Robert A. Heinlein'),
+  Book('Foundation', 'Isaac Asimov'),
+  Book('Fahrenheit 451', 'Ray Bradbury'),
+];
 
 class BooksApp extends StatefulWidget {
   @override
@@ -37,9 +32,8 @@ class BooksApp extends StatefulWidget {
 }
 
 class _BooksAppState extends State<BooksApp> {
-  final BookRouterDelegate _routerDelegate = BookRouterDelegate();
-  final BookRouteInformationParser _routeInformationParser =
-  BookRouteInformationParser();
+  final _routeInformationParser = NaviInformationParser();
+  final _routerDelegate = NaviRouterDelegate.material(child: BooksStack());
 
   @override
   void dispose() {
@@ -57,73 +51,40 @@ class _BooksAppState extends State<BooksApp> {
   }
 }
 
-class BookRouteInformationParser extends RouteInformationParser<BookRoutePath> {
+class BooksStack extends StatefulWidget {
   @override
-  Future<BookRoutePath> parseRouteInformation(
-      RouteInformation routeInformation) async {
-    final uri = Uri.parse(routeInformation.location!);
-    var filter = uri.queryParameters['filter'];
-    return BookRoutePath(filter);
-  }
-
-  @override
-  RouteInformation restoreRouteInformation(BookRoutePath path) {
-    var filter = path.filter;
-    var uri =
-    Uri(path: '/', queryParameters: <String, dynamic>{'filter': filter});
-    return RouteInformation(location: uri.toString());
-  }
+  _BooksStackState createState() => _BooksStackState();
 }
 
-class BookRouterDelegate extends RouterDelegate<BookRoutePath>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<BookRoutePath> {
-  @override
-  final GlobalKey<NavigatorState> navigatorKey;
-  final AppState _appState;
-
-  BookRouterDelegate()
-      : navigatorKey = GlobalKey<NavigatorState>(),
-        _appState = AppState() {
-    _appState.addListener(() => notifyListeners());
-  }
+class _BooksStackState extends State<BooksStack>
+    with NaviRouteMixin<BooksStack> {
+  String? _filter;
 
   @override
-  BookRoutePath get currentConfiguration {
-    return BookRoutePath(_appState.filter);
+  void onNewRoute(NaviRoute unprocessedRoute) {
+    _filter = unprocessedRoute.queryParams['filter']?.firstOrNull;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Navigator(
-      key: navigatorKey,
-      pages: [
-        MaterialPage(
-          key: ValueKey('BooksListPage'),
+    return NaviStack(
+      pages: (context) => [
+        NaviPage.material(
+          key: const ValueKey('Books'),
+          route: NaviRoute(queryParams: {
+            'filter': [_filter ?? '']
+          }),
           child: BooksListScreen(
-            books: _appState.books,
-            filter: _appState.filter,
-            onFilterChanged: (filter) {
-              _appState.filter = filter;
-            },
+            books: books,
+            filter: _filter,
+            onFilterChanged: (filter) => setState(() {
+              _filter = filter;
+            }),
           ),
         ),
       ],
-      onPopPage: (route, result) {
-        return route.didPop(result);
-      },
     );
   }
-
-  @override
-  Future<void> setNewRoutePath(BookRoutePath path) async {
-    _appState.filter = path.filter;
-  }
-}
-
-class BookRoutePath {
-  String? filter;
-
-  BookRoutePath(this.filter);
 }
 
 class BooksListScreen extends StatelessWidget {

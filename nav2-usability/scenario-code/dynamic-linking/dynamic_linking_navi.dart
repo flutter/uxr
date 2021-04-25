@@ -2,9 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+// This file is tested with Navi 0.2.0.
+// If it doesn't work with newer version, please check live version at https://github.com/zenonine/navi/tree/master/examples/uxr
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:navi/navi.dart';
 
 void main() {
   runApp(WishlistApp());
@@ -16,22 +20,7 @@ class Wishlist {
   Wishlist(this.id);
 }
 
-class AppState extends ChangeNotifier {
-  final List<Wishlist> wishlists = <Wishlist>[];
-  Wishlist? _selectedWishlist;
-
-  Wishlist? get selectedWishlist => _selectedWishlist;
-
-  set selectedWishlist(Wishlist? w) {
-    _selectedWishlist = w;
-    notifyListeners();
-  }
-
-  void addWishlist(Wishlist wishlist) {
-    wishlists.add(wishlist);
-    notifyListeners();
-  }
-}
+final List<Wishlist> wishlists = <Wishlist>[];
 
 class WishlistApp extends StatefulWidget {
   @override
@@ -39,9 +28,8 @@ class WishlistApp extends StatefulWidget {
 }
 
 class _WishlistAppState extends State<WishlistApp> {
-  final BookRouterDelegate _routerDelegate = BookRouterDelegate();
-  final BookRouteInformationParser _routeInformationParser =
-  BookRouteInformationParser();
+  final _routeInformationParser = NaviInformationParser();
+  final _routerDelegate = NaviRouterDelegate.material(child: WishlistsStack());
 
   @override
   void dispose() {
@@ -59,132 +47,68 @@ class _WishlistAppState extends State<WishlistApp> {
   }
 }
 
-class BookRouteInformationParser extends RouteInformationParser<AppRoutePath> {
+class WishlistsStack extends StatefulWidget {
   @override
-  Future<AppRoutePath> parseRouteInformation(
-      RouteInformation routeInformation) async {
-    final uri = Uri.parse(routeInformation.location!);
-    // Handle '/'
-    if (uri.pathSegments.isEmpty) {
-      return AppRoutePath();
-    }
-
-    // Handle '/wishlist/:id'
-    if (uri.pathSegments.length == 2) {
-      if (uri.pathSegments[0] != 'wishlist') return AppRoutePath();
-      final id = uri.pathSegments[1];
-      return AppRoutePath(id: id);
-    }
-
-    // Handle unknown routes
-    return AppRoutePath();
-  }
-
-  @override
-  RouteInformation restoreRouteInformation(AppRoutePath path) {
-    late final String location;
-    if (path.id == null) {
-      location = '/';
-    } else {
-      location = '/wishlist/${path.id}';
-    }
-    return RouteInformation(location: location);
-  }
+  _WishlistsStackState createState() => _WishlistsStackState();
 }
 
-class BookRouterDelegate extends RouterDelegate<AppRoutePath>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppRoutePath> {
-  @override
-  final GlobalKey<NavigatorState> navigatorKey;
-  final AppState _appState = AppState();
-
-  BookRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
-    _appState.addListener(() => notifyListeners());
-  }
+class _WishlistsStackState extends State<WishlistsStack>
+    with NaviRouteMixin<WishlistsStack> {
+  Wishlist? _selectedWishlist;
 
   @override
-  void dispose() {
-    _appState.dispose();
-    super.dispose();
-  }
-
-  @override
-  AppRoutePath get currentConfiguration {
-    final selected = _appState.selectedWishlist;
-    if (selected == null) {
-      return AppRoutePath();
-    } else {
-      return AppRoutePath(id: selected.id);
+  void onNewRoute(NaviRoute unprocessedRoute) {
+    String? id;
+    if (unprocessedRoute.hasPrefixes(['wishlist'])) {
+      id = unprocessedRoute.pathSegmentAt(1);
     }
+
+    _selectedWishlist = id == null
+        ? null
+        : wishlists.firstWhere(
+            (w) => w.id == id,
+            orElse: () {
+              final newWishlist = Wishlist(id!);
+              wishlists.add(newWishlist);
+              return newWishlist;
+            },
+          );
+
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedWishlist = _appState.selectedWishlist;
-    return Navigator(
-      key: navigatorKey,
-      pages: [
-        MaterialPage(
-          key: ValueKey('WishlistListPage'),
+    return NaviStack(
+      pages: (context) => [
+        NaviPage.material(
+          key: const ValueKey('Wishlists'),
           child: WishlistListScreen(
-            wishlists: _appState.wishlists,
-            onTapped: _handleTapped,
-            onCreate: (newId) {
-              setNewRoutePath(AppRoutePath(id: newId));
+            wishlists: wishlists,
+            onTapped: (wishlist) => setState(() {
+              _selectedWishlist = wishlist;
+            }),
+            onCreate: (id) {
+              context.navi.to(['wishlist', id]);
             },
           ),
         ),
-        if (selectedWishlist != null)
-          MaterialPage(
-            key: ValueKey('WishPage'),
-            child: WishlistScreen(wishlist: selectedWishlist),
+        if (_selectedWishlist != null)
+          NaviPage.material(
+            key: ValueKey(_selectedWishlist),
+            route: NaviRoute(path: ['wishlist', '${_selectedWishlist!.id}']),
+            child: WishlistScreen(wishlist: _selectedWishlist!),
           ),
       ],
-      onPopPage: (route, result) {
-        if (!route.didPop(result)) {
-          return false;
+      onPopPage: (context, route, dynamic result) {
+        if (_selectedWishlist != null) {
+          setState(() {
+            _selectedWishlist = null;
+          });
         }
-
-        // Update the list of pages by setting selected wishlist to null
-        _appState.selectedWishlist = null;
-
-        return true;
       },
     );
   }
-
-  @override
-  Future<void> setNewRoutePath(AppRoutePath path) async {
-    var pathId = path.id;
-    if (pathId == null) {
-      _appState.selectedWishlist = null;
-      return;
-    }
-
-    // Create a wishlist with the given ID if none exists
-    Wishlist? wishlist;
-    for (var w in _appState.wishlists) {
-      if (w.id == path.id) {
-        wishlist = w;
-      }
-    }
-    if (wishlist == null) {
-      wishlist = Wishlist(pathId);
-      _appState.addWishlist(wishlist);
-    }
-
-    _appState.selectedWishlist = wishlist;
-  }
-
-  void _handleTapped(Wishlist wishlist) {
-    _appState.selectedWishlist = wishlist;
-  }
-}
-
-class AppRoutePath {
-  final String? id;
-
-  AppRoutePath({this.id});
 }
 
 class WishlistListScreen extends StatelessWidget {
@@ -207,8 +131,8 @@ class WishlistListScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child:
-            Text('Navigate to /wishlist/<ID> in the URL bar to dynamically '
-                'create a new wishlist.'),
+                Text('Navigate to /wishlist/<ID> in the URL bar to dynamically '
+                    'create a new wishlist.'),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),

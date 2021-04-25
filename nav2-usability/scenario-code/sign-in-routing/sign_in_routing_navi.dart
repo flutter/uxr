@@ -1,4 +1,8 @@
+// This file is tested with Navi 0.2.0.
+// If it doesn't work with newer version, please check live version at https://github.com/zenonine/navi/tree/master/examples/uxr
+
 import 'package:flutter/material.dart';
+import 'package:navi/navi.dart';
 
 void main() {
   runApp(BooksApp());
@@ -38,61 +42,41 @@ class MockAuthentication implements Authentication {
   }
 }
 
-class BooksApp extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _BooksAppState();
-}
+class AuthService extends ChangeNotifier {
+  AuthService(this.auth);
 
-class AppState extends ChangeNotifier {
   final Authentication auth;
-  bool _isViewingBooks = false;
-  bool _isViewingSignIn = false;
 
-  AppState(this.auth);
+  bool _authenticated = false;
+
+  bool get authenticated => _authenticated;
 
   Future<bool> signIn(String username, String password) async {
-    var success = await auth.signIn(username, password);
+    final success = await auth.signIn(username, password);
     if (success) {
-      _isViewingSignIn = false;
+      _authenticated = true;
+      notifyListeners();
     }
-    notifyListeners();
     return success;
   }
 
   Future<void> signOut() async {
     await auth.signOut();
-    _isViewingSignIn = true;
-    notifyListeners();
-  }
-
-  bool get isViewingBooks => _isViewingBooks;
-
-  set isViewingBooks(bool value) {
-    _isViewingBooks = value;
-    if (_isViewingBooks) {
-      _isViewingSignIn = false;
-    }
-
-    notifyListeners();
-  }
-
-  bool get isViewingSignIn => _isViewingSignIn;
-
-  set isViewingSignIn(bool value) {
-    _isViewingSignIn = value;
-    if (_isViewingSignIn) {
-      _isViewingBooks = false;
-    }
-
+    _authenticated = false;
     notifyListeners();
   }
 }
 
+final authService = AuthService(MockAuthentication());
+
+class BooksApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _BooksAppState();
+}
+
 class _BooksAppState extends State<BooksApp> {
-  final AppState _appState = AppState(MockAuthentication());
-  late final BookRouterDelegate _routerDelegate = BookRouterDelegate(_appState);
-  late final BookRouteInformationParser _routeInformationParser =
-  BookRouteInformationParser(_appState);
+  final _routeInformationParser = NaviInformationParser();
+  final _routerDelegate = NaviRouterDelegate.material(child: RootStack());
 
   @override
   void dispose() {
@@ -110,163 +94,69 @@ class _BooksAppState extends State<BooksApp> {
   }
 }
 
-class BookRouteInformationParser extends RouteInformationParser<AppRoutePath> {
-  final AppState _appState;
-
-  BookRouteInformationParser(this._appState);
-
+class RootStack extends StatefulWidget {
   @override
-  Future<AppRoutePath> parseRouteInformation(
-      RouteInformation routeInformation) async {
-    final uri = Uri.parse(routeInformation.location!);
-
-    // Check if the user is signed in.
-    if (!await _appState.auth.isSignedIn()) {
-      return SignInRoutePath();
-    }
-
-    // Handle '/'
-    if (uri.pathSegments.isEmpty) {
-      return HomeRoutePath();
-    }
-
-    if (uri.pathSegments.length == 1 && uri.pathSegments[0] == 'books') {
-      return BooksRoutePath();
-    }
-
-    // Handle unknown routes
-    return HomeRoutePath();
-  }
-
-  @override
-  RouteInformation restoreRouteInformation(AppRoutePath path) {
-    late final String location;
-    if (path is HomeRoutePath) {
-      location = '/';
-    } else if (path is BooksRoutePath) {
-      location = '/books';
-    } else if (path is SignInRoutePath) {
-      location = '/signin';
-    }
-    return RouteInformation(location: location);
-  }
+  _RootStackState createState() => _RootStackState();
 }
 
-class BookRouterDelegate extends RouterDelegate<AppRoutePath>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppRoutePath> {
+class _RootStackState extends State<RootStack> with NaviRouteMixin<RootStack> {
+  late final VoidCallback _authListener;
+  bool _showBooks = false;
+
   @override
-  final GlobalKey<NavigatorState> navigatorKey;
-  final AppState _appState;
-
-  BookRouterDelegate(this._appState)
-      : navigatorKey = GlobalKey<NavigatorState>() {
-    _appState.addListener(() => notifyListeners());
+  void initState() {
+    super.initState();
+    _authListener = () => setState(() {});
+    authService.addListener(_authListener);
   }
 
-  void _handleGoToBooks() {
-    _appState.isViewingBooks = true;
-  }
-
-  Future _handleSignOut() async {
-    await _appState.signOut();
-  }
-
-  Future _handleSignedIn(Credentials credentials) async {
-    await _appState.signIn(credentials.username, credentials.password);
+  @override
+  void onNewRoute(NaviRoute unprocessedRoute) {
+    setState(() {
+      _showBooks = unprocessedRoute.hasPrefixes(['books']);
+    });
   }
 
   @override
   void dispose() {
-    _appState.dispose();
+    authService.removeListener(_authListener);
     super.dispose();
   }
 
   @override
-  AppRoutePath get currentConfiguration {
-    if (_appState.isViewingSignIn) {
-      return SignInRoutePath();
-    } else if (_appState.isViewingBooks) {
-      return BooksRoutePath();
-    } else {
-      return HomeRoutePath();
-    }
-  }
-
-  @override
-  Future<void> setNewRoutePath(AppRoutePath path) async {
-    if (path is HomeRoutePath) {
-      _appState.isViewingBooks = false;
-      _appState.isViewingSignIn = false;
-    } else if (path is BooksRoutePath) {
-      _appState.isViewingBooks = true;
-      _appState.isViewingSignIn = false;
-    } else if (path is SignInRoutePath) {
-      _appState.isViewingSignIn = true;
-      _appState.isViewingBooks = false;
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final viewingSignIn = _appState.isViewingSignIn;
-    final viewingBooksScreen = _appState.isViewingBooks;
-    return Navigator(
-      key: navigatorKey,
-      pages: [
-        if (viewingSignIn)
-          MaterialPage(
-            key: ValueKey('SignInScreen'),
-            child: SignInScreen(
-              onSignedIn: _handleSignedIn,
-            ),
-          )
-        else ...[
-          MaterialPage(
-            key: ValueKey('HomeScreen'),
-            child: HomeScreen(
-              onGoToBooks: _handleGoToBooks,
-              onSignOut: _handleSignOut,
-            ),
+    return NaviStack(
+      pages: (context) => [
+        if (authService.authenticated) ...[
+          NaviPage.material(
+            key: const ValueKey('Home'),
+            child: HomeScreen(),
           ),
-          if (viewingBooksScreen)
-            MaterialPage(
-              key: ValueKey('BooksListPage'),
+          if (_showBooks)
+            NaviPage.material(
+              key: const ValueKey('Books'),
+              route: const NaviRoute(path: ['books']),
               child: BooksListScreen(),
             ),
-        ]
+        ] else
+          NaviPage.material(
+            key: const ValueKey('Auth'),
+            route: const NaviRoute(path: ['signin']),
+            child: SignInScreen(),
+          ),
       ],
-      onPopPage: (route, result) {
-        if (!route.didPop(result)) {
-          return false;
+      onPopPage: (context, route, result) {
+        if (_showBooks) {
+          setState(() {
+            _showBooks = false;
+          });
         }
-
-        if (_appState.isViewingBooks) {
-          _appState.isViewingBooks = false;
-        }
-
-        return true;
       },
     );
   }
 }
 
-class AppRoutePath {}
-
-class HomeRoutePath extends AppRoutePath {}
-
-class SignInRoutePath extends AppRoutePath {}
-
-class BooksRoutePath extends AppRoutePath {}
-
 class HomeScreen extends StatelessWidget {
-  final VoidCallback onGoToBooks;
-  final VoidCallback onSignOut;
-
-  HomeScreen({
-    required this.onGoToBooks,
-    required this.onSignOut,
-  });
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -275,11 +165,11 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           children: [
             ElevatedButton(
-              onPressed: onGoToBooks,
+              onPressed: () => context.navi.to(['books']),
               child: Text('View my bookshelf'),
             ),
             ElevatedButton(
-              onPressed: onSignOut,
+              onPressed: () => authService.signOut(),
               child: Text('Sign out'),
             ),
           ],
@@ -290,12 +180,6 @@ class HomeScreen extends StatelessWidget {
 }
 
 class SignInScreen extends StatefulWidget {
-  final ValueChanged<Credentials> onSignedIn;
-
-  SignInScreen({
-    required this.onSignedIn,
-  });
-
   @override
   _SignInScreenState createState() => _SignInScreenState();
 }
@@ -321,8 +205,7 @@ class _SignInScreenState extends State<SignInScreen> {
               onChanged: (s) => _password = s,
             ),
             ElevatedButton(
-              onPressed: () =>
-                  widget.onSignedIn(Credentials(_username, _password)),
+              onPressed: () => authService.signIn(_username, _password),
               child: Text('Sign in'),
             ),
           ],

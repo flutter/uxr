@@ -2,117 +2,39 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:flutter/material.dart';
+// This file is tested with Navi 0.2.0.
+// If it doesn't work with newer version, please check live version at https://github.com/zenonine/navi/tree/master/examples/uxr
 
+import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
+import 'package:navi/navi.dart';
 
 void main() {
   runApp(BooksApp());
 }
 
 class Book {
+  final int id;
   final String title;
   final Author author;
 
-  Book(this.title, this.author);
+  Book(this.id, this.title, this.author);
 }
 
 class Author {
+  final int id;
   String name;
 
-  Author(this.name);
+  Author(this.id, this.name);
 }
 
-class AppState extends ChangeNotifier {
-  final List<Book> books = [
-    Book('Stranger in a Strange Land', Author('Robert A. Heinlein')),
-    Book('Foundation', Author('Isaac Asimov')),
-    Book('Fahrenheit 451', Author('Ray Bradbury')),
-  ];
+final List<Book> books = [
+  Book(0, 'Stranger in a Strange Land', Author(0, 'Robert A. Heinlein')),
+  Book(1, 'Foundation', Author(1, 'Isaac Asimov')),
+  Book(2, 'Fahrenheit 451', Author(2, 'Ray Bradbury')),
+];
 
-  bool _isViewingAuthorsPage = false;
-  int? _selectedBookId;
-  int? _selectedAuthorId;
-
-
-  List<Author> get authors => [
-    ...books.map((book) => book.author),
-  ];
-
-  bool get isViewingAuthorsPage => _isViewingAuthorsPage;
-
-  set isViewingAuthorsPage(bool show) {
-    _isViewingAuthorsPage = show;
-    notifyListeners();
-  }
-
-  int? get selectedBookId => _selectedBookId;
-
-  set selectedBookId(int? id) {
-    if (id == null || id < 0 || id > books.length - 1) {
-      return;
-    }
-
-    _isViewingAuthorsPage = false;
-    _selectedBookId = id;
-    _selectedAuthorId = null;
-    notifyListeners();
-  }
-
-  int? get selectedAuthorId => _selectedAuthorId;
-
-  set selectedAuthorId(int? id) {
-    if (id == null || id < 0 || id > books.length - 1) {
-      return;
-    }
-
-    _selectedAuthorId = id;
-    _isViewingAuthorsPage = false;
-    _selectedBookId = null;
-    notifyListeners();
-  }
-
-  Book? get selectedBook {
-    var idx = _selectedBookId;
-    if (idx == null) {
-      return null;
-    }
-    return books[idx];
-  }
-
-  set selectedBook(Book? book) {
-    if (book == null) {
-      selectedBookId = null;
-      return;
-    }
-    selectedBookId = books.indexOf(book);
-  }
-
-  Author? get selectedAuthor {
-    var idx = _selectedAuthorId;
-    if (idx == null) {
-      return null;
-    }
-    return authors[idx];
-  }
-
-  set selectedAuthor(Author? author) {
-    if (author == null) {
-      selectedAuthorId = null;
-      return;
-    }
-    selectedAuthorId = authors.indexOf(author);
-  }
-
-  void clearSelectedBook() {
-    _selectedBookId = null;
-    notifyListeners();
-  }
-
-  void clearSelectedAuthor() {
-    _selectedAuthorId = null;
-    notifyListeners();
-  }
-}
+final List<Author> authors = [...books.map((book) => book.author)];
 
 class BooksApp extends StatefulWidget {
   @override
@@ -120,9 +42,8 @@ class BooksApp extends StatefulWidget {
 }
 
 class _BooksAppState extends State<BooksApp> {
-  final BookRouterDelegate _routerDelegate = BookRouterDelegate();
-  final BookRouteInformationParser _routeInformationParser =
-  BookRouteInformationParser();
+  final _routeInformationParser = NaviInformationParser();
+  final _routerDelegate = NaviRouterDelegate.material(child: RootStack());
 
   @override
   void dispose() {
@@ -140,254 +61,158 @@ class _BooksAppState extends State<BooksApp> {
   }
 }
 
-class BookRouteInformationParser extends RouteInformationParser<AppRoutePath> {
+enum RootPageId { books, authors }
+
+class RootStack extends StatefulWidget {
   @override
-  Future<AppRoutePath> parseRouteInformation(
-      RouteInformation routeInformation) async {
-    final uri = Uri.parse(routeInformation.location!);
-    // Handle '/'
-    if (uri.pathSegments.isEmpty) {
-      return AppRoutePath();
-    }
-
-    if (uri.pathSegments.length == 2) {
-      // Handle '/book/:id'
-      if (uri.pathSegments[0] == 'book') {
-        final remaining = uri.pathSegments[1];
-        final id = int.tryParse(remaining);
-        if (id != null) {
-          return BookRoutePath(id);
-        }
-        // Handle '/author/:id'
-      } else if (uri.pathSegments[0] == 'author') {
-        final remaining = uri.pathSegments[1];
-        final id = int.tryParse(remaining);
-        if (id != null) {
-          return AuthorRoutePath(id);
-        }
-      }
-    } else if (uri.pathSegments.length == 1 &&
-        uri.pathSegments[0] == 'authors') {
-      return AuthorsRoutePath();
-    }
-
-    // Handle unknown routes
-    return AppRoutePath();
-  }
-
-  @override
-  RouteInformation restoreRouteInformation(AppRoutePath path) {
-    late final String location;
-    if (path.isHomePage) {
-      location = '/';
-    } else if (path is AuthorsRoutePath) {
-      location = '/authors';
-    } else if (path is BookRoutePath) {
-      location = '/book/${path.id}';
-    } else if (path is AuthorRoutePath) {
-      location = '/author/${path.id}';
-    } else {
-      location = '/';
-    }
-    return RouteInformation(location: location);
-  }
+  _RootStackState createState() => _RootStackState();
 }
 
-class BookRouterDelegate extends RouterDelegate<AppRoutePath>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppRoutePath> {
-  @override
-  final GlobalKey<NavigatorState> navigatorKey;
-  final AppState _appState = AppState();
-
-  BookRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
-    _appState.addListener(() => notifyListeners());
-  }
+class _RootStackState extends State<RootStack> with NaviRouteMixin<RootStack> {
+  RootPageId _pageId = RootPageId.books;
 
   @override
-  AppRoutePath get currentConfiguration {
-    final selectedBookId = _appState.selectedBookId;
-    final selectedAuthorId = _appState.selectedAuthorId;
-    final showAuthorsPage = _appState.isViewingAuthorsPage;
-
-    if (showAuthorsPage) {
-      return AuthorsRoutePath();
+  void onNewRoute(NaviRoute unprocessedRoute) {
+    _pageId = RootPageId.books;
+    if (unprocessedRoute.pathSegmentAt(0) == 'authors' ||
+        unprocessedRoute.hasPrefixes(['author'])) {
+      _pageId = RootPageId.authors;
     }
 
-    if (selectedAuthorId != null) {
-      return AuthorRoutePath(selectedAuthorId);
-    }
-
-    if (selectedBookId != null) {
-      return BookRoutePath(selectedBookId);
-    }
-
-    return AppRoutePath();
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedBook = _appState.selectedBook;
-    final selectedAuthor = _appState.selectedAuthor;
-    return Navigator(
-      key: navigatorKey,
-      pages: [
-        if (selectedAuthor != null) ...[
-          MaterialPage(
-            key: ValueKey('AuthorsListPage'),
-            child: AuthorsListScreen(
-              authors: _appState.authors,
-              onTapped: _handleAuthorTapped,
-              onGoToBooksTapped: _handleGoToBooksTapped,
-            ),
+    return NaviStack(
+      pages: (context) {
+        switch (_pageId) {
+          case RootPageId.authors:
+            return [
+              NaviPage.material(
+                key: const ValueKey('Authors'),
+                child: AuthorsStack(),
+              )
+            ];
+          case RootPageId.books:
+          default:
+            return [
+              NaviPage.material(
+                key: const ValueKey('Books'),
+                child: BooksStack(),
+              )
+            ];
+        }
+      },
+    );
+  }
+}
+
+class AuthorsStack extends StatefulWidget {
+  @override
+  _AuthorsStackState createState() => _AuthorsStackState();
+}
+
+class _AuthorsStackState extends State<AuthorsStack>
+    with NaviRouteMixin<AuthorsStack> {
+  Author? _selectedAuthor;
+
+  @override
+  void onNewRoute(NaviRoute unprocessedRoute) {
+    _selectedAuthor = null;
+    if (unprocessedRoute.hasPrefixes(['author'])) {
+      final authorId = int.tryParse(unprocessedRoute.pathSegmentAt(1) ?? '');
+      _selectedAuthor =
+          authors.firstWhereOrNull((author) => author.id == authorId);
+    }
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NaviStack(
+      pages: (context) => [
+        NaviPage.material(
+          key: const ValueKey('Authors'),
+          route: const NaviRoute(path: ['authors']),
+          child: AuthorsListScreen(
+            authors: authors,
+            onTapped: (author) => setState(() {
+              _selectedAuthor = author;
+            }),
           ),
-          AuthorDetailPage(
-            author: selectedAuthor,
+        ),
+        if (_selectedAuthor != null)
+          NaviPage.material(
+            key: ValueKey(_selectedAuthor),
+            route: NaviRoute(path: ['author', '${_selectedAuthor!.id}']),
+            child: AuthorDetailsScreen(author: _selectedAuthor!),
           ),
-        ] else if (selectedBook != null) ...[
-          MaterialPage(
-            key: ValueKey('BooksListPage'),
-            child: BooksListScreen(
-              books: _appState.books,
-              onTapped: _handleBookTapped,
-            ),
+      ],
+      onPopPage: (context, route, dynamic result) {
+        if (_selectedAuthor != null) {
+          setState(() {
+            _selectedAuthor = null;
+          });
+        }
+      },
+    );
+  }
+}
+
+class BooksStack extends StatefulWidget {
+  @override
+  _BooksStackState createState() => _BooksStackState();
+}
+
+class _BooksStackState extends State<BooksStack>
+    with NaviRouteMixin<BooksStack> {
+  Book? _selectedBook;
+
+  @override
+  void onNewRoute(NaviRoute unprocessedRoute) {
+    _selectedBook = null;
+    if (unprocessedRoute.hasPrefixes(['book'])) {
+      final bookId = int.tryParse(unprocessedRoute.pathSegmentAt(1) ?? '');
+      if (bookId != null) {
+        _selectedBook = books.firstWhereOrNull((book) => book.id == bookId);
+      }
+    }
+
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NaviStack(
+      pages: (context) => [
+        NaviPage.material(
+          key: const ValueKey('Books'),
+          child: BooksListScreen(
+            books: books,
+            onTapped: (book) => setState(() {
+              _selectedBook = book;
+            }),
           ),
-          BookDetailsPage(
-            book: selectedBook,
-            onAuthorTapped: _handleAuthorTapped,
-          )
-        ] else if (_appState.isViewingAuthorsPage)
-          MaterialPage(
-            key: ValueKey('AuthorsListPage'),
-            child: AuthorsListScreen(
-              authors: _appState.authors,
-              onTapped: _handleAuthorTapped,
-              onGoToBooksTapped: _handleGoToBooksTapped,
-            ),
-          )
-        else
-          MaterialPage(
-            key: ValueKey('BooksListPage'),
-            child: BooksListScreen(
-              books: _appState.books,
-              onTapped: _handleBookTapped,
+        ),
+        if (_selectedBook != null)
+          NaviPage.material(
+            key: ValueKey(_selectedBook),
+            route: NaviRoute(path: ['book', '${_selectedBook!.id}']),
+            child: BookDetailsScreen(
+              book: _selectedBook!,
             ),
           ),
       ],
-      onPopPage: (route, result) {
-        if (!route.didPop(result)) {
-          return false;
+      onPopPage: (context, route, dynamic result) {
+        if (_selectedBook != null) {
+          setState(() {
+            _selectedBook = null;
+          });
         }
-
-        if (_appState.selectedAuthor != null) {
-          _appState.isViewingAuthorsPage = true;
-        }
-
-        _appState.clearSelectedBook();
-        _appState.clearSelectedAuthor();
-
-        return true;
       },
     );
   }
-
-  @override
-  Future<void> setNewRoutePath(AppRoutePath path) async {
-    if (path is AuthorRoutePath) {
-      _appState.selectedAuthorId = path.id;
-    } else if (path is AuthorsRoutePath) {
-      _appState.isViewingAuthorsPage = true;
-    } else if (path is BookRoutePath) {
-      _appState.selectedBookId = path.id;
-    } else {
-      _appState.clearSelectedBook();
-      _appState.clearSelectedAuthor();
-      _appState.isViewingAuthorsPage = false;
-    }
-  }
-
-  void _handleBookTapped(Book book) {
-    _appState.selectedBook = book;
-  }
-
-  void _handleAuthorTapped(Author author) {
-    _appState.selectedAuthor = author;
-  }
-
-  void _handleGoToBooksTapped() {
-    _appState.isViewingAuthorsPage = false;
-    _appState.clearSelectedAuthor();
-    _appState.clearSelectedBook();
-  }
-}
-
-class BookDetailsPage extends Page<dynamic> {
-  final Book book;
-  final ValueChanged<Author> onAuthorTapped;
-
-  BookDetailsPage({
-    required this.book,
-    required this.onAuthorTapped,
-  }) : super(key: ValueKey(book));
-
-  @override
-  Route<dynamic> createRoute(BuildContext context) {
-    return MaterialPageRoute(
-      settings: this,
-      builder: (BuildContext context) {
-        return BookDetailsScreen(
-          book: book,
-          onAuthorTapped: onAuthorTapped,
-        );
-      },
-    );
-  }
-}
-
-class AuthorDetailPage extends Page<dynamic> {
-  final Author author;
-
-  AuthorDetailPage({
-    required this.author,
-  }) : super(key: ValueKey(author));
-
-  @override
-  Route<dynamic> createRoute(BuildContext context) {
-    return MaterialPageRoute(
-      settings: this,
-      builder: (BuildContext context) {
-        return AuthorDetailsScreen(
-          author: author,
-        );
-      },
-    );
-  }
-}
-
-class AppRoutePath {
-  bool get isHomePage => true;
-}
-
-class AuthorsRoutePath extends AppRoutePath {
-  @override
-  bool get isHomePage => false;
-}
-
-class AuthorRoutePath extends AppRoutePath {
-  final int id;
-
-  AuthorRoutePath(this.id);
-
-  @override
-  bool get isHomePage => false;
-}
-
-class BookRoutePath extends AppRoutePath {
-  final int id;
-
-  BookRoutePath(this.id);
-
-  @override
-  bool get isHomePage => false;
 }
 
 class BooksListScreen extends StatelessWidget {
@@ -420,12 +245,10 @@ class BooksListScreen extends StatelessWidget {
 class AuthorsListScreen extends StatelessWidget {
   final List<Author> authors;
   final ValueChanged<Author> onTapped;
-  final VoidCallback onGoToBooksTapped;
 
   AuthorsListScreen({
     required this.authors,
     required this.onTapped,
-    required this.onGoToBooksTapped,
   });
 
   @override
@@ -435,7 +258,7 @@ class AuthorsListScreen extends StatelessWidget {
       body: ListView(
         children: [
           ElevatedButton(
-            onPressed: onGoToBooksTapped,
+            onPressed: () => context.navi.to(['books']),
             child: Text('Go to Books Screen'),
           ),
           for (var author in authors)
@@ -451,11 +274,9 @@ class AuthorsListScreen extends StatelessWidget {
 
 class BookDetailsScreen extends StatelessWidget {
   final Book book;
-  final ValueChanged<Author> onAuthorTapped;
 
   BookDetailsScreen({
     required this.book,
-    required this.onAuthorTapped,
   });
 
   @override
@@ -470,7 +291,7 @@ class BookDetailsScreen extends StatelessWidget {
             Text(book.title, style: Theme.of(context).textTheme.headline6),
             ElevatedButton(
               onPressed: () {
-                onAuthorTapped(book.author);
+                context.navi.to(['author', '${book.author.id}']);
               },
               child: Text(book.author.name),
             ),
