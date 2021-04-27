@@ -20,35 +20,16 @@ class Wishlist {
   Wishlist(this.id);
 }
 
-class AppState extends ChangeNotifier {
+class AppState {
   final List<Wishlist> wishlists = <Wishlist>[];
 
   void addWishlist(Wishlist wishlist) {
     wishlists.add(wishlist);
-    notifyListeners();
   }
 }
 
-class WishlistApp extends StatefulWidget {
-  @override
-  _WishlistAppState createState() => _WishlistAppState();
-}
-
-class _WishlistAppState extends State<WishlistApp> {
+class WishlistApp extends StatelessWidget {
   final AppState _appState = AppState();
-  final vRouterKey;
-
-  _WishlistAppState() : vRouterKey = GlobalKey<VRouterState>() {
-    _appState.addListener(() {
-      setState(() {});
-    });
-  }
-
-  void onCreate(String value) {
-    final wishlist = Wishlist(value);
-    _appState.addWishlist(wishlist);
-    vRouterKey.currentState!.push('/wishlist/$value');
-  }
 
   void createIfNotExist(String value) {
     if (_appState.wishlists.indexWhere((element) => element.id == value) == -1) {
@@ -57,19 +38,12 @@ class _WishlistAppState extends State<WishlistApp> {
   }
 
   @override
-  void dispose() {
-    _appState.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return VRouter(
-      key: vRouterKey,
       routes: [
         VWidget(
           path: '/',
-          widget: WishlistListScreen(wishlists: _appState.wishlists, onCreate: onCreate),
+          widget: WishlistListScreen(wishlists: _appState.wishlists),
           stackedRoutes: [
             VGuard(
               beforeEnter: (vRedirector) async =>
@@ -82,7 +56,7 @@ class _WishlistAppState extends State<WishlistApp> {
                   widget: Builder(
                     builder: (context) => WishlistScreen(
                         wishlist: _appState.wishlists.firstWhere(
-                            (element) => element.id == context.vRouter.pathParameters['id'])),
+                                (element) => element.id == context.vRouter.pathParameters['id'])),
                   ),
                 ),
               ],
@@ -96,12 +70,8 @@ class _WishlistAppState extends State<WishlistApp> {
 
 class WishlistListScreen extends StatelessWidget {
   final List<Wishlist> wishlists;
-  final ValueChanged<String> onCreate;
 
-  WishlistListScreen({
-    required this.wishlists,
-    required this.onCreate,
-  });
+  WishlistListScreen({required this.wishlists});
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +89,7 @@ class WishlistListScreen extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 var randomInt = Random().nextInt(10000);
-                onCreate('$randomInt');
+                context.vRouter.push('/wishlist/$randomInt');
               },
               child: Text('Create a new Wishlist'),
             ),
