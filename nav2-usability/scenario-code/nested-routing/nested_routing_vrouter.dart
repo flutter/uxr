@@ -16,7 +16,7 @@ class BooksApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return VRouter(
-      initialUrl: '/books/all',
+      initialUrl: '/books/new',
       routes: [
         VNester(
           path: null,
@@ -61,7 +61,7 @@ class AppScreen extends StatelessWidget {
         currentIndex: context.vRouter.url!.contains('/books') ? 0 : 1,
         onTap: (idx) {
           if (idx == 0) {
-            context.vRouter.push('/books/all');
+            context.vRouter.push('/books/new');
           } else {
             context.vRouter.push('/settings');
           }
