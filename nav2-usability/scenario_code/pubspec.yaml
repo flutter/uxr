@@ -30,7 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   vrouter: ^1.1.0
   beamer: ^0.11.4
-  navi: ^0.2.0
+  navi: ^0.2.1
 
 dev_dependencies:
   flutter_test:
