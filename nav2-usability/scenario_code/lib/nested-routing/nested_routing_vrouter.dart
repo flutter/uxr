@@ -29,7 +29,8 @@ class BooksApp extends StatelessWidget {
               key: ValueKey('books'),
               widget: Builder(
                 builder: (context) => BooksScreen(
-                  initialSelectedTab: context.vRouter.url!.contains('/new') ? 0 : 1,
+                  initialSelectedTab:
+                      context.vRouter.url!.contains('/new') ? 0 : 1,
                 ),
               ),
               buildTransition: (animation, _, child) =>
@@ -93,13 +94,14 @@ class BooksScreen extends StatefulWidget {
   _BooksScreenState createState() => _BooksScreenState();
 }
 
-class _BooksScreenState extends State<BooksScreen> with SingleTickerProviderStateMixin {
+class _BooksScreenState extends State<BooksScreen>
+    with SingleTickerProviderStateMixin {
   late final TabController _tabController;
 
   @override
   void initState() {
-    _tabController =
-        TabController(length: 2, vsync: this, initialIndex: widget.initialSelectedTab);
+    _tabController = TabController(
+        length: 2, vsync: this, initialIndex: widget.initialSelectedTab);
     super.initState();
   }
 
@@ -111,8 +113,8 @@ class _BooksScreenState extends State<BooksScreen> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     return VWidgetGuard(
-      beforeUpdate: (vRedirector) async =>
-          _tabController.animateTo(vRedirector.newVRouterData!.url!.contains('/new') ? 0 : 1),
+      beforeUpdate: (vRedirector) async => _tabController
+          .animateTo(vRedirector.newVRouterData!.url!.contains('/new') ? 0 : 1),
       child: Column(
         children: [
           TabBar(
