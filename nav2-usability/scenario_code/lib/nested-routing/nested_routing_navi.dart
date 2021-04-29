@@ -2,8 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// This file is tested with Navi 0.2.0.
-// If it doesn't work with newer version, please check live version at https://github.com/zenonine/navi/tree/master/examples/uxr
+// If the file doesn't work with newer version, please check live version at
+// https://github.com/zenonine/navi/tree/master/examples/uxr
 
 import 'package:flutter/material.dart';
 import 'package:navi/navi.dart';

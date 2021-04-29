@@ -1,5 +1,5 @@
-// This file is tested with Navi 0.2.0.
-// If it doesn't work with newer version, please check live version at https://github.com/zenonine/navi/tree/master/examples/uxr
+// If the file doesn't work with newer version, please check live version at
+// https://github.com/zenonine/navi/tree/master/examples/uxr
 
 import 'package:flutter/material.dart';
 import 'package:navi/navi.dart';
