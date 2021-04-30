@@ -2,11 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-/// Queryparam path parameters example
+/// Deeplink query parameters example
 /// Done using AutoRoute
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'deeplink_queryparam_auto_route.gr.dart';
+import 'package:flutter_uxr/main.gr.dart';
 
 void main() {
   runApp(BooksApp());
@@ -30,6 +30,7 @@ class Book {
   replaceInRouteName: 'Screen,Route',
   routes: <AutoRoute>[
     AutoRoute(path: "/", page: BooksListScreen),
+    AutoRoute(path: "/book/:id", page: BookDetailsScreen),
     RedirectRoute(path: "*", redirectTo: "/")
   ],
 )
@@ -47,29 +48,50 @@ class BooksApp extends StatelessWidget {
   }
 }
 
-class BooksListScreen extends StatelessWidget {
-  final String? filter;
-  BooksListScreen({@QueryParam('filter') this.filter});
+class BooksListScreen extends StatefulWidget {
+  @override
+  _BooksListScreenState createState() => _BooksListScreenState();
+}
 
+class _BooksListScreenState extends State<BooksListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: ListView(
         children: [
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'filter',
-            ),
-            onSubmitted: (value) => context.router.pushPath('/?filter=$value'),
-          ),
           for (var book in books)
-            if (filter == null || book.title.toLowerCase().contains(filter!))
-              ListTile(
-                title: Text(book.title),
-                subtitle: Text(book.author),
-              )
+            ListTile(
+              title: Text(book.title),
+              subtitle: Text(book.author),
+              onTap: () =>
+                  context.router.replaceNamed("/book/${books.indexOf(book)}"),
+            )
         ],
+      ),
+    );
+  }
+}
+
+class BookDetailsScreen extends StatelessWidget {
+  final int id;
+
+  BookDetailsScreen({@PathParam('id') required this.id});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(books[id].title, style: Theme.of(context).textTheme.headline6),
+            Text(books[id].author,
+                style: Theme.of(context).textTheme.subtitle1),
+          ],
+        ),
       ),
     );
   }
