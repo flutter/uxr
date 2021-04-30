@@ -6,7 +6,7 @@
 /// Done using AutoRoute
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter_uxr/main.gr.dart';
+import 'deeplink_pathparam_auto_route.gr.dart';
 
 void main() {
   runApp(BooksApp());
