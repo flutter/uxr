@@ -9,7 +9,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter_uxr/main.gr.dart';
+import 'dynamic_linking_auto_route.gr.dart';
 
 void main() {
   runApp(WishListApp());
