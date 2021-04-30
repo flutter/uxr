@@ -11,6 +11,7 @@ dependencies:
   vrouter: ^1.1.0
   beamer: ^0.12.4
   auto_route: ^2.0.2
+  navi: ^0.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -310,6 +310,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  navi:
+    dependency: "direct main"
+    description:
+      name: navi
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.1"
   package_config:
     dependency: transitive
     description:
@@ -541,4 +548,4 @@ packages:
     version: "3.1.0"
 sdks:
   dart: ">=2.12.0 <3.0.0"
-  flutter: ">=1.22.0"
+  flutter: ">=2.0.0"
