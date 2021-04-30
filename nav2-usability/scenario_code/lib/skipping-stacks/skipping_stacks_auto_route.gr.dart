@@ -15,10 +15,6 @@ class AppRouter extends _i1.RootStackRouter {
 
   @override
   final Map<String, _i1.PageFactory> pagesMap = {
-    RootRouter.name: (routeData) {
-      return _i1.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i1.EmptyRouterScreen());
-    },
     BooksListRoute.name: (routeData) {
       return _i1.MaterialPageX<dynamic>(
           routeData: routeData, child: _i3.BooksListScreen());
@@ -49,26 +45,17 @@ class AppRouter extends _i1.RootStackRouter {
 
   @override
   List<_i1.RouteConfig> get routes => [
-        _i1.RouteConfig(RootRouter.name, path: '/', children: [
-          _i1.RouteConfig(BooksListRoute.name, path: ''),
-          _i1.RouteConfig(BookDetailsRoute.name, path: 'book/:bookId'),
-          _i1.RouteConfig(AuthorsListRoute.name, path: 'authors'),
-          _i1.RouteConfig(AuthorDetailsRoute.name, path: 'author/:bookId')
-        ]),
+        _i1.RouteConfig(BooksListRoute.name, path: '/'),
+        _i1.RouteConfig(BookDetailsRoute.name, path: '/book/:bookId'),
+        _i1.RouteConfig(AuthorsListRoute.name, path: '/authors'),
+        _i1.RouteConfig(AuthorDetailsRoute.name, path: '/author/:bookId'),
         _i1.RouteConfig('*#redirect',
             path: '*', redirectTo: '/', fullMatch: true)
       ];
 }
 
-class RootRouter extends _i1.PageRouteInfo {
-  const RootRouter({List<_i1.PageRouteInfo>? children})
-      : super(name, path: '/', children: children);
-
-  static const String name = 'RootRouter';
-}
-
 class BooksListRoute extends _i1.PageRouteInfo {
-  const BooksListRoute() : super(name, path: '');
+  const BooksListRoute() : super(name, path: '/');
 
   static const String name = 'BooksListRoute';
 }
@@ -76,7 +63,7 @@ class BooksListRoute extends _i1.PageRouteInfo {
 class BookDetailsRoute extends _i1.PageRouteInfo<BookDetailsRouteArgs> {
   BookDetailsRoute({required int bookId})
       : super(name,
-            path: 'book/:bookId',
+            path: '/book/:bookId',
             args: BookDetailsRouteArgs(bookId: bookId),
             params: {'bookId': bookId});
 
@@ -90,7 +77,7 @@ class BookDetailsRouteArgs {
 }
 
 class AuthorsListRoute extends _i1.PageRouteInfo {
-  const AuthorsListRoute() : super(name, path: 'authors');
+  const AuthorsListRoute() : super(name, path: '/authors');
 
   static const String name = 'AuthorsListRoute';
 }
@@ -98,7 +85,7 @@ class AuthorsListRoute extends _i1.PageRouteInfo {
 class AuthorDetailsRoute extends _i1.PageRouteInfo<AuthorDetailsRouteArgs> {
   AuthorDetailsRoute({required int bookId})
       : super(name,
-            path: 'author/:bookId',
+            path: '/author/:bookId',
             args: AuthorDetailsRouteArgs(bookId: bookId),
             params: {'bookId': bookId});
 
