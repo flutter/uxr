@@ -40,27 +40,21 @@ class AppState extends ChangeNotifier {
   replaceInRouteName: 'Screen,Route',
   routes: <AutoRoute>[
     AutoRoute(
-        path: '/',
-        name: 'RootRouter',
-        page: EmptyRouterScreen,
-        children: [
-          AutoRoute(
-            path: '',
-            page: BooksListScreen,
-          ),
-          AutoRoute(
-            path: 'book/:bookId',
-            page: BookDetailsScreen,
-          ),
-          AutoRoute(
-            path: 'authors',
-            page: AuthorsListScreen,
-          ),
-          AutoRoute(
-            path: 'author/:bookId',
-            page: AuthorDetailsScreen,
-          ),
-        ]),
+      path: '/',
+      page: BooksListScreen,
+    ),
+    AutoRoute(
+      path: '/book/:bookId',
+      page: BookDetailsScreen,
+    ),
+    AutoRoute(
+      path: '/authors',
+      page: AuthorsListScreen,
+    ),
+    AutoRoute(
+      path: '/author/:bookId',
+      page: AuthorDetailsScreen,
+    ),
     RedirectRoute(path: "*", redirectTo: "/")
   ],
 )
@@ -92,8 +86,8 @@ class BooksListScreen extends StatelessWidget {
             ListTile(
               title: Text(book.title),
               subtitle: Text(book.author.name),
-              onTap: () => context.router
-                  .push(BookDetailsRoute(bookId: books.indexOf(book))),
+              onTap: () =>
+                  context.router.pushNamed("/book/${books.indexOf(book)}"),
             )
         ],
       ),
@@ -110,14 +104,14 @@ class AuthorsListScreen extends StatelessWidget {
       body: ListView(
         children: [
           ElevatedButton(
-            onPressed: () => context.router.push(BooksListRoute()),
+            onPressed: () => context.router.pushNamed("/"),
             child: Text('Go to Books Page'),
           ),
           for (var author in authors)
             ListTile(
               title: Text(author.name),
               onTap: () => context.router
-                  .push(AuthorDetailsRoute(bookId: authors.indexOf(author))),
+                  .pushNamed("/author/${authors.indexOf(author)}"),
             )
         ],
       ),
@@ -143,10 +137,10 @@ class BookDetailsScreen extends StatelessWidget {
             Text(book.title, style: Theme.of(context).textTheme.headline6),
             ElevatedButton(
               // push both the AuthorsListRoute and AuthorsDetailsRoute
-              onPressed: () => context.router.push(RootRouter(children: [
+              onPressed: () => context.router.pushAll([
                 AuthorsListRoute(),
-                AuthorDetailsRoute(bookId: bookId)
-              ])),
+                AuthorDetailsRoute(bookId: bookId),
+              ]),
               child: Text(book.author.name),
             ),
           ],
