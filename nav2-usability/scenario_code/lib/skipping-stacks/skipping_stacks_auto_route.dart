@@ -68,7 +68,7 @@ class BooksApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routeInformationParser: _appRouter.defaultRouteParser(),
+      routeInformationParser: _appRouter.defaultRouteParser(includePrefixMatches: true),    
       routerDelegate: _appRouter.delegate(),
     );
   }
