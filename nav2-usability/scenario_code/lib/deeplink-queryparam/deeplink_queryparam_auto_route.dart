@@ -30,7 +30,6 @@ class Book {
   replaceInRouteName: 'Screen,Route',
   routes: <AutoRoute>[
     AutoRoute(path: "/", page: BooksListScreen),
-    AutoRoute(path: "/book/:id", page: BookDetailsScreen),
     RedirectRoute(path: "*", redirectTo: "/")
   ],
 )
@@ -48,50 +47,30 @@ class BooksApp extends StatelessWidget {
   }
 }
 
-class BooksListScreen extends StatefulWidget {
-  @override
-  _BooksListScreenState createState() => _BooksListScreenState();
-}
+class BooksListScreen extends StatelessWidget {
+  final String? filter;
+  BooksListScreen({@QueryParam('filter') this.filter});
 
-class _BooksListScreenState extends State<BooksListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: ListView(
         children: [
+          TextField(
+            decoration: InputDecoration(
+              hintText: 'filter',
+            ),
+            onSubmitted: (value) =>
+                context.router.replaceNamed('/?filter=$value'),
+          ),
           for (var book in books)
-            ListTile(
-              title: Text(book.title),
-              subtitle: Text(book.author),
-              onTap: () =>
-                  context.router.replaceNamed("/book/${books.indexOf(book)}"),
-            )
+            if (filter == null || book.title.toLowerCase().contains(filter!))
+              ListTile(
+                title: Text(book.title),
+                subtitle: Text(book.author),
+              )
         ],
-      ),
-    );
-  }
-}
-
-class BookDetailsScreen extends StatelessWidget {
-  final int id;
-
-  BookDetailsScreen({@PathParam('id') required this.id});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(books[id].title, style: Theme.of(context).textTheme.headline6),
-            Text(books[id].author,
-                style: Theme.of(context).textTheme.subtitle1),
-          ],
-        ),
       ),
     );
   }
