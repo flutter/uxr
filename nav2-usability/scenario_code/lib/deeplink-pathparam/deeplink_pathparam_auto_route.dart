@@ -6,7 +6,7 @@
 /// Done using AutoRoute
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'deeplink_pathparam_auto_route.gr.dart';
+import 'package:flutter_uxr/main.gr.dart';
 
 void main() {
   runApp(BooksApp());
@@ -65,7 +65,7 @@ class _BooksListScreenState extends State<BooksListScreen> {
               title: Text(book.title),
               subtitle: Text(book.author),
               onTap: () =>
-                  context.router.replace(BookDetailsRoute(id: books.indexOf(book))),
+                  context.router.pushNamed("/book/${books.indexOf(book)}"),
             )
         ],
       ),
