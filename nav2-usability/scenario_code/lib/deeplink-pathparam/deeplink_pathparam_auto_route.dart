@@ -43,7 +43,8 @@ class BooksApp extends StatelessWidget {
 
     return MaterialApp.router(
       routerDelegate: _appRouter.delegate(),
-      routeInformationParser: _appRouter.defaultRouteParser(includePrefixMatches: true),
+      routeInformationParser:
+          _appRouter.defaultRouteParser(includePrefixMatches: true),
     );
   }
 }
