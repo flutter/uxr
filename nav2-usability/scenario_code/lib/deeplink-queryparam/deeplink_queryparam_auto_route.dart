@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-/// Queryparam path parameters example
+/// Deeplink query parameters example
 /// Done using AutoRoute
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
@@ -61,7 +61,8 @@ class BooksListScreen extends StatelessWidget {
             decoration: InputDecoration(
               hintText: 'filter',
             ),
-            onSubmitted: (value) => context.router.pushPath('/?filter=$value'),
+            onSubmitted: (value) =>
+                context.router.replaceNamed('/?filter=$value'),
           ),
           for (var book in books)
             if (filter == null || book.title.toLowerCase().contains(filter!))

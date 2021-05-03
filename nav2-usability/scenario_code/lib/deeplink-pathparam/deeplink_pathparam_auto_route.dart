@@ -43,7 +43,7 @@ class BooksApp extends StatelessWidget {
 
     return MaterialApp.router(
       routerDelegate: _appRouter.delegate(),
-      routeInformationParser: _appRouter.defaultRouteParser(),
+      routeInformationParser: _appRouter.defaultRouteParser(includePrefixMatches: true),
     );
   }
 }
@@ -65,7 +65,7 @@ class _BooksListScreenState extends State<BooksListScreen> {
               title: Text(book.title),
               subtitle: Text(book.author),
               onTap: () =>
-                  context.router.replace(BookDetailsRoute(id: books.indexOf(book))),
+                  context.router.pushNamed("/book/${books.indexOf(book)}"),
             )
         ],
       ),
