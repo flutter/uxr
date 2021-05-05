@@ -37,10 +37,10 @@ class Book {
 class $AppRouter {}
 
 class BooksApp extends StatelessWidget {
+  final _appRouter = AppRouter();
+  
   @override
   Widget build(BuildContext context) {
-    final _appRouter = AppRouter();
-
     return MaterialApp.router(
       routerDelegate: _appRouter.delegate(),
       routeInformationParser:
