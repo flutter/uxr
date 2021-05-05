@@ -10,12 +10,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   vrouter: ^1.1.0
   beamer: ^0.12.4
-  auto_route: ^2.0.2
+  auto_route: ^2.1.0
   navi: ^0.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  auto_route_generator: ^2.0.1
-  build_runner: ^2.0.1
+  auto_route_generator: ^2.1.0
+  build_runner: ^2.0.2
 flutter:
   uses-material-design: true
