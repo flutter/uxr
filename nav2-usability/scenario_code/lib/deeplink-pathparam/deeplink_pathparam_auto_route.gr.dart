@@ -7,7 +7,7 @@
 import 'package:auto_route/auto_route.dart' as _i1;
 import 'package:flutter/material.dart' as _i2;
 
-import 'deeplink_pathparam_auto_route.dart' as _i3;
+import 'main.dart' as _i3;
 
 class AppRouter extends _i1.RootStackRouter {
   AppRouter([_i2.GlobalKey<_i2.NavigatorState>? navigatorKey])
@@ -15,17 +15,19 @@ class AppRouter extends _i1.RootStackRouter {
 
   @override
   final Map<String, _i1.PageFactory> pagesMap = {
-    BooksListRoute.name: (routeData) {
-      return _i1.MaterialPageX<dynamic>(
-          routeData: routeData, child: _i3.BooksListScreen());
-    },
-    BookDetailsRoute.name: (routeData) {
-      var pathParams = routeData.pathParams;
-      final args = routeData.argsAs<BookDetailsRouteArgs>(
-          orElse: () => BookDetailsRouteArgs(id: pathParams.getInt('id')));
-      return _i1.MaterialPageX<dynamic>(
-          routeData: routeData, child: _i3.BookDetailsScreen(id: args.id));
-    }
+    BooksListRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i3.BooksListScreen();
+        }),
+    BookDetailsRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+        routeData: routeData,
+        builder: (data) {
+          final pathParams = data.pathParams;
+          final args = data.argsAs<BookDetailsRouteArgs>(
+              orElse: () => BookDetailsRouteArgs(id: pathParams.getInt('id')));
+          return _i3.BookDetailsScreen(id: args.id);
+        })
   };
 
   @override
@@ -48,7 +50,7 @@ class BookDetailsRoute extends _i1.PageRouteInfo<BookDetailsRouteArgs> {
       : super(name,
             path: '/book/:id',
             args: BookDetailsRouteArgs(id: id),
-            params: {'id': id});
+            rawPathParams: {'id': id});
 
   static const String name = 'BookDetailsRoute';
 }
