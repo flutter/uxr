@@ -65,8 +65,8 @@ class _BooksListScreenState extends State<BooksListScreen> {
             ListTile(
               title: Text(book.title),
               subtitle: Text(book.author),
-              onTap: () =>
-                  context.router.pushNamed("/book/${books.indexOf(book)}"),
+              onTap: () => context.router
+                  .push(BookDetailsRoute(id: books.indexOf(book))),
             )
         ],
       ),
