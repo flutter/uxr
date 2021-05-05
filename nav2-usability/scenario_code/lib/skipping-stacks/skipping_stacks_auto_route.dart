@@ -68,7 +68,8 @@ class BooksApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routeInformationParser: _appRouter.defaultRouteParser(),
+      routeInformationParser:
+          _appRouter.defaultRouteParser(includePrefixMatches: true),
       routerDelegate: _appRouter.delegate(),
     );
   }
@@ -86,8 +87,8 @@ class BooksListScreen extends StatelessWidget {
             ListTile(
               title: Text(book.title),
               subtitle: Text(book.author.name),
-              onTap: () => context.router
-                  .push(BookDetailsRoute(bookId: books.indexOf(book))),
+              onTap: () => context
+                  .pushRoute(BookDetailsRoute(bookId: books.indexOf(book))),
             )
         ],
       ),
@@ -104,14 +105,14 @@ class AuthorsListScreen extends StatelessWidget {
       body: ListView(
         children: [
           ElevatedButton(
-            onPressed: () => context.router.push(BooksListRoute()),
+            onPressed: () => context.pushRoute(BooksListRoute()),
             child: Text('Go to Books Page'),
           ),
           for (var author in authors)
             ListTile(
               title: Text(author.name),
-              onTap: () => context.router
-                  .push(AuthorDetailsRoute(bookId: authors.indexOf(author))),
+              onTap: () => context.pushRoute(
+                  AuthorDetailsRoute(bookId: authors.indexOf(author))),
             )
         ],
       ),
@@ -122,7 +123,7 @@ class AuthorsListScreen extends StatelessWidget {
 class BookDetailsScreen extends StatelessWidget {
   final int bookId;
 
-  BookDetailsScreen({@PathParam('bookId') required this.bookId});
+  BookDetailsScreen({@pathParam required this.bookId});
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +154,7 @@ class BookDetailsScreen extends StatelessWidget {
 class AuthorDetailsScreen extends StatelessWidget {
   final int bookId;
 
-  AuthorDetailsScreen({@PathParam('bookId') required this.bookId});
+  AuthorDetailsScreen({@pathParam required this.bookId});
 
   @override
   Widget build(BuildContext context) {

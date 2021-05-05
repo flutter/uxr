@@ -19,17 +19,19 @@ class AppRouter extends _i1.RootStackRouter {
 
   @override
   final Map<String, _i1.PageFactory> pagesMap = {
-    WishlistListRoute.name: (routeData) {
-      return _i1.MaterialPageX<dynamic>(
-          routeData: routeData, child: _i3.WishlistListScreen());
-    },
-    WishlistRoute.name: (routeData) {
-      var pathParams = routeData.pathParams;
-      final args = routeData.argsAs<WishlistRouteArgs>(
-          orElse: () => WishlistRouteArgs(id: pathParams.getString('id')));
-      return _i1.MaterialPageX<dynamic>(
-          routeData: routeData, child: _i3.WishlistScreen(id: args.id));
-    }
+    WishlistListRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i3.WishlistListScreen();
+        }),
+    WishlistRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+        routeData: routeData,
+        builder: (data) {
+          final pathParams = data.pathParams;
+          final args = data.argsAs<WishlistRouteArgs>(
+              orElse: () => WishlistRouteArgs(id: pathParams.getString('id')));
+          return _i3.WishlistScreen(id: args.id);
+        })
   };
 
   @override
@@ -53,7 +55,7 @@ class WishlistRoute extends _i1.PageRouteInfo<WishlistRouteArgs> {
       : super(name,
             path: '/wishlist/:id',
             args: WishlistRouteArgs(id: id),
-            params: {'id': id});
+            rawPathParams: {'id': id});
 
   static const String name = 'WishlistRoute';
 }

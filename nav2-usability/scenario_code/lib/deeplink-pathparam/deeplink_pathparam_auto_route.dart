@@ -38,7 +38,7 @@ class $AppRouter {}
 
 class BooksApp extends StatelessWidget {
   final _appRouter = AppRouter();
-  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
@@ -65,8 +65,8 @@ class _BooksListScreenState extends State<BooksListScreen> {
             ListTile(
               title: Text(book.title),
               subtitle: Text(book.author),
-              onTap: () => context.router
-                  .push(BookDetailsRoute(id: books.indexOf(book))),
+              onTap: () =>
+                  context.pushRoute(BookDetailsRoute(id: books.indexOf(book))),
             )
         ],
       ),
@@ -77,7 +77,7 @@ class _BooksListScreenState extends State<BooksListScreen> {
 class BookDetailsScreen extends StatelessWidget {
   final int id;
 
-  BookDetailsScreen({@PathParam('id') required this.id});
+  BookDetailsScreen({@pathParam required this.id});
 
   @override
   Widget build(BuildContext context) {

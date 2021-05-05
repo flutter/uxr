@@ -118,7 +118,8 @@ class _BooksAppState extends State<BooksApp> {
             ),
         ],
       ),
-      routeInformationParser: _appRouter.defaultRouteParser(),
+      routeInformationParser:
+          _appRouter.defaultRouteParser(includePrefixMatches: true),
     );
   }
 
