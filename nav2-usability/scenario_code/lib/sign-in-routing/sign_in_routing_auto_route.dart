@@ -68,13 +68,6 @@ class AppState extends ChangeNotifier {
   }
 
   bool get isSignedIn => _isSignedIn;
-
-  set isViewingSignIn(bool value) {
-    if (_isSignedIn != value) {
-      _isSignedIn = value;
-      notifyListeners();
-    }
-  }
 }
 
 // Declare routing setup
