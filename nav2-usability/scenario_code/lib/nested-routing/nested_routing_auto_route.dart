@@ -47,27 +47,27 @@ class BooksApp extends StatelessWidget {
 class AppScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AutoTabsScaffold(
+    return AutoTabsRouter(
       routes: [BooksRoute(), SettingsRoute()],
-      // transition between bottom nav tabs
-      builder: (_, child, animation) => FadeTransition(
-        opacity: animation,
-        child: child,
-      ),
-      bottomNavigationBuilder: (_, tabsRouter) {
-        return BottomNavigationBar(
-          currentIndex: tabsRouter.activeIndex,
-          onTap: tabsRouter.setActiveIndex,
-          items: [
-            BottomNavigationBarItem(
-              label: 'Books',
-              icon: Icon(Icons.chrome_reader_mode_outlined),
-            ),
-            BottomNavigationBarItem(
-              label: 'Settings',
-              icon: Icon(Icons.settings),
-            ),
-          ],
+      duration: Duration(milliseconds: 400),
+      builder: (context, child, animation) {
+        final tabsRouter = context.tabsRouter;
+        return Scaffold(
+          body: FadeTransition(child: child, opacity: animation),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: tabsRouter.activeIndex,
+            onTap: tabsRouter.setActiveIndex,
+            items: [
+              BottomNavigationBarItem(
+                label: 'Books',
+                icon: Icon(Icons.chrome_reader_mode_outlined),
+              ),
+              BottomNavigationBarItem(
+                label: 'Settings',
+                icon: Icon(Icons.settings),
+              ),
+            ],
+          ),
         );
       },
     );
