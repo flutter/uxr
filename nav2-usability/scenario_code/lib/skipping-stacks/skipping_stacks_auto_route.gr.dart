@@ -15,32 +15,34 @@ class AppRouter extends _i1.RootStackRouter {
 
   @override
   final Map<String, _i1.PageFactory> pagesMap = {
-    BooksListRoute.name: (routeData) {
-      return _i1.MaterialPageX<dynamic>(
-          routeData: routeData, child: _i3.BooksListScreen());
-    },
-    BookDetailsRoute.name: (routeData) {
-      var pathParams = routeData.pathParams;
-      final args = routeData.argsAs<BookDetailsRouteArgs>(
-          orElse: () =>
-              BookDetailsRouteArgs(bookId: pathParams.getInt('bookId')));
-      return _i1.MaterialPageX<dynamic>(
-          routeData: routeData,
-          child: _i3.BookDetailsScreen(bookId: args.bookId));
-    },
-    AuthorsListRoute.name: (routeData) {
-      return _i1.MaterialPageX<dynamic>(
-          routeData: routeData, child: _i3.AuthorsListScreen());
-    },
-    AuthorDetailsRoute.name: (routeData) {
-      var pathParams = routeData.pathParams;
-      final args = routeData.argsAs<AuthorDetailsRouteArgs>(
-          orElse: () =>
-              AuthorDetailsRouteArgs(bookId: pathParams.getInt('bookId')));
-      return _i1.MaterialPageX<dynamic>(
-          routeData: routeData,
-          child: _i3.AuthorDetailsScreen(bookId: args.bookId));
-    }
+    BooksListRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i3.BooksListScreen();
+        }),
+    BookDetailsRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+        routeData: routeData,
+        builder: (data) {
+          final pathParams = data.pathParams;
+          final args = data.argsAs<BookDetailsRouteArgs>(
+              orElse: () =>
+                  BookDetailsRouteArgs(bookId: pathParams.getInt('bookId')));
+          return _i3.BookDetailsScreen(bookId: args.bookId);
+        }),
+    AuthorsListRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i3.AuthorsListScreen();
+        }),
+    AuthorDetailsRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+        routeData: routeData,
+        builder: (data) {
+          final pathParams = data.pathParams;
+          final args = data.argsAs<AuthorDetailsRouteArgs>(
+              orElse: () =>
+                  AuthorDetailsRouteArgs(bookId: pathParams.getInt('bookId')));
+          return _i3.AuthorDetailsScreen(bookId: args.bookId);
+        })
   };
 
   @override
@@ -65,7 +67,7 @@ class BookDetailsRoute extends _i1.PageRouteInfo<BookDetailsRouteArgs> {
       : super(name,
             path: '/book/:bookId',
             args: BookDetailsRouteArgs(bookId: bookId),
-            params: {'bookId': bookId});
+            rawPathParams: {'bookId': bookId});
 
   static const String name = 'BookDetailsRoute';
 }
@@ -87,7 +89,7 @@ class AuthorDetailsRoute extends _i1.PageRouteInfo<AuthorDetailsRouteArgs> {
       : super(name,
             path: '/author/:bookId',
             args: AuthorDetailsRouteArgs(bookId: bookId),
-            params: {'bookId': bookId});
+            rawPathParams: {'bookId': bookId});
 
   static const String name = 'AuthorDetailsRoute';
 }

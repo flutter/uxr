@@ -15,15 +15,15 @@ class AppRouter extends _i1.RootStackRouter {
 
   @override
   final Map<String, _i1.PageFactory> pagesMap = {
-    BooksListRoute.name: (routeData) {
-      var queryParams = routeData.queryParams;
-      final args = routeData.argsAs<BooksListRouteArgs>(
-          orElse: () =>
-              BooksListRouteArgs(filter: queryParams.optString('filter')));
-      return _i1.MaterialPageX<dynamic>(
-          routeData: routeData,
-          child: _i3.BooksListScreen(filter: args.filter));
-    }
+    BooksListRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+        routeData: routeData,
+        builder: (data) {
+          final queryParams = data.queryParams;
+          final args = data.argsAs<BooksListRouteArgs>(
+              orElse: () =>
+                  BooksListRouteArgs(filter: queryParams.optString('filter')));
+          return _i3.BooksListScreen(filter: args.filter);
+        })
   };
 
   @override
@@ -39,7 +39,7 @@ class BooksListRoute extends _i1.PageRouteInfo<BooksListRouteArgs> {
       : super(name,
             path: '/',
             args: BooksListRouteArgs(filter: filter),
-            queryParams: {'filter': filter});
+            rawQueryParams: {'filter': filter});
 
   static const String name = 'BooksListRoute';
 }

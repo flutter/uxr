@@ -107,19 +107,19 @@ class _BooksAppState extends State<BooksApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerDelegate: AutoRouterDelegate.declarative(
-        _appRouter,
-        routes: (_) => [
-          if (appState.isSignedIn)
-            AppStackRoute()
-          else
-            SignInRoute(
-              onSignedIn: _handleSignedIn,
-            ),
-        ],
-      ),
-      routeInformationParser: _appRouter.defaultRouteParser(),
-    );
+        routerDelegate: AutoRouterDelegate.declarative(
+          _appRouter,
+          routes: (_) => [
+            if (appState.isSignedIn)
+              AppStackRoute()
+            else
+              SignInRoute(
+                onSignedIn: _handleSignedIn,
+              ),
+          ],
+        ),
+        routeInformationParser:
+            _appRouter.defaultRouteParser(includePrefixMatches: true));
   }
 
   Future _handleSignedIn(Credentials credentials) async {
