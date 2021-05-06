@@ -50,13 +50,12 @@ class $AppRouter {}
 
 class CreateIfNotExistGuard extends AutoRouteGuard {
   @override
-  Future<bool> canNavigate(
-      List<PageRouteInfo> pendingRoutes, StackRouter router) async {
-    final id = pendingRoutes.first.params["id"];
+  void canNavigate(NavigationResolver resolver, StackRouter router) {
+    final id = resolver.route.pathParams.get("id");
     if (appState.wishlists.indexWhere((element) => element.id == id) == -1) {
       appState.addWishlist(Wishlist(id));
     }
-    return true;
+    resolver.next(true);
   }
 }
 
@@ -76,8 +75,6 @@ class _WishListAppState extends State<WishListApp> {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routeInformationParser:
-          // includePrefixMatches can toggle whether the root / route is also pushed when you
-          // hit /wishlist/:id directly in the browser
           _appRouter.defaultRouteParser(includePrefixMatches: true),
       routerDelegate: _appRouter.delegate(),
     );
@@ -88,7 +85,7 @@ class WishlistListScreen extends StatelessWidget {
   void onCreate(BuildContext context, String value) {
     final wishlist = Wishlist(value);
     appState.addWishlist(wishlist);
-    context.router.pushNamed('/wishlist/$value');
+    context.pushRoute(WishlistRoute(id: value));
   }
 
   @override
@@ -115,11 +112,10 @@ class WishlistListScreen extends StatelessWidget {
           ),
           for (var i = 0; i < appState.wishlists.length; i++)
             ListTile(
-              title: Text('Wishlist ${i + 1}'),
-              subtitle: Text(appState.wishlists[i].id),
-              onTap: () => context.router
-                  .pushNamed("/wishlist/${appState.wishlists[i].id}"),
-            )
+                title: Text('Wishlist ${i + 1}'),
+                subtitle: Text(appState.wishlists[i].id),
+                onTap: () => context
+                    .pushRoute(WishlistRoute(id: appState.wishlists[i].id)))
         ],
       ),
     );
@@ -127,7 +123,7 @@ class WishlistListScreen extends StatelessWidget {
 }
 
 class WishlistScreen extends StatelessWidget {
-  WishlistScreen({@PathParam('id') required this.id});
+  WishlistScreen({@pathParam required this.id});
   final String id;
 
   @override

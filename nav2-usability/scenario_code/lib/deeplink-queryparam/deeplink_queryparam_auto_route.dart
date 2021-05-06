@@ -36,20 +36,21 @@ class Book {
 class $AppRouter {}
 
 class BooksApp extends StatelessWidget {
+  final _appRouter = AppRouter();
+
   @override
   Widget build(BuildContext context) {
-    final _appRouter = AppRouter();
-
     return MaterialApp.router(
       routerDelegate: _appRouter.delegate(),
-      routeInformationParser: _appRouter.defaultRouteParser(),
+      routeInformationParser:
+          _appRouter.defaultRouteParser(includePrefixMatches: true),
     );
   }
 }
 
 class BooksListScreen extends StatelessWidget {
   final String? filter;
-  BooksListScreen({@QueryParam('filter') this.filter});
+  BooksListScreen({@queryParam this.filter});
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +63,7 @@ class BooksListScreen extends StatelessWidget {
               hintText: 'filter',
             ),
             onSubmitted: (value) =>
-                context.router.replaceNamed('/?filter=$value'),
+                context.navigateTo(BooksListRoute(filter: value)),
           ),
           for (var book in books)
             if (filter == null || book.title.toLowerCase().contains(filter!))
