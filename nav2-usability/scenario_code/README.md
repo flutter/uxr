@@ -3,3 +3,5 @@ This is the folder to host code snippets for [#9](https://github.com/flutter/uxr
 ```
 flutter run -d Chrome -t {{path_to_snippet_file}}
 ```
+
+To run code snippets written with the `auto_route` package, run the code generator first by following [these instructions](https://autoroute.vercel.app/introduction/installation_and_usage). 
