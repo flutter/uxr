@@ -50,7 +50,7 @@ class $AppRouter {}
 
 class CreateIfNotExistGuard extends AutoRouteGuard {
   @override
-  void canNavigate(NavigationResolver resolver, StackRouter router) {
+  void onNavigation(NavigationResolver resolver, StackRouter router) {
     final id = resolver.route.pathParams.get("id");
     if (appState.wishlists.indexWhere((element) => element.id == id) == -1) {
       appState.addWishlist(Wishlist(id));

@@ -121,11 +121,9 @@ class _BooksScreenState extends State<BooksScreen>
         TabBar(
           controller: _tabController,
           onTap: (int index) {
-            context.navigateTo(AppRoute(
-              children: [
-                BooksRoute(tab: _tabs.elementAt(index)),
-              ],
-            ));
+            context.navigateTo(
+              BooksRoute(tab: _tabs.elementAt(index)),
+            );
           },
           labelColor: Theme.of(context).primaryColor,
           tabs: [
