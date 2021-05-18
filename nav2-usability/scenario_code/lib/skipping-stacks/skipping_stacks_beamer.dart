@@ -37,7 +37,7 @@ class BooksLocation extends BeamLocation {
   List<String> get pathBlueprints => ['/books/:bookId'];
 
   @override
-  List<BeamPage> pagesBuilder(BuildContext context, BeamState state) {
+  List<BeamPage> buildPages(BuildContext context, BeamState state) {
     String? rawBookId = state.pathParameters['bookId'];
     int? bookId = rawBookId != null ? int.parse(rawBookId) : null;
     return [
@@ -85,7 +85,7 @@ class AuthorsLocation extends BeamLocation {
   List<String> get pathBlueprints => ['/authors/:authorId'];
 
   @override
-  List<BeamPage> pagesBuilder(BuildContext context, BeamState state) {
+  List<BeamPage> buildPages(BuildContext context, BeamState state) {
     String? rawAuthorId = state.pathParameters['authorId'];
     int? authorId = rawAuthorId != null ? int.parse(rawAuthorId) : null;
     return [
@@ -129,7 +129,7 @@ class BooksApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Books App',
-      routerDelegate: BeamerRouterDelegate(
+      routerDelegate: BeamerDelegate(
         locationBuilder: (state) {
           if (state.uri.path.contains('authors')) {
             return AuthorsLocation(state);
@@ -137,7 +137,7 @@ class BooksApp extends StatelessWidget {
           return BooksLocation(state);
         },
       ),
-      routeInformationParser: BeamerRouteInformationParser(),
+      routeInformationParser: BeamerParser(),
     );
   }
 }

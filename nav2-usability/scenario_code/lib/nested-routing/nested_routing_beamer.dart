@@ -21,15 +21,18 @@ class BooksApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Books App',
-      routerDelegate: BeamerRouterDelegate(
+      routerDelegate: BeamerDelegate(
         initialPath: '/books/new',
         locationBuilder: SimpleLocationBuilder(
           routes: {
-            '/*/*': (context) => HomeScreen(),
+            '*': (context) => BeamPage(
+                  key: ValueKey('${context.currentBeamLocation.state.uri}'),
+                  child: HomeScreen(),
+                ),
           },
         ),
       ),
-      routeInformationParser: BeamerRouteInformationParser(),
+      routeInformationParser: BeamerParser(),
     );
   }
 }
@@ -48,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Beamer(
         key: _innerBeamer,
-        routerDelegate: BeamerRouterDelegate(
+        routerDelegate: BeamerDelegate(
           transitionDelegate: NoAnimationTransitionDelegate(),
           locationBuilder: SimpleLocationBuilder(
             routes: {
@@ -117,10 +120,13 @@ class _BooksScreenState extends State<BooksScreen>
         TabController(length: 2, vsync: this, initialIndex: initialIndex)
           ..addListener(() {
             if (!_tabController.indexIsChanging) {
-              Beamer.of(context).updateRouteInformation(
-                _tabController.index == 0
-                    ? Uri.parse('/books/new')
-                    : Uri.parse('/books/all'),
+              Beamer.of(context).update(
+                state: BeamState.fromUri(
+                  _tabController.index == 0
+                      ? Uri.parse('/books/new')
+                      : Uri.parse('/books/all'),
+                ),
+                rebuild: false,
               );
             }
           });

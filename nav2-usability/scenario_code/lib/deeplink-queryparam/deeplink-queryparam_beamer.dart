@@ -25,7 +25,7 @@ class BooksLocation extends BeamLocation {
   List<String> get pathBlueprints => ['/books'];
 
   @override
-  List<BeamPage> pagesBuilder(BuildContext context, BeamState state) => [
+  List<BeamPage> buildPages(BuildContext context, BeamState state) => [
         BeamPage(
           key: ValueKey('books-${state.queryParameters['filter'] ?? ''}'),
           child: BooksListScreen(
@@ -49,10 +49,11 @@ class BooksApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Books App',
-      routerDelegate: BeamerRouterDelegate(
+      routerDelegate: BeamerDelegate(
+        transitionDelegate: NoAnimationTransitionDelegate(),
         locationBuilder: (state) => BooksLocation(state),
       ),
-      routeInformationParser: BeamerRouteInformationParser(),
+      routeInformationParser: BeamerParser(),
     );
   }
 }
