@@ -55,7 +55,7 @@ class WishlistLocation extends BeamLocation {
   List<String> get pathBlueprints => ['/wishlist/:wishlistId'];
 
   @override
-  List<BeamPage> pagesBuilder(BuildContext context, BeamState beamState) => [
+  List<BeamPage> buildPages(BuildContext context, BeamState beamState) => [
         BeamPage(
           key: ValueKey('wishlist-${_appState.wishlists.length}'),
           child: WishlistListScreen(
@@ -93,11 +93,11 @@ class WishlistApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Wishlist App',
-      routerDelegate: BeamerRouterDelegate(
+      routerDelegate: BeamerDelegate(
         transitionDelegate: NoAnimationTransitionDelegate(),
         locationBuilder: (beamState) => WishlistLocation(_appState, beamState),
       ),
-      routeInformationParser: BeamerRouteInformationParser(),
+      routeInformationParser: BeamerParser(),
     );
   }
 }

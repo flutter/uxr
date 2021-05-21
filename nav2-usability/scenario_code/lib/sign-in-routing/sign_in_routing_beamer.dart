@@ -47,7 +47,7 @@ class BooksApp extends StatefulWidget {
 class _BooksAppState extends State<BooksApp> {
   final Authentication _auth = MockAuthentication();
   late final List<BeamGuard> _guards;
-  late final BeamerRouterDelegate _delegate;
+  late final BeamerDelegate _delegate;
   bool _isSignedIn = false;
 
   @override
@@ -66,7 +66,7 @@ class _BooksAppState extends State<BooksApp> {
         beamToNamed: '/',
       )
     ];
-    _delegate = BeamerRouterDelegate(
+    _delegate = BeamerDelegate(
       guards: _guards,
       locationBuilder: SimpleLocationBuilder(
         routes: {
@@ -92,7 +92,7 @@ class _BooksAppState extends State<BooksApp> {
     return MaterialApp.router(
       title: 'Books App',
       routerDelegate: _delegate,
-      routeInformationParser: BeamerRouteInformationParser(),
+      routeInformationParser: BeamerParser(),
     );
   }
 }

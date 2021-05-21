@@ -25,7 +25,8 @@ class BooksApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Books App',
-      routerDelegate: BeamerRouterDelegate(
+      routerDelegate: BeamerDelegate(
+        notFoundRedirectNamed: '/',
         locationBuilder: SimpleLocationBuilder(
           routes: {
             '/': (context) => BooksListScreen(
@@ -35,14 +36,18 @@ class BooksApp extends StatelessWidget {
             '/books/:bookId': (context) {
               final bookId = int.parse(
                   context.currentBeamLocation.state.pathParameters['bookId']!);
-              return BookDetailsScreen(
-                book: books[bookId],
+              return BeamPage(
+                key: ValueKey('book-$bookId'),
+                popToNamed: '/',
+                child: BookDetailsScreen(
+                  book: books[bookId],
+                ),
               );
             },
           },
         ),
       ),
-      routeInformationParser: BeamerRouteInformationParser(),
+      routeInformationParser: BeamerParser(),
     );
   }
 }
