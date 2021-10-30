@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 void main() {
+  QR.settings.oneRouteInstancePerStack = true;
   runApp(MyApp());
 }
 
@@ -45,7 +46,7 @@ class BooksListScreen extends StatelessWidget {
             ListTile(
                 title: Text(book.title),
                 subtitle: Text(book.author),
-                onTap: () => QR.to('/books/${books.indexOf(book)}'))
+                onTap: () => QR.to('/books/${books.indexOf(book)}')),
         ],
       ),
     );
