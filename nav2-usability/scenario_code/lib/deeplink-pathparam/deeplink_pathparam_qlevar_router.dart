@@ -17,11 +17,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp.router(
       routeInformationParser: QRouteInformationParser(),
       routerDelegate: QRouterDelegate([
-        QRoute(path: '/', builder: () => BooksListScreen(books)),
-        QRoute(
-            path:
-                '/books/:id([0-${books.length - 1}])', // The only available pages are the pages in the list
-            builder: () => BookDetailsScreen(books[QR.params['id']!.asInt!])),
+        QRoute(path: '/!', builder: () => BooksListScreen(books), children: [
+          QRoute(
+              path:
+                  '/book/:id([0-${books.length - 1}])', // The only available pages are the pages in the list
+              builder: () => BookDetailsScreen(books[QR.params['id']!.asInt!]))
+        ]),
       ]));
 }
 
@@ -46,7 +47,7 @@ class BooksListScreen extends StatelessWidget {
             ListTile(
                 title: Text(book.title),
                 subtitle: Text(book.author),
-                onTap: () => QR.to('/books/${books.indexOf(book)}')),
+                onTap: () => QR.to('/book/${books.indexOf(book)}')),
         ],
       ),
     );

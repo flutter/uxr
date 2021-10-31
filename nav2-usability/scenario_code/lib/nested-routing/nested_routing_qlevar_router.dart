@@ -94,12 +94,17 @@ class _BooksScreenState extends State<BooksScreen>
 
   @override
   void initState() {
-    _tabController = TabController(
-        length: 2,
-        vsync: this,
-        initialIndex: widget.router.routeName == 'New Book' ? 0 : 1);
+    _tabController =
+        TabController(length: 2, vsync: this, initialIndex: getTapIndex);
+
+    widget.router.navigator.addListener(() {
+      _tabController.animateTo(getTapIndex);
+    });
+
     super.initState();
   }
+
+  int get getTapIndex => widget.router.routeName == 'New Book' ? 0 : 1;
 
   void dispose() {
     _tabController.dispose();
