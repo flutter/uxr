@@ -1,7 +1,7 @@
 # Flutter Router Package Comparative Analysis  
-As part of the [Navigator 2.0 API Usability Research](https://github.com/flutter/uxr/wiki/Navigator-2.0-API-Usability-Research), we have conducted a [preliminary comparative analysis](https://github.com/flutter/uxr/issues/13) of existing router packages Flutter community has produced around common navigation scenarios ([PDF](https://github.com/flutter/uxr/blob/master/nav2-usability/storyboards/%5BPublic%5D%20Flutter%20Navigator%20Scenarios%20Storyboards%20v2.pdf)) the Flutter UX Research team has identified through previous user studies. 
+As part of the [Navigator 2.0 API Usability Research](https://github.com/flutter/uxr/wiki/Navigator-2.0-API-Usability-Research), we have conducted a [preliminary comparative analysis](https://github.com/flutter/uxr/issues/13) of existing routing packages Flutter community has produced around common navigation scenarios ([PDF](https://github.com/flutter/uxr/blob/master/nav2-usability/storyboards/%5BPublic%5D%20Flutter%20Navigator%20Scenarios%20Storyboards%20v2.pdf)) the Flutter UX Research team has identified through previous user studies. 
 
-We also completed an in-depth evaluation of three packages (beamer, auto_route, and vroute), and you can [download the report here](https://github.com/flutter/uxr/raw/master/nav2-usability/Flutter%20routing%20packages%20usability%20research%20report.pdf) (PDF file).
+In August 2021, we completed an in-depth evaluation of three packages (beamer, auto_route, and vroute). You can [download the research report](https://github.com/flutter/uxr/raw/master/nav2-usability/Flutter%20routing%20packages%20usability%20research%20report.pdf) (PDF file).
   
 ## Package feature comparison  
 
@@ -45,4 +45,4 @@ Learn more about the packcages inluded in this analysis on Github:
 Authors of the abovementioned packages shared their feedback on the analysis via email and Github [comments](https://github.com/flutter/uxr/issues/13). We appreciate your contributions.  
   
 ## This is a living document
-This analysis is not final, and this page is meant to be a living document. Please feel free to add or edit content by opening a pull request.  
+This analysis is not final, and this page is meant to be a living document. Please feel free to add or edit content by opening a pull request. 
