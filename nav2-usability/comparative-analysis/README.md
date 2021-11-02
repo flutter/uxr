@@ -1,8 +1,11 @@
 # Flutter Router Package Comparative Analysis  
-As part of the [Navigator 2.0 API Usability Research](https://github.com/flutter/uxr/wiki/Navigator-2.0-API-Usability-Research), we have conducted a [preliminary comparative analysis](https://github.com/flutter/uxr/issues/13) of existing router packages Flutter community has produced around common navigation scenarios ([PDF](https://github.com/flutter/uxr/blob/master/nav2-usability/storyboards/%5BPublic%5D%20Flutter%20Navigator%20Scenarios%20Storyboards%20v2.pdf)) the Flutter UX Research team has identified through previous user studies.  
+As part of the [Navigator 2.0 API Usability Research](https://github.com/flutter/uxr/wiki/Navigator-2.0-API-Usability-Research), we have conducted a [preliminary comparative analysis](https://github.com/flutter/uxr/issues/13) of existing routing packages Flutter community has produced around common navigation scenarios ([PDF](https://github.com/flutter/uxr/blob/master/nav2-usability/storyboards/%5BPublic%5D%20Flutter%20Navigator%20Scenarios%20Storyboards%20v2.pdf)) the Flutter UX Research team has identified through previous user studies. 
+
+In August 2021, we completed an in-depth evaluation of three packages (beamer, auto_route, and vroute). You can [download the research report](https://github.com/flutter/uxr/raw/master/nav2-usability/Flutter%20routing%20packages%20usability%20research%20report.pdf) (PDF file).
   
-## Analysis  
-Scroll right to see all >
+## Package feature comparison  
+
+Scroll right to see all >>
 
 |  | auto_route | beamer | flit-router | flouter | flow_builder | fluro | flutter_modular | navi | page_router | qlevar_router | routemaster | vrouter |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -42,7 +45,4 @@ Learn more about the packcages inluded in this analysis on Github:
 Authors of the abovementioned packages shared their feedback on the analysis via email and Github [comments](https://github.com/flutter/uxr/issues/13). We appreciate your contributions.  
   
 ## This is a living document
-This analysis is not final, and this page is meant to be a living document. Please feel free to add or edit content by opening a pull request.  
-  
-## What's Next  
-Our immediate next step in the [Navigator 2.0 API Usability Research](https://github.com/flutter/uxr/wiki/Navigator-2.0-API-Usability-Research) is to conduct a more detailed evaluation ([#7](https://github.com/flutter/uxr/issues/7)) of usability benefits and disadvantages based on code snippets ([#9](https://github.com/flutter/uxr/issues/9)) provided by package authors based on the finalized navigator scenarios in [#4](https://github.com/flutter/uxr/issues/4). We have about 5 authors who expressed interest so far to participate in the next round and contribute code snippets for the usability evaluation. We will share a more detailed plan here: [#9](https://github.com/flutter/uxr/issues/9)
+This analysis is not final, and this page is meant to be a living document. Please feel free to add or edit content by opening a pull request. 
