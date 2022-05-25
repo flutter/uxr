@@ -13,6 +13,7 @@ dependencies:
   auto_route: ^2.1.0
   navi: ^0.2.1
   go_router: ^2.2.1
+  go_router_prototype: ^0.0.1
   qlevar_router: ^1.5.5
 dev_dependencies:
   flutter_test:
