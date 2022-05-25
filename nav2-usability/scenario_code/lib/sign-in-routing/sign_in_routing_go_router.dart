@@ -106,9 +106,7 @@ class _BooksAppState extends State<BooksApp> {
     ),
     redirect: (state) {
       final signedIn = _appState.auth.isSignedIn();
-      final signingIn = state.subloc == '/signin';
-      if (!signedIn && !signingIn) return '/signin';
-      if (signedIn && signingIn) return '/';
+      if (!signedIn) return '/signin';
       return null;
     },
     refreshListenable: _appState.auth,
