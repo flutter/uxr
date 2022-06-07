@@ -34,7 +34,7 @@ class WishlistApp extends StatefulWidget {
 class _WishlistAppState extends State<WishlistApp> {
   final AppState _appState = AppState();
 
-  void onCreate(String id) {
+  void onCreate(String id, BuildContext context) {
     final wishlist = Wishlist(id);
     _appState.addWishlist(wishlist);
     RouteState.of(context).goTo('/wishlist/$id');
@@ -71,7 +71,7 @@ class _WishlistAppState extends State<WishlistApp> {
         path: '/',
         builder: (context) => WishlistListScreen(
           wishlists: _appState.wishlists,
-          onCreate: onCreate,
+          onCreate: (id) => onCreate(id, context),
         ),
         routes: [
           StackedRoute(
