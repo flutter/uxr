@@ -59,7 +59,7 @@ class BooksApp extends StatelessWidget {
             builder: (context) => BooksListScreen(books: _appState.books),
             routes: [
               StackedRoute(
-                path: r':bookId',
+                path: ':bookId',
                 builder: (context) {
                   final state = RouteState.of(context);
                   final bookId = int.parse(state.pathParameters['bookId']!);
@@ -76,7 +76,7 @@ class BooksApp extends StatelessWidget {
             builder: (context) => AuthorsListScreen(authors: _appState.authors),
             routes: [
               StackedRoute(
-                path: r':bookId',
+                path: ':bookId',
                 builder: (context) {
                   final state = RouteState.of(context);
                   final bookId = int.parse(state.pathParameters['bookId']!);
