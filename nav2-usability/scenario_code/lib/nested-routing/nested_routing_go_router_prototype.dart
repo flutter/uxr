@@ -22,11 +22,7 @@ class BooksApp extends StatelessWidget {
     routes: [
       ShellRoute(
         path: '/',
-        redirect: (routeState) async {
-          if (routeState.path == '/') {
-            return '/books/new';
-          }
-        },
+        defaultRoute: '/books/new',
         builder: (context, child) {
           late final int selectedIndex;
           final childPath = RouteState.of(context).activeChild?.path;
@@ -44,7 +40,7 @@ class BooksApp extends StatelessWidget {
         routes: [
           ShellRoute(
             path: 'books',
-            defaultRoute: '/books/new',
+            defaultRoute: 'new',
             builder: (context, child) => BooksScreen(
               selectedTab:
                   RouteState.of(context).activeChild!.path == 'new' ? 0 : 1,
