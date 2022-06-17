@@ -19,7 +19,7 @@ class Credentials {
 class Authentication extends ChangeNotifier {
   bool _signedIn = false;
 
-  bool isSignedIn() => _signedIn;
+  Future<bool> isSignedIn() async => _signedIn;
 
   Future<void> signOut() async {
     _signedIn = false;
@@ -73,7 +73,7 @@ class _BooksAppState extends State<BooksApp> {
         path: '/',
         builder: (context, child) => child,
         redirect: (state) async {
-          final signedIn = _appState.auth.isSignedIn();
+          final signedIn = await _appState.auth.isSignedIn();
           if (!signedIn) return '/signin';
           return null;
         },
