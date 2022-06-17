@@ -91,12 +91,17 @@ class _BooksAppState extends State<BooksApp> {
         path: '/signin',
         pageBuilder: (context, state) => MaterialPage(
           key: state.pageKey,
-          child: SignInScreen(onSignedIn: (Credentials credentials) async {
-            await _appState.signIn(
-              credentials.username,
-              credentials.password,
-            );
-          }),
+          child: Builder(
+            builder: (BuildContext context) {
+              return SignInScreen(onSignedIn: (Credentials credentials) async {
+                await _appState.signIn(
+                  credentials.username,
+                  credentials.password,
+                );
+                context.go('/');
+              });
+            },
+          ),
         ),
       ),
     ],
@@ -106,7 +111,7 @@ class _BooksAppState extends State<BooksApp> {
     ),
     redirect: (state) {
       final signedIn = _appState.auth.isSignedIn();
-      if (!signedIn) return '/signin';
+      if (!signedIn && state.location != '/signin') return '/signin';
       return null;
     },
     refreshListenable: _appState.auth,
