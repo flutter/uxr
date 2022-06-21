@@ -1,15 +1,12 @@
-// Copyright 2021, the Flutter project authors. Please see the AUTHORS file
+// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-/// Sign-in example
-/// Done using go_router
-
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:go_router_prototype/go_router_prototype.dart';
 
 void main() {
-  runApp(BooksApp());
+  runApp(const BooksApp());
 }
 
 class Credentials {
@@ -22,7 +19,7 @@ class Credentials {
 class Authentication extends ChangeNotifier {
   bool _signedIn = false;
 
-  bool isSignedIn() => _signedIn;
+  Future<bool> isSignedIn() async => _signedIn;
 
   Future<void> signOut() async {
     _signedIn = false;
@@ -37,6 +34,8 @@ class Authentication extends ChangeNotifier {
 }
 
 class BooksApp extends StatefulWidget {
+  const BooksApp({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _BooksAppState();
 }
@@ -62,66 +61,57 @@ class _BooksAppState extends State<BooksApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routeInformationParser: _router.routeInformationParser,
-      routerDelegate: _router.routerDelegate,
+      routeInformationParser: _router.parser,
+      routerDelegate: _router.delegate,
     );
   }
 
   late final _router = GoRouter(
+    refreshListenable: _appState.auth,
     routes: [
-      GoRoute(
+      ShellRoute(
         path: '/',
-        pageBuilder: (context, state) => MaterialPage(
-          key: state.pageKey,
-          child: HomeScreen(onSignOut: () async {
-            await _appState.signOut();
-          }),
-        ),
+        builder: (context, child) => child,
+        redirect: (state) async {
+          final signedIn = await _appState.auth.isSignedIn();
+          if (!signedIn) return '/signin';
+          return null;
+        },
         routes: [
-          GoRoute(
-            path: 'books',
-            pageBuilder: (context, state) => MaterialPage(
-              key: state.pageKey,
-              child: BooksListScreen(),
+          StackedRoute(
+            path: 'home',
+            builder: (context) => HomeScreen(
+              onSignOut: () async {
+                await _appState.signOut();
+              },
+            ),
+            routes: [
+              StackedRoute(
+                path: 'books',
+                builder: (context) => const BooksListScreen(),
+              ),
+            ],
+          ),
+          StackedRoute(
+            path: 'signin',
+            builder: (context) => SignInScreen(
+              onSignedIn: (credentials) async {
+                await _appState.signIn(
+                    credentials.username, credentials.password);
+                RouteState.of(context).goTo('/home');
+              },
             ),
           ),
         ],
       ),
-      GoRoute(
-        path: '/signin',
-        pageBuilder: (context, state) => MaterialPage(
-          key: state.pageKey,
-          child: Builder(
-            builder: (BuildContext context) {
-              return SignInScreen(onSignedIn: (Credentials credentials) async {
-                await _appState.signIn(
-                  credentials.username,
-                  credentials.password,
-                );
-                context.go('/');
-              });
-            },
-          ),
-        ),
-      ),
     ],
-    errorPageBuilder: (context, state) => MaterialPage(
-      key: state.pageKey,
-      child: ErrorScreen(state.error),
-    ),
-    redirect: (state) {
-      final signedIn = _appState.auth.isSignedIn();
-      if (!signedIn && state.location != '/signin') return '/signin';
-      return null;
-    },
-    refreshListenable: _appState.auth,
   );
 }
 
 class HomeScreen extends StatelessWidget {
   final VoidCallback onSignOut;
 
-  HomeScreen({required this.onSignOut});
+  const HomeScreen({required this.onSignOut, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -131,12 +121,12 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           children: [
             ElevatedButton(
-              onPressed: () => context.go('/books'),
-              child: Text('View my bookshelf'),
+              onPressed: () => RouteState.of(context).goTo('books'),
+              child: const Text('View my bookshelf'),
             ),
             ElevatedButton(
               onPressed: onSignOut,
-              child: Text('Sign out'),
+              child: const Text('Sign out'),
             ),
           ],
         ),
@@ -148,7 +138,7 @@ class HomeScreen extends StatelessWidget {
 class SignInScreen extends StatefulWidget {
   final ValueChanged<Credentials> onSignedIn;
 
-  SignInScreen({required this.onSignedIn});
+  const SignInScreen({required this.onSignedIn, Key? key}) : super(key: key);
 
   @override
   _SignInScreenState createState() => _SignInScreenState();
@@ -166,18 +156,18 @@ class _SignInScreenState extends State<SignInScreen> {
         child: Column(
           children: [
             TextField(
-              decoration: InputDecoration(hintText: 'username (any)'),
+              decoration: const InputDecoration(hintText: 'username (any)'),
               onChanged: (s) => _username = s,
             ),
             TextField(
-              decoration: InputDecoration(hintText: 'password (any)'),
+              decoration: const InputDecoration(hintText: 'password (any)'),
               obscureText: true,
               onChanged: (s) => _password = s,
             ),
             ElevatedButton(
               onPressed: () =>
                   widget.onSignedIn(Credentials(_username, _password)),
-              child: Text('Sign in'),
+              child: const Text('Sign in'),
             ),
           ],
         ),
@@ -187,14 +177,14 @@ class _SignInScreenState extends State<SignInScreen> {
 }
 
 class BooksListScreen extends StatelessWidget {
-  BooksListScreen();
+  const BooksListScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: ListView(
-        children: [
+        children: const [
           ListTile(
             title: Text('Stranger in a Strange Land'),
             subtitle: Text('Robert A. Heinlein'),
@@ -219,18 +209,18 @@ class ErrorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('Page Not Found')),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(error?.toString() ?? 'page not found'),
-              TextButton(
-                onPressed: () => context.go('/'),
-                child: const Text('Home'),
-              ),
-            ],
+    appBar: AppBar(title: const Text('Page Not Found')),
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(error?.toString() ?? 'page not found'),
+          TextButton(
+            onPressed: () => RouteState.of(context).goTo('/'),
+            child: const Text('Home'),
           ),
-        ),
-      );
+        ],
+      ),
+    ),
+  );
 }
