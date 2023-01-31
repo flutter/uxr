@@ -32,4 +32,3 @@ jobs:
       with:
         path: 'surveys/flutter-survey-metadata.json'
         destination: 'flutter-uxr/'
-        predefinedAcl: publicRead
