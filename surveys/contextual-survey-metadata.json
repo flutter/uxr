@@ -7,6 +7,8 @@
 	"description": "Help improve Flutter's release builds with this 3-question survey!",
 	"dismissForMinutes": "7200",
 	"moreInfoURL": "https://docs.flutter.dev/reference/crash-reporting",
+	"acceptButtonText": "Take Survey",
+	"rejectButtonText": "Dismiss",
 	"samplingRate": "0.1",
 	"conditions": [
 	    {
