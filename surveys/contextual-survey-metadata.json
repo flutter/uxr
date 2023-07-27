@@ -1,21 +1,34 @@
 [
     {
-        "uniqueId": "test_channel",
-        "url": "https://google.qualtrics.com/jfe/form/SV_5gsB2EuG5Et5Yy2",
+        "uniqueId": "eca0100a-505b-4539-96d0-57235f816cef",
         "startDate": "2023-07-01T09:00:00-07:00",
         "endDate": "2023-07-30T09:00:00-07:00",
-	"description": "Help improve Flutter's release builds with this 3-question survey!",
-	"dismissForMinutes": "7200",
-	"moreInfoURL": "https://docs.flutter.dev/reference/crash-reporting",
-	"acceptButtonText": "Take Survey",
-	"rejectButtonText": "Dismiss",
-	"samplingRate": "0.1",
-	"conditions": [
-	    {
-	        "field": "logFileStats.recordCount",
-	        "operator": ">=",
-	        "value": 1000
+        "description": "Help improve Flutter's release builds with this 3-question survey!",
+        "dismissForMinutes": "7200",
+        "samplingRate": "0.1",
+        "conditions": [
+            {
+                "field": "logFileStats.recordCount",
+                "operator": ">=",
+                "value": 1000
             }
-	]
+        ],
+        "buttons": [
+            {
+                "buttonText": "Take Survey",
+                "action": "accepted",
+                "url": "https://google.qualtrics.com/jfe/form/SV_5gsB2EuG5Et5Yy2"
+            },
+            {
+                "buttonText": "Dismiss",
+                "action": "dismissed",
+                "url": null
+            },
+            {
+                "buttonText": "More Info",
+                "action": "snoozed",
+                "url": "https://docs.flutter.dev/reference/crash-reporting"
+            }
+        ]
     }
 ]
