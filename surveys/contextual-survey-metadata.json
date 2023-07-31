@@ -2,7 +2,7 @@
     {
         "uniqueId": "eca0100a-505b-4539-96d0-57235f816cef",
         "startDate": "2023-07-01T09:00:00-07:00",
-        "endDate": "2023-07-30T09:00:00-07:00",
+        "endDate": "2023-08-31T09:00:00-07:00",
         "description": "Help improve Flutter's release builds with this 3-question survey!",
         "dismissForMinutes": "7200",
         "samplingRate": "0.1",
@@ -16,17 +16,17 @@
         "buttons": [
             {
                 "buttonText": "Take Survey",
-                "action": "accepted",
+                "action": "accept",
                 "url": "https://google.qualtrics.com/jfe/form/SV_5gsB2EuG5Et5Yy2"
             },
             {
                 "buttonText": "Dismiss",
-                "action": "dismissed",
+                "action": "dismiss",
                 "url": null
             },
             {
                 "buttonText": "More Info",
-                "action": "snoozed",
+                "action": "snooze",
                 "url": "https://docs.flutter.dev/reference/crash-reporting"
             }
         ]
