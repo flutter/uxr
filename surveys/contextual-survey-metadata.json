@@ -16,17 +16,17 @@
         "buttons": [
             {
                 "buttonText": "Take Survey",
-                "action": "accepted",
+                "action": "accept",
                 "url": "https://google.qualtrics.com/jfe/form/SV_5gsB2EuG5Et5Yy2"
             },
             {
                 "buttonText": "Dismiss",
-                "action": "dismissed",
+                "action": "dismiss",
                 "url": null
             },
             {
                 "buttonText": "More Info",
-                "action": "snoozed",
+                "action": "snooze",
                 "url": "https://docs.flutter.dev/reference/crash-reporting"
             }
         ]
