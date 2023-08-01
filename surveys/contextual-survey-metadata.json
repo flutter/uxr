@@ -17,17 +17,20 @@
             {
                 "buttonText": "Take Survey",
                 "action": "accept",
-                "url": "https://google.qualtrics.com/jfe/form/SV_5gsB2EuG5Et5Yy2"
+                "url": "https://google.qualtrics.com/jfe/form/SV_5gsB2EuG5Et5Yy2",
+                "promptRemainsVisible": false
             },
             {
                 "buttonText": "Dismiss",
                 "action": "dismiss",
-                "url": null
+                "url": null,
+                "promptRemainsVisible": false
             },
             {
                 "buttonText": "More Info",
                 "action": "snooze",
-                "url": "https://docs.flutter.dev/reference/crash-reporting"
+                "url": "https://docs.flutter.dev/reference/crash-reporting",
+                "promptRemainsVisible": true
             }
         ]
     }
