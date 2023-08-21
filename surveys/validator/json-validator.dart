@@ -1,50 +1,5 @@
-import 'dart:io';
 import 'dart:convert';
-
-/// The allowed action strings for a given button
-final allowedButtonActions = [
-  'accept',
-  'dismiss',
-  'snooze',
-];
-
-/// The allowed operators for a given condition item
-const allowedConditionOperators = [
-  '>=',
-  '<=',
-  '>',
-  '<',
-  '==',
-  '!=',
-];
-
-/// Required keys for the button object
-const buttonRequiredKeys = [
-  'buttonText',
-  'action',
-  'url',
-  'promptRemainsVisible',
-];
-
-/// Required keys for the condition object
-const conditionRequiredKeys = [
-  'field',
-  'operator',
-  'value',
-];
-
-/// The top level keys that must exist for each json object
-/// in the array
-const requiredKeys = [
-  'uniqueId',
-  'startDate',
-  'endDate',
-  'description',
-  'snoozeForMinutes',
-  'samplingRate',
-  'conditions',
-  'buttons',
-];
+import 'dart:io';
 
 void main() {
   final contextualSurveyFile = File('surveys/contextual-survey-metadata.json');
@@ -129,3 +84,48 @@ void main() {
     });
   });
 }
+
+/// The allowed operators for a given condition item
+const allowedConditionOperators = [
+  '>=',
+  '<=',
+  '>',
+  '<',
+  '==',
+  '!=',
+];
+
+/// Required keys for the button object
+const buttonRequiredKeys = [
+  'buttonText',
+  'action',
+  'url',
+  'promptRemainsVisible',
+];
+
+/// Required keys for the condition object
+const conditionRequiredKeys = [
+  'field',
+  'operator',
+  'value',
+];
+
+/// The top level keys that must exist for each json object
+/// in the array
+const requiredKeys = [
+  'uniqueId',
+  'startDate',
+  'endDate',
+  'description',
+  'snoozeForMinutes',
+  'samplingRate',
+  'conditions',
+  'buttons',
+];
+
+/// The allowed action strings for a given button
+final allowedButtonActions = [
+  'accept',
+  'dismiss',
+  'snooze',
+];
