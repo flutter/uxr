@@ -8,17 +8,13 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
 
 jobs:
   json-yaml-validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+        - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+        - uses: dart-lang/setup-dart@d6a63dab3335f427404425de0fbfed4686d93c4f
 
-      - name: json-yaml-validate
-        id: json-yaml-validate
-        uses: GrantBirki/json-yaml-validate@v2.3.0
-        with:
-          comment: "true"
+        - run: dart surveys/validator/json-validator.dart
 
