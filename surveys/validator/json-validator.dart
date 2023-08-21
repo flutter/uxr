@@ -37,9 +37,10 @@ void main() {
     // Validation on the periods
     if (startDate.isAfter(endDate)) throw ('End date is before the start date');
 
-    // Ensure the numbers are greater than zero
+    // Ensure the numbers are greater than zero and valid
     if (snoozeForMinutes == 0) throw ('Snooze minutes must be greater than 0');
-    if (samplingRate == 0) throw ('Sampling rate must be greater than 0');
+    if (samplingRate == 0) throw ('Sampling rate must be between 0 and 1 inclusive');
+    if (samplingRate > 1) throw ('Sampling rate must be between 0 and 1 inclusive');
 
     // Validation on the condition array
     conditionList.forEach((conditionObject) {
