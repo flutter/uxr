@@ -22,10 +22,11 @@ void main() {
     }
 
     // Ensure that the keys themselves match what has been defined
-    if (surveyObject.keys.toSet().intersection(requiredKeys).length !=
+    final surveyObjectKeySet = surveyObject.keys.toSet();
+    if (surveyObjectKeySet.intersection(requiredKeys).length !=
         requiredKeys.length) {
       throw ArgumentError('Missing the following keys: '
-          '${requiredKeys.difference(surveyObject.keys.toSet()).join(', ')}');
+          '${requiredKeys.difference(surveyObjectKeySet).join(', ')}');
     }
 
     final uniqueId = surveyObject['uniqueId'] as String;
