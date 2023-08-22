@@ -5,7 +5,7 @@ void main() {
   final contextualSurveyFile = File('surveys/contextual-survey-metadata.json');
   final jsonContents = jsonDecode(contextualSurveyFile.readAsStringSync());
 
-  if (!(jsonContents is List)) throw ('The json file must be a list');
+  if (jsonContents is! List) throw ('The json file must be a list');
 
   jsonContents.forEach((surveyObject) {
     // Ensure that each list item is a json object / map
@@ -44,7 +44,7 @@ void main() {
 
     // Validation on the condition array
     conditionList.forEach((conditionObject) {
-      if (!(conditionObject is Map))
+      if (conditionObject is! Map)
         throw ('Each item in the condition array must '
             'be a map for survey: ${uniqueId}');
       if (conditionObject.keys.length != conditionRequiredKeys.length)
@@ -63,7 +63,7 @@ void main() {
 
     // Validation on the button array
     buttonList.forEach((buttonObject) {
-      if (!(buttonObject is Map))
+      if (buttonObject is! Map)
         throw ('Each item in the button array must '
             'be a map for survey: ${uniqueId}');
       if (buttonObject.keys.length != buttonRequiredKeys.length)
@@ -87,14 +87,14 @@ void main() {
 }
 
 /// The allowed operators for a given condition item
-const allowedConditionOperators = [
+const allowedConditionOperators = {
   '>=',
   '<=',
   '>',
   '<',
   '==',
   '!=',
-];
+};
 
 /// Required keys for the button object
 const buttonRequiredKeys = [
@@ -113,7 +113,7 @@ const conditionRequiredKeys = [
 
 /// The top level keys that must exist for each json object
 /// in the array
-const requiredKeys = [
+const requiredKeys = {
   'uniqueId',
   'startDate',
   'endDate',
@@ -122,11 +122,11 @@ const requiredKeys = [
   'samplingRate',
   'conditions',
   'buttons',
-];
+};
 
 /// The allowed action strings for a given button
-final allowedButtonActions = [
+const allowedButtonActions = {
   'accept',
   'dismiss',
   'snooze',
-];
+};
