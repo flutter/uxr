@@ -1,0 +1,36 @@
+name: contextual-json-validator
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0' # weekly
+
+permissions:
+  contents: read
+
+jobs:
+  json-yaml-validate:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+        - uses: dart-lang/setup-dart@d6a63dab3335f427404425de0fbfed4686d93c4f
+
+        - run: dart surveys/validator/json-validator.dart
+
+  analyze:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: surveys/validator
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+      - uses: dart-lang/setup-dart@d6a63dab3335f427404425de0fbfed4686d93c4f
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze Dart files
+        run: dart analyze --fatal-infos
