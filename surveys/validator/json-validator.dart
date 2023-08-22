@@ -9,7 +9,7 @@ void main() {
     throw ArgumentError('The json file must be a list');
   }
 
-  for (var surveyObject in jsonContents) {
+  for (final surveyObject in jsonContents) {
     // Ensure that each list item is a json object / map
     if (surveyObject is! Map) {
       throw ArgumentError('Each item in the array must be a map');
@@ -63,7 +63,7 @@ void main() {
     }
 
     // Validation on the condition array
-    for (var conditionObject in conditionList) {
+    for (final conditionObject in conditionList) {
       if (conditionObject is! Map) {
         throw ArgumentError('Each item in the condition array must '
             'be a map for survey: $uniqueId');
@@ -90,7 +90,7 @@ void main() {
     }
 
     // Validation on the button array
-    for (var buttonObject in buttonList) {
+    for (final buttonObject in buttonList) {
       if (buttonObject is! Map) {
         throw ArgumentError('Each item in the button array must '
             'be a map for survey: $uniqueId');
