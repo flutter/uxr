@@ -118,7 +118,7 @@ void main() {
         throw ArgumentError('URL values must be a non-empty string or "null"');
       }
 
-      // If a given button has "dismiss" as the action, 
+      // If a given button has "dismiss" as the action,
       // there should be no URL defined.
       if (action == 'dismiss' && url != null) {
         throw ArgumentError('URL should be null if action for a button is '
