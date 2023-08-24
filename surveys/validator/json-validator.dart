@@ -90,6 +90,7 @@ void main() {
     }
 
     // Validation on the button array
+    final buttonTextSet = <String>{};
     for (final buttonObject in buttonList) {
       if (buttonObject is! Map) {
         throw ArgumentError('Each item in the button array must '
@@ -116,6 +117,22 @@ void main() {
       if (url != null && url.isEmpty) {
         throw ArgumentError('URL values must be a non-empty string or "null"');
       }
+
+      // If a given button has dismiss as the action, there should be no URL defined
+      if (action == 'dismiss' && url != null) {
+        throw ArgumentError('URL should be null if action for a button is '
+            '"dismiss" or "snooze" for survey: $uniqueId');
+      }
+
+      // Add the button text to the set to ensure that there are no duplicate
+      // text values for a given button (each button needs to have unique text)
+      buttonTextSet.add(buttonText);
+    }
+
+    if (buttonTextSet.length != buttonList.length) {
+      throw ArgumentError(
+          'Ensure that each survey has buttons with unique text '
+          'for survey: $uniqueId');
     }
   }
 }
