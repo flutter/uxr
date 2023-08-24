@@ -118,21 +118,21 @@ void main() {
         throw ArgumentError('URL values must be a non-empty string or "null"');
       }
 
-      // If a given button has dismiss as the action, there should be no URL defined
+      // If a given button has "dismiss" as the action, 
+      // there should be no URL defined.
       if (action == 'dismiss' && url != null) {
         throw ArgumentError('URL should be null if action for a button is '
             '"dismiss" or "snooze" for survey: $uniqueId');
       }
 
-      // Add the button text to the set to ensure that there are no duplicate
-      // text values for a given button (each button needs to have unique text)
+      // Add the button text to a set to ensure that
+      // each button in a survey has a unique label.
       buttonTextSet.add(buttonText);
     }
 
     if (buttonTextSet.length != buttonList.length) {
       throw ArgumentError(
-          'Ensure that each survey has buttons with unique text '
-          'for survey: $uniqueId');
+          'Each button must have unique text in survey: $uniqueId');
     }
   }
 }
