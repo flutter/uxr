@@ -1,7 +1,9 @@
 name: survey_validator
-description: A sample command-line application.
+description: |
+  Small application for validating the survey
+  metadata file which is used by package:unified_analytics
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+publish_to: none
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
