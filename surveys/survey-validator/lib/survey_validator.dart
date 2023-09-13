@@ -50,7 +50,7 @@ const requiredKeys = {
 };
 
 /// The valid dash tools stored in the [DashTool] enum
-List<String> get validDashTools => DashTool.values.map((e) => e.label).toList();
+Set<String> get validDashTools => DashTool.values.map((e) => e.label).toSet();
 
 void checkJson(File contextualSurveyFile) {
   final jsonContents = jsonDecode(contextualSurveyFile.readAsStringSync());
