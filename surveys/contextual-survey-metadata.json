@@ -6,6 +6,10 @@
         "description": "Help improve Flutter's release builds with this 3-question survey!",
         "snoozeForMinutes": 7200,
         "samplingRate": 0.1,
+        "excludeDashTools": [
+            "flutter-tool",
+            "dart-tool"
+        ],
         "conditions": [
             {
                 "field": "logFileStats.recordCount",

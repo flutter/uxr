@@ -14,20 +14,26 @@ permissions:
 jobs:
   contextual-json-validate:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: surveys/survey-validator
     steps:
         - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
         - uses: dart-lang/setup-dart@d6a63dab3335f427404425de0fbfed4686d93c4f
 
-        - run: dart surveys/validator/json-validator.dart
+        - run: dart pub get
+        - run: dart run
 
   analyze:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: surveys/validator
+        working-directory: surveys/survey-validator
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
       - uses: dart-lang/setup-dart@d6a63dab3335f427404425de0fbfed4686d93c4f
+
+      - run: dart pub get
 
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .

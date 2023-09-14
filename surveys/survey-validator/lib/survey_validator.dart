@@ -1,8 +1,58 @@
 import 'dart:convert';
 import 'dart:io';
 
-void main() {
-  final contextualSurveyFile = File('surveys/contextual-survey-metadata.json');
+import 'package:unified_analytics/unified_analytics.dart';
+
+/// The allowed action strings for a given button
+const allowedButtonActions = {
+  'accept',
+  'dismiss',
+  'snooze',
+};
+
+/// The allowed operators for a given condition item
+const allowedConditionOperators = {
+  '>=',
+  '<=',
+  '>',
+  '<',
+  '==',
+  '!=',
+};
+
+/// Required keys for the button object
+const buttonRequiredKeys = [
+  'buttonText',
+  'action',
+  'url',
+  'promptRemainsVisible',
+];
+
+/// Required keys for the condition object
+const conditionRequiredKeys = [
+  'field',
+  'operator',
+  'value',
+];
+
+/// The top level keys that must exist for each json object
+/// in the array
+const requiredKeys = {
+  'uniqueId',
+  'startDate',
+  'endDate',
+  'description',
+  'snoozeForMinutes',
+  'samplingRate',
+  'conditions',
+  'buttons',
+  'excludeDashTools',
+};
+
+/// The valid dash tools stored in the [DashTool] enum
+Set<String> get validDashTools => DashTool.values.map((e) => e.label).toSet();
+
+void checkJson(File contextualSurveyFile) {
   final jsonContents = jsonDecode(contextualSurveyFile.readAsStringSync());
 
   if (jsonContents is! List) {
@@ -18,7 +68,8 @@ void main() {
     // Ensure that the number of keys found in each object is correct
     if (surveyObject.keys.length != requiredKeys.length) {
       throw ArgumentError(
-          'There should only be ${requiredKeys.length} keys per survey object');
+          'There should only be ${requiredKeys.length} keys per survey object\n'
+          'The required keys are: ${requiredKeys.join(', ')}');
     }
 
     // Ensure that the keys themselves match what has been defined
@@ -35,6 +86,7 @@ void main() {
     final description = surveyObject['description'] as String;
     final snoozeForMinutes = surveyObject['snoozeForMinutes'] as int;
     final samplingRate = surveyObject['samplingRate'] as double;
+    final excludeDashToolsList = surveyObject['excludeDashTools'] as List;
     final conditionList = surveyObject['conditions'] as List;
     final buttonList = surveyObject['buttons'] as List;
 
@@ -60,6 +112,20 @@ void main() {
     }
     if (samplingRate > 1) {
       throw ArgumentError('Sampling rate must be between 0 and 1 inclusive');
+    }
+
+    // Validation on the array containing dash tools to exclude
+    for (final excludeDashTool in excludeDashToolsList) {
+      if (excludeDashTool is! String) {
+        throw ArgumentError(
+            'Each dash tool in the exclude list must be a string');
+      }
+
+      if (!validDashTools.contains(excludeDashTool)) {
+        throw ArgumentError(
+            'The excluded dash tool: "$excludeDashTool" is not valid\n'
+            'Valid dash tools are: ${validDashTools.join(', ')}');
+      }
     }
 
     // Validation on the condition array
@@ -136,48 +202,3 @@ void main() {
     }
   }
 }
-
-/// The allowed action strings for a given button
-const allowedButtonActions = {
-  'accept',
-  'dismiss',
-  'snooze',
-};
-
-/// The allowed operators for a given condition item
-const allowedConditionOperators = {
-  '>=',
-  '<=',
-  '>',
-  '<',
-  '==',
-  '!=',
-};
-
-/// Required keys for the button object
-const buttonRequiredKeys = [
-  'buttonText',
-  'action',
-  'url',
-  'promptRemainsVisible',
-];
-
-/// Required keys for the condition object
-const conditionRequiredKeys = [
-  'field',
-  'operator',
-  'value',
-];
-
-/// The top level keys that must exist for each json object
-/// in the array
-const requiredKeys = {
-  'uniqueId',
-  'startDate',
-  'endDate',
-  'description',
-  'snoozeForMinutes',
-  'samplingRate',
-  'conditions',
-  'buttons',
-};
