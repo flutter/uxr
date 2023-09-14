@@ -68,7 +68,8 @@ void checkJson(File contextualSurveyFile) {
     // Ensure that the number of keys found in each object is correct
     if (surveyObject.keys.length != requiredKeys.length) {
       throw ArgumentError(
-          'There should only be ${requiredKeys.length} keys per survey object');
+          'There should only be ${requiredKeys.length} keys per survey object\n'
+          'The required keys are: ${requiredKeys.join(', ')}');
     }
 
     // Ensure that the keys themselves match what has been defined
