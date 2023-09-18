@@ -5,7 +5,7 @@
         "endDate": "2023-12-31T09:00:00-07:00",
         "description": "Help improve Flutter's release builds with this 3-question survey!",
         "snoozeForMinutes": 7200,
-        "samplingRate": 0.1,
+        "samplingRate": 1.0,
         "excludeDashTools": [
             "flutter-tool",
             "dart-tool"
