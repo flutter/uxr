@@ -104,13 +104,10 @@ void checkJson(File contextualSurveyFile) {
     }
 
     // Ensure the numbers are greater than zero and valid
-    if (snoozeForMinutes == 0) {
+    if (snoozeForMinutes <= 0) {
       throw ArgumentError('Snooze minutes must be greater than 0');
     }
-    if (samplingRate == 0) {
-      throw ArgumentError('Sampling rate must be between 0 and 1 inclusive');
-    }
-    if (samplingRate > 1) {
+    if (samplingRate <= 0 || samplingRate > 1.0) {
       throw ArgumentError('Sampling rate must be between 0 and 1 inclusive');
     }
 
