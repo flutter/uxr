@@ -81,6 +81,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+  dart_flutter_team_lints:
+    dependency: "direct dev"
+    description:
+      name: dart_flutter_team_lints
+      sha256: "66517b1f6a53e3275938eece5fe0df6960d1e86a82bad074d7364a9a5c97ae10"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   file:
     dependency: transitive
     description:
@@ -154,7 +162,7 @@ packages:
     source: hosted
     version: "0.6.7"
   lints:
-    dependency: "direct dev"
+    dependency: transitive
     description:
       name: lints
       sha256: "0a217c6c989d21039f1498c3ed9f3ed71b354e69873f13a8dfc3c9fe76f1b452"
@@ -357,10 +365,10 @@ packages:
     dependency: "direct main"
     description:
       name: unified_analytics
-      sha256: "4d22115b83778592e606508072454209fbf8aa31e061ace8dd36f6bf3ba9e4b8"
+      sha256: "5394c375511a841fc53617bbbf947509cd939bb4275ad3ad0e378fc2e62c0c11"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "4.0.0"
   vm_service:
     dependency: transitive
     description:
@@ -402,4 +410,4 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.0.0 <4.0.0"
+  dart: ">=3.1.0 <4.0.0"
