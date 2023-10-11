@@ -49,6 +49,10 @@ const requiredKeys = {
   'excludeDashTools',
 };
 
+/// Regex pattern to valid UUID v4 format
+final uuidRegexPattern = RegExp(
+    r'^[0-9a-z]{8}\-[0-9a-z]{4}\-[0-9a-z]{4}\-[0-9a-z]{4}\-[0-9a-z]{12}$');
+
 /// The valid dash tools stored in the [DashTool] enum
 Set<String> get validDashTools => DashTool.values.map((e) => e.label).toSet();
 
@@ -96,6 +100,13 @@ void checkJson(File contextualSurveyFile) {
     }
     if (description.isEmpty) {
       throw ArgumentError('Description cannot be an empty string');
+    }
+
+    // Ensure that the client id is in the UUID v4 format
+    if (!uuidRegexPattern.hasMatch(uniqueId)) {
+      throw ArgumentError('Ensure that the unique ID for the survey is '
+          'valid UUID v4 format\n'
+          'Example: eca0100a-505b-4539-96d0-57235f816cef');
     }
 
     // Validation on the periods
