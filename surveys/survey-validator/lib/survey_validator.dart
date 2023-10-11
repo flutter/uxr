@@ -105,7 +105,7 @@ void checkJson(File contextualSurveyFile) {
     // Ensure that the client id is in the UUID v4 format
     if (!uuidRegexPattern.hasMatch(uniqueId)) {
       throw ArgumentError('Ensure that the unique ID for the survey is '
-          'valid UUID v4 format\n'
+          'valid UUID v4 format for survey: $uniqueId\n'
           'Example: eca0100a-505b-4539-96d0-57235f816cef');
     }
 
