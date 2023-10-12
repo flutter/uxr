@@ -102,7 +102,7 @@ void checkJson(File contextualSurveyFile) {
       throw ArgumentError('Description cannot be an empty string');
     }
 
-    // Ensure that the client id is in the UUID v4 format
+    // Ensure that the survey's ID is a valid v4 UUID.
     if (!uuidRegexPattern.hasMatch(uniqueId)) {
       throw ArgumentError('Ensure that the unique ID for the survey is '
           'valid UUID v4 format for survey: $uniqueId\n'
