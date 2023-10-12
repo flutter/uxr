@@ -33,7 +33,7 @@
             {
                 "buttonText": "More Info",
                 "action": "snooze",
-                "url": "https://docs.flutter.dev/reference/crash-reporting",
+                "url": "https://docs.flutter.dev/reference/user-surveys",
                 "promptRemainsVisible": true
             }
         ]
