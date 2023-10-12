@@ -49,7 +49,7 @@ const requiredKeys = {
   'excludeDashTools',
 };
 
-/// Regex pattern to valid UUID v4 format
+/// Regex pattern to verify a string is a valid v4 UUID.
 final uuidRegexPattern = RegExp(
     r'^[0-9a-z]{8}\-[0-9a-z]{4}\-[0-9a-z]{4}\-[0-9a-z]{4}\-[0-9a-z]{12}$');
 
