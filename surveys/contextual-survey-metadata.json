@@ -4,7 +4,7 @@
         "startDate": "2023-10-13T09:00:00-07:00",
         "endDate": "2023-10-27T09:00:00-07:00",
         "description": "This is a test message for the new survey!",
-        "snoozeForMinutes": 1440,
+        "snoozeForMinutes": 5,
         "samplingRate": 1.0,
         "excludeDashTools": [
             "flutter-tool",
