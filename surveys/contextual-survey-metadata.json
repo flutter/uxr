@@ -3,7 +3,7 @@
         "uniqueId": "a09da33a-39f4-42b7-9aab-02dd3e0d7836",
         "startDate": "2023-10-13T09:00:00-07:00",
         "endDate": "2023-10-27T09:00:00-07:00",
-        "description": "This is a test message for the new survey!",
+        "description": "[Test] Help us improve Flutter's Web support by taking this 3-question survey!",
         "snoozeForMinutes": 5,
         "samplingRate": 1.0,
         "excludeDashTools": [
