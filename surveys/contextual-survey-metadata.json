@@ -4,18 +4,13 @@
         "startDate": "2023-10-13T09:00:00-07:00",
         "endDate": "2023-10-27T09:00:00-07:00",
         "description": "This is a test message for the new survey!",
-        "snoozeForMinutes": 7200,
+        "snoozeForMinutes": 1440,
         "samplingRate": 1.0,
         "excludeDashTools": [
             "flutter-tool",
             "dart-tool"
         ],
         "conditions": [
-            {
-                "field": "logFileStats.recordCount",
-                "operator": ">=",
-                "value": 1000
-            }
         ],
         "buttons": [
             {
