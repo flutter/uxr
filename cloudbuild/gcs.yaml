@@ -1,0 +1,5 @@
+steps:
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args: ['gsutil', 'cp', '-r', 'surveys', 'gs://khanhs-test-bucket/']
+options:
+  logging: CLOUD_LOGGING_ONLY
