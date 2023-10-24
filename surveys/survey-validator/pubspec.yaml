@@ -1,7 +1,7 @@
 name: survey_validator
-description: |
+description: >-
   Small application for validating the survey
-  metadata file which is used by package:unified_analytics
+  metadata file which is used by package:unified_analytics.
 version: 1.0.0
 publish_to: none
 
@@ -10,8 +10,8 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
-  unified_analytics: ^4.0.0
+  unified_analytics: ^5.0.0
 
 dev_dependencies:
-  dart_flutter_team_lints: ^2.0.0
+  dart_flutter_team_lints: ^2.1.1
   test: ^1.24.0
