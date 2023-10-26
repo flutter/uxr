@@ -1,22 +1,25 @@
 [
     {
-        "uniqueId": "a09da33a-39f4-42b7-9aab-02dd3e0d7836",
-        "startDate": "2023-10-13T09:00:00-07:00",
-        "endDate": "2023-10-27T09:00:00-07:00",
-        "description": "[Test] Help us improve Flutter's Web support by taking this 3-question survey!",
-        "snoozeForMinutes": 5,
-        "samplingRate": 1.0,
+        "uniqueId": "d27d24da-f789-45e3-83af-7ebaeade75c1",
+        "startDate": "2023-11-07T09:00:00-07:00",
+        "endDate": "2023-11-21T09:00:00-07:00",
+        "description": "Tell us about your target platform by taking this 3-question survey!",
+        "snoozeForMinutes": 1440,
+        "samplingRate": 0.1,
         "excludeDashTools": [
-            "flutter-tool",
-            "dart-tool"
         ],
         "conditions": [
+            {
+                "field": "logFileStats.flutterChannelCount.beta",
+                "operator": ">=",
+                "value": 1
+            }
         ],
         "buttons": [
             {
                 "buttonText": "Take Survey",
                 "action": "accept",
-                "url": "https://google.qualtrics.com/jfe/form/SV_9RWoOhx4FV3kmyi",
+                "url": "https://google.qualtrics.com/jfe/form/SV_3ERHkWXZmE19WzI",
                 "promptRemainsVisible": false
             },
             {
