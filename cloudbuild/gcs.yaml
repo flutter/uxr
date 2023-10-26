@@ -1,0 +1,5 @@
+steps:
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args: ['gsutil', 'cp', '-r', 'surveys', 'gs://flutter-uxr/']
+options:
+  logging: CLOUD_LOGGING_ONLY
