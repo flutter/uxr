@@ -3,7 +3,7 @@
     "uniqueId must be updated with each new survey so IDEs know to re-prompt users.",
     "title should not exceed 45 characters.",
     "startDate and endDate should follow ISO 8601 standard with a timezone offset.",
-    "this is a comment from Khanh 10/25"
+    "TEST"
   ],
   "uniqueId": "2023Q4",
   "title": "Help improve Flutter! Take our Q4 survey.",
