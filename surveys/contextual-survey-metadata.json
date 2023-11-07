@@ -5,14 +5,14 @@
         "endDate": "2023-12-31T09:00:00-07:00",
         "description": "Tell us about your target platform by taking this 3-question survey!",
         "snoozeForMinutes": 1440,
-        "samplingRate": 0.5,
+        "samplingRate": 0.1,
         "excludeDashTools": [
         ],
         "conditions": [
             {
-                "field": "logFileStats.flutterChannelCount.beta",
+                "field": "logFileStats.recordCount",
                 "operator": ">=",
-                "value": 1
+                "value": 1500
             }
         ],
         "buttons": [
