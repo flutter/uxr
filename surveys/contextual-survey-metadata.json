@@ -12,7 +12,7 @@
             {
                 "field": "logFileStats.recordCount",
                 "operator": ">=",
-                "value": 400
+                "value": 1500
             }
         ],
         "buttons": [
