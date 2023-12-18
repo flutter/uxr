@@ -23,33 +23,38 @@ f.setcolors <- function(colors, length) {
 }
 
 # ------------------------------ Presets ------------------------------
+
 add_conf_intv       <- geom_errorbar(aes(ymin = p - me, ymax = p + me), 
                                      position = position_dodge(width = 0.9),
                                      width = 0.1, 
                                      colour = "grey40") 
-add_text            <- geom_text_repel(aes(label = paste0(round(100 * p), "% ")), 
+add_text            <- geom_text_repel(aes(label = paste0(round(100 * p, digits = 1), "% ")), 
                                        position = position_dodge(width = 0.9), 
                                        direction = "x",
+                                       bg.color = "grey30",
+                                       bg.r = 0.01,
                                        size = 3,
                                        hjust = 0, 
                                        colour = "white")
-add_text_stacked    <- geom_text_repel(aes(label = paste0(round(100*p), "% ")), 
-                                       hjust = 1, 
-                                       vjust = 1, 
+add_text_stacked    <- geom_text_repel(aes(label = paste0(round(100*p, digits = 1), "% ")),
+                                       vjust = 0,
+                                       hjust = 0.5,
                                        size = 3, 
                                        colour = "white", 
+                                       bg.color = "grey30",
+                                       bg.r = 0.01,
                                        position = "stack", 
                                        point.padding = NA, 
                                        ylim = c(0, 1)) 
 theme_custom        <- theme_minimal() + 
-                        theme(text = element_text(family = "Roboto", size = 10), 
-                              plot.title = element_text(family = "Roboto", size = 10), 
-                              axis.title = element_blank())
+                        theme(text = element_text(family = "Roboto", size = 12), 
+                              plot.title = element_text(family = "Roboto", size = 12), 
+                              axis.title = element_blank()) 
 theme_custom_top    <- theme_custom + 
                         theme(legend.position="top")  
 add_percent_scale   <- scale_y_continuous(labels = scales::percent, 
                                           name = "")
-
+wrap_text           <- scale_x_discrete(labels = function(x) str_wrap(x, width = 40))
 
 # ------------------------------ Plotting functions ------------------------------
 
@@ -107,11 +112,11 @@ f.singlechoice <- function(qNum,
     geom_bar(aes(fill = rating), stat = "identity", width = 0.8) + 
     add_conf_intv + add_text + 
     ggtitle(plot_title)+
-    scale_x_discrete(limits = rev(levels(set$rating))) +
+    scale_x_discrete(limits = rev(levels(set$rating))) + # , labels = function(x) str_wrap(x, width = 40)
     scale_y_continuous(labels = scales::percent) +
-    scale_fill_manual(values = palette, guide = F) + # c(primary, gray600)
+    scale_fill_manual(values = palette, guide = "none") + # c(primary, gray600)
     coord_flip() +
-    theme_custom
+    theme_custom 
   
   if(!is.null(filename)) {
     ggsave(paste0("figures/", filename, ".png"), 
@@ -144,7 +149,7 @@ f.singlechoice_breakout <- function(qNum,
                               data = NULL, 
                               title = NULL, 
                               orders = NULL, 
-                              by = NULL, 
+                              orders_bo = NULL,
                               colors = NULL, 
                               labels = NULL,
                               q_exclude = c(), 
@@ -174,24 +179,36 @@ f.singlechoice_breakout <- function(qNum,
     group_by(category) %>% 
     mutate(category.n = paste0(category, "\n(N = ", sum(n), ")"))
   
-  # TODO: Make it possible to order the categories too (add another parameter)
   if(is.null(orders)) {
     rating_order_by_n <- set %>% 
       group_by(rating) %>% 
       summarise(sump = sum(p)) %>% 
       arrange(desc(sump)) %>% 
-      select(rating) %>% 
+      dplyr::select(rating) %>% 
       sapply(factor)
     set$rating <- factor(set$rating, levels = rating_order_by_n)
     category_order_by_n <- set %>% ungroup() %>% 
       filter(rating == rating_order_by_n[1]) %>% 
       arrange(desc(p)) %>% 
-      select(category.n) %>% 
+      dplyr::select(category.n) %>% 
       sapply(factor)
     set$category.n <- factor(set$category.n, levels = category_order_by_n)
   } else {
     set$rating <- factor(set$rating, levels = orders)
+    category_order_by_factor <- set %>% ungroup() %>% 
+      filter(rating == levels(set$rating)[1]) %>% 
+      arrange(desc(p)) %>% 
+      dplyr::select(category.n) %>% 
+      sapply(factor)
+    set$category.n <- factor(set$category.n, levels = category_order_by_factor)
   }
+  
+  if(!is.null(orders_bo)) {
+    set$category <- factor(set$category, levels = orders_bo)
+    x = set[order(set$category), "category.n"]
+    set$category.n <- factor(set$category.n, levels = unique(x)$category.n)
+  }
+  
   
   palette <- f.setcolors(colors, length(unique(set$rating)))
   
@@ -201,11 +218,12 @@ f.singlechoice_breakout <- function(qNum,
   
   p <- ggplot(set, aes(x = category.n, y = p, fill = rating)) +
     geom_bar(position = "fill", stat = "identity", width = 0.8) +
-    ggtitle(plot_title)+
+    ggtitle(plot_title) +
     scale_fill_manual(values = palette, labels = labels) +
     guides(fill = guide_legend(reverse = T)) +
     add_text_stacked + add_percent_scale + 
-    coord_flip() + theme_custom_top
+    coord_flip() + 
+    theme_custom_top
   
   if(!is.null(filename)) {
     ggsave(paste0("figures/", filename, ".png"), 
@@ -240,14 +258,18 @@ f.multiplechoice <- function(qNum,
                              height = 4) {
   
   if(is.null(data)) data <- all
+
+  select <- dplyr::select
   
-  choices <- sub('.+-(.+)', 
-                 '\\1', 
-                 questions %>% 
-                   select(starts_with(qNum), -ends_with("TEXT"), -ends_with("RANK")))
+  choices <- str_remove(
+    str_extract(
+      questions %>% 
+        select(starts_with(paste0(qNum,"_")), -ends_with("TEXT"), -ends_with("RANK")),
+      "-[1-9a-zA-Z].+"), 
+    "-")
   
   set.wide <- data %>% 
-    select(starts_with(qNum)) %>% 
+    select(starts_with(paste0(qNum,"_"))) %>% 
     select(-ends_with("TEXT"), -ends_with("RANK")) %>% 
     filter_all(any_vars(.!="")) %>%
     rename_at(vars(starts_with(qNum)), ~choices)
@@ -283,14 +305,14 @@ f.multiplechoice <- function(qNum,
   p <- ggplot(set , aes(x = category, y = p)) + 
     geom_bar(stat = "identity", aes(fill = category), width = 0.8) + 
     ggtitle(plot_title) +
-    scale_fill_manual(values = palette, guide = F) +
+    scale_fill_manual(values = palette, guide = "none") +
     add_conf_intv + add_text + add_percent_scale + 
     xlab("") +
     coord_flip() +
-    theme_custom
+    theme_custom + wrap_text
 
   if(!is.null(filename)) ggsave(paste0("figures/", filename, ".png"), p, width = width, height = height)
-  
+  print(set)
   return(p)
 }
 
@@ -307,25 +329,34 @@ f.multiplechoice <- function(qNum,
 #                     labels* (Add a vector of labels, if you want to include custom labels for a smaller legend.)
 #                     width, height (Set the size of output plot)
 
+# filename = NULL; data = NULL; exclude = c(); title = NULL; orders = NULL; colors = NULL; labels = NULL; width = 8; height = 4
+
 f.matrix <- function(qNum, 
                      filename = NULL, 
                      data = NULL, 
                      exclude = c(), 
                      title = NULL, 
                      orders = NULL, 
+                     orders2 = NULL,
                      colors = NULL, 
                      labels = NULL, 
                      width = 8, 
-                     height = 4) {
+                     height = 4,
+                     table = FALSE) {
   
   if(is.null(data)) data <- all
+
+  select <- dplyr::select
   
-  choices <- sub('.+-(.+)', 
-                 '\\1', 
-                 questions %>% dplyr::select(starts_with(qNum)) %>% dplyr::select(-ends_with("TEXT")))
+  choices <- str_remove(
+    str_extract(
+      questions %>% 
+        select(starts_with(paste0(qNum,"_")), -ends_with("TEXT"), -ends_with("RANK")),
+      "-[a-zA-Z].+"), 
+    "-")
   
   set.wide <- data %>% 
-    select(starts_with(qNum)) %>% 
+    select(starts_with(paste0(qNum,"_"))) %>% 
     select(-ends_with("TEXT")) %>%
     rename_at(vars(starts_with(qNum)), ~choices) %>% 
     filter_all(any_vars(.!="")) 
@@ -335,13 +366,13 @@ f.matrix <- function(qNum,
   set <- set.wide %>% 
     gather("category") %>% 
     group_by(category, value) %>% 
-    filter(value != "", !value %in% exclude) %>% 
+    filter(value != "", !value %in% exclude, !category %in% exclude) %>% 
     tally() %>% 
     mutate(p = n/sum(n)) %>% 
     mutate(me = 1.96 * sqrt(p * (1-p) / n))
   
   # TODO: Make it possible to order the categories too (add another parameter)
-  if(is.null(orders)) {
+  if(is.null(orders) & is.null(orders2)) {
     value_order_by_n <- set %>% 
       group_by(value) %>% 
       summarise(sump = sum(p)) %>% 
@@ -355,14 +386,26 @@ f.matrix <- function(qNum,
       select(category) %>% 
       sapply(factor)
     set$category <- factor(set$category, levels = category_order_by_n)
-  } else {
+  } else if (!is.null(orders) & is.null(orders)) {
     set$value <- factor(set$value, levels = orders)
     category_order <- set %>% 
       filter(value == orders[1]) %>% 
       arrange(desc(p)) %>% 
       select(category) %>% 
       sapply(factor)
-    set$category <- factor(set$category, levels = category_order)
+    set$category <- factor(set$category, levels = category_order)    
+  } else if(is.null(orders) & !is.null(orders2)) {
+    value_order_by_n <- set %>% 
+      group_by(value) %>% 
+      summarise(sump = sum(p)) %>% 
+      arrange(desc(sump)) %>% 
+      select(value) %>% 
+      sapply(factor)
+    set$value <- factor(set$value, levels = value_order_by_n)
+    set$category <- factor(set$category, levels = orders2)    
+  } else if(!is.null(orders) & !is.null(orders2)) {
+    set$value <- factor(set$value, levels = orders)
+    set$category <- factor(set$category, levels = orders2)
   }
   
   palette = f.setcolors(colors, length(unique(set$value)))
@@ -384,12 +427,13 @@ f.matrix <- function(qNum,
     add_text_stacked +
     add_percent_scale + 
     coord_flip() +
-    theme_custom_top + guides(fill = guide_legend(reverse = T))
+    theme_custom_top + guides(fill = guide_legend(reverse = T)) +
+    wrap_text
   
   if(!is.null(filename)) ggsave(paste0("figures/", filename, ".png"), 
                                 p, 
                                 width = width, 
                                 height = height)
-  
-  return(p)
+  if(table == TRUE) {return(list(set, p))} else {return (p)}
+  # return(p)
 }
