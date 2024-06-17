@@ -1,1 +1,1 @@
-This wiki is used to host project documents, including research briefs, plans, testing materials, and reports. 
+This documentation directory is used to host project documents, including research briefs, plans, testing materials, and reports.
