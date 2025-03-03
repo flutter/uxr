@@ -35,5 +35,42 @@
                 "promptRemainsVisible": true
             }
         ]
+    },
+    {
+        "uniqueId": "new-inspector-survey-q2-2025",
+        "startDate": "2025-03-05T09:00:00-07:00",
+        "endDate": "2025-04-01T09:00:00-07:00",
+        "description": "Share your feedback on the new Flutter Inspector with a 5-question survey.",
+        "snoozeForMinutes": 1440,
+        "samplingRate": 1.0,
+        "excludeDashTools": [
+        ],
+        "conditions": [
+            {
+                "field": "logFileStats.eventCount.devtools_event",
+                "operator": ">=",
+                "value": 100
+              }              
+        ],
+        "buttons": [
+            {
+                "buttonText": "Take Survey",
+                "action": "accept",
+                "url": "https://google.qualtrics.com/jfe/form/SV_265fSlzysboLOt0",
+                "promptRemainsVisible": false
+            },
+            {
+                "buttonText": "Dismiss",
+                "action": "dismiss",
+                "url": null,
+                "promptRemainsVisible": false
+            },
+            {
+                "buttonText": "More Info",
+                "action": "snooze",
+                "url": "https://docs.flutter.dev/reference/user-surveys",
+                "promptRemainsVisible": true
+            }
+        ]
     }
 ]
