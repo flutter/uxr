@@ -39,7 +39,7 @@
     {
         "uniqueId": "new-inspector-survey-q2-2025",
         "startDate": "2025-03-05T09:00:00-07:00",
-        "endDate": "2025-04-01T09:00:00-07:00",
+        "endDate": "2025-03-20T09:00:00-07:00",
         "description": "Share your feedback on the new Flutter Inspector with a 5-question survey.",
         "snoozeForMinutes": 1440,
         "samplingRate": 1.0,
