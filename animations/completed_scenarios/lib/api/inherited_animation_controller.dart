@@ -54,13 +54,15 @@ class InheritedAnimationController extends StatefulWidget {
   /// to the controller.
   const InheritedAnimationController({
     super.key,
-    required this.duration,
+    this.duration = defaultDuration,
     this.debugLabel,
     this.lowerBound = 0.0,
     this.upperBound = 1.0,
     this.animationBehavior = AnimationBehavior.normal,
     required this.child,
   });
+
+  static const defaultDuration = Duration(milliseconds: 400);
 
   /// The length of time this animation should last.
   final Duration duration;
