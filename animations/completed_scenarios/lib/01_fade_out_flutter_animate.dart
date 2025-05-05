@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,14 +11,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Scenario 1 - Fade out',
+      title: 'Scenario 1 - Fade in and out',
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Scenario 1 - Fade out'),
-        ),
-        body: Center(
-          child: FadeInOutButton(),
-        ),
+        appBar: AppBar(title: const Text('Scenario 1 - Fade in and out')),
+        body: Center(child: FadeInOutButton()),
       ),
     );
   }
@@ -42,6 +39,6 @@ class FadeInOutButtonState extends State<FadeInOutButton> {
         });
       },
       child: Text('Toggle Opacity'),
-    );
+    ).animate(target: isVisible ? 1.0 : 0.0).fade(duration: 300.ms);
   }
 }

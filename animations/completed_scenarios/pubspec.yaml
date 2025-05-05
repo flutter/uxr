@@ -7,6 +7,7 @@ environment:
   sdk: ^3.8.0-278.1.beta
 
 dependencies:
+  flutter_animate: ^4.5.0
   flutter:
     sdk: flutter
 

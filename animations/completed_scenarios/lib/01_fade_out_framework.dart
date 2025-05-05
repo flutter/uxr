@@ -44,7 +44,7 @@ class FadeInOutButtonState extends State<FadeInOutButton> {
             isVisible = !isVisible;
           });
         },
-        child: Text('Fade in and out'),
+        child: Text('Toggle Opacity'),
       ),
     );
   }
