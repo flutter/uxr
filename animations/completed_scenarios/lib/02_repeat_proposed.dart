@@ -58,39 +58,24 @@ class RepeatScenarioState extends State<RepeatScenario>
       appBar: AppBar(title: Text('Repeat Scenario')),
       body: Center(
         child: InheritedAnimationController(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              FadeTransition(
-                opacity: InheritedAnimationController.of(context).controller,
-                child: ElevatedButton(
-                  onPressed: null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
-                  ),
-                  child: Text('Fading Button'),
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    if (_isRepeating) {
-                      InheritedAnimationController.of(
-                        context,
-                      ).controller.stop();
-                      _isRepeating = false;
-                    } else {
-                      _isRepeating = true;
-                      InheritedAnimationController.of(
-                        context,
-                      ).controller.repeat(reverse: true);
-                    }
-                  });
-                },
-                child: Text('Fade in and out'),
-              ),
-            ],
+          child: FadeTransition(
+            opacity: InheritedAnimationController.of(context).controller,
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  if (_isRepeating) {
+                    InheritedAnimationController.of(context).controller.stop();
+                    _isRepeating = false;
+                  } else {
+                    _isRepeating = true;
+                    InheritedAnimationController.of(
+                      context,
+                    ).controller.repeat(reverse: true);
+                  }
+                });
+              },
+              child: Text('Fade in and out'),
+            ),
           ),
         ),
       ),
