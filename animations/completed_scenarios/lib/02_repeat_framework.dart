@@ -51,30 +51,22 @@ class RepeatScenarioState extends State<RepeatScenario>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Repeat Scenario')),
+      appBar: AppBar(title: const Text('Repeat Scenario')),
       body: Center(
-        child: InheritedAnimationController(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              FadeTransition(
-                opacity: _controller,
-                child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      if (_isRepeating) {
-                        _controller.stop();
-                        _isRepeating = false;
-                      } else {
-                        _isRepeating = true;
-                        _controller.repeat(reverse: true);
-                      }
-                    });
-                  },
-                  child: Text('Fade in and out '),
-                ),
-              ),
-            ],
+        child: FadeTransition(
+          opacity: _controller,
+          child: ElevatedButton(
+            onPressed: () {
+              if (_isRepeating) {
+                _controller.stop();
+              } else {
+                _controller.repeat(reverse: true);
+              }
+              setState(() {
+                _isRepeating = !_isRepeating;
+              });
+            },
+            child: const Text('Fade in and out'),
           ),
         ),
       ),
