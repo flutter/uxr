@@ -77,6 +77,7 @@ import 'package:flutter/material.dart';
 /// }
 /// ```
 /// {@end-tool}
+
 class Animate extends StatelessWidget {
   /// The default duration for the animation if none is specified.
   static const defaultDuration = Duration(milliseconds: 400);
