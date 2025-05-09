@@ -39,6 +39,7 @@ class ExpandCard extends StatefulWidget {
 class _ExpandCardState extends State<ExpandCard>
     with SingleTickerProviderStateMixin {
   bool selected = false;
+  static const double initialSize = 128.0;
 
   void toggleExpanded() {
     setState(() {
@@ -50,12 +51,16 @@ class _ExpandCardState extends State<ExpandCard>
   Widget build(context) {
     return GestureDetector(
       onTap: () => toggleExpanded(),
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        width: initialSize,
+        height: initialSize,
+        child: Card(
+          clipBehavior: Clip.antiAlias,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
 
-          child: Image.asset('assets/eat_cape_town_sm.jpg', fit: BoxFit.cover),
+            child: Image.asset('assets/eat_cape_town_sm.jpg', fit: BoxFit.cover),
+          ),
         ),
       ),
     );

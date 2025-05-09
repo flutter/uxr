@@ -92,16 +92,22 @@ class Animate extends StatelessWidget {
   /// Defaults to [defaultDuration].
   final Duration duration;
 
-  /// Creates a widget that animates animatable attributes of its child subtree.
+  /// The easing curve to use for this animation.
+  ///
+  /// This curve applies to any animatable attributes within this subtree.
+  final Curve? curve;
+
+  /// Creates a widget that animates animatable attributes in its subtree.
   const Animate({
     super.key,
     required this.child,
     this.duration = defaultDuration,
+    this.curve,
   });
 
   @override
   Widget build(BuildContext context) {
-    // This is a "stub" implementation for the purposes of this UX study
+    // This class is a stub for the purposes of this UX study
     return child;
   }
 }
