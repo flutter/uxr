@@ -28,29 +28,7 @@ class RepeatScenario extends StatefulWidget {
 
 class RepeatScenarioState extends State<RepeatScenario>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _opacityAnimation;
-
   bool _isRepeating = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    );
-    _opacityAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(_controller);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
