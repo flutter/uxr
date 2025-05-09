@@ -34,8 +34,7 @@ class RepeatScenario extends StatefulWidget {
 // 2. When the animation is currently running, a tap on the
 // 'Fade in and out' button should terminate the animation.
 
-// Hint: You may use `FadeTransition`, `AnimationController`,
-// `InheritedAnimationController` or other APIs in this test.
+// Hint: You should use `InheritedAnimationController` API in this test.
 class RepeatScenarioState extends State<RepeatScenario>
     with SingleTickerProviderStateMixin {
   @override

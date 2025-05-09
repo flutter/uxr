@@ -17,3 +17,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+     - assets/eat_cape_town_sm.jpg
