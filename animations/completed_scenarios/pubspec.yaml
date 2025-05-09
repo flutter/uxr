@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: ^3.8.0-278.1.beta
+  sdk: ^3.7.0
 
 dependencies:
   flutter_animate: ^4.5.0

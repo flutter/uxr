@@ -52,13 +52,24 @@ class RepeatScenarioState extends State<RepeatScenario>
     return Scaffold(
       appBar: AppBar(title: Text('Repeat Scenario')),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            // Please implement this call method.
-          },
-          child: Text('Fade in and out'),
-        ),
+        child: RepeatFadeButton(),
       ),
+    );
+  }
+}
+
+class RepeatFadeButton extends StatelessWidget {
+  const RepeatFadeButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        // Please implement this call method.
+      },
+      child: Text('Fade in and out'),
     );
   }
 }

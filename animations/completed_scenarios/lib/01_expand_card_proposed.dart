@@ -23,21 +23,22 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 class ExpandCard extends StatefulWidget {
   const ExpandCard({super.key});
   @override
   State<ExpandCard> createState() => _ExpandCardState();
 }
 
-class _ExpandCardState extends State<ExpandCard>
-    with SingleTickerProviderStateMixin {
+class _ExpandCardState extends State<ExpandCard> {
   bool selected = false;
 
-  // State variable for rotation, in turns (1.0 = 360 degrees)
   double get turns => selected ? 0.5 : 0.0;
+  double get angle => turns * pi;
 
-  double get size => selected ? 256 : 128;
+  static const double initialSize = 128.0;
+  static const double finalSize = 256.0;
+  static const double scaleFactor = finalSize / initialSize;
+  double get currentScale => selected ? scaleFactor : 1.0;
 
   void toggleExpanded() {
     setState(() {
@@ -49,20 +50,24 @@ class _ExpandCardState extends State<ExpandCard>
   Widget build(context) {
     return GestureDetector(
       onTap: () => toggleExpanded(),
-      child: Card(
-        clipBehavior:
-            Clip.antiAlias, // Helps contain the rotated image within the card
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Animate(
-            child: Container(
-              width: size,
-              height: size,
-              child: Transform.rotate(
-                angle: turns * pi,
-                child: Image.asset(
-                  'assets/eat_cape_town_sm.jpg',
-                  fit: BoxFit.cover,
+      child: Animate(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.ease,
+        child: Transform.rotate(
+          angle: angle,
+          child: Transform.scale(
+            scale: currentScale,
+            child: SizedBox(
+              width: initialSize,
+              height: initialSize,
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    'assets/eat_cape_town_sm.jpg',
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
