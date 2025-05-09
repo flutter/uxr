@@ -36,24 +36,28 @@ class RepeatScenarioState extends State<RepeatScenario>
       appBar: AppBar(title: Text('Repeat Scenario')),
       body: Center(
         child: InheritedAnimationController(
-          child: FadeTransition(
-            opacity: InheritedAnimationController.of(context).controller,
-            child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  if (_isRepeating) {
-                    InheritedAnimationController.of(context).controller.stop();
-                    _isRepeating = false;
-                  } else {
-                    _isRepeating = true;
-                    InheritedAnimationController.of(
-                      context,
-                    ).controller.repeat(reverse: true);
-                  }
-                });
-              },
-              child: Text('Fade in and out'),
-            ),
+          child: Builder(
+            builder: (context) {
+              return FadeTransition(
+                opacity: InheritedAnimationController.of(context).controller,
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      if (_isRepeating) {
+                        InheritedAnimationController.of(context).controller.stop();
+                        _isRepeating = false;
+                      } else {
+                        _isRepeating = true;
+                        InheritedAnimationController.of(
+                          context,
+                        ).controller.repeat(reverse: true);
+                      }
+                    });
+                  },
+                  child: Text('Fade in and out'),
+                ),
+              );
+            }
           ),
         ),
       ),
