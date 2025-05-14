@@ -21,6 +21,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// The `ExpandCard` code implements the following animation behavior 
+// using AnimatedRotation and AnimatedScale:
+// 1. When tapped, the card is selected. Simultaneously, it animates 
+// from size 128 to 256 and rotates 180 degrees.
+// 2. When deselected, the animation reverses.
+//
+// Your task:
+// Edit the current code to use a combination of the `Animate` API, 
+// Transform.rotate, and Transform.scale to replace `AnimatedRotation` and `AnimatedScale`,
+// achieving the same animation effect.
+
 class ExpandCard extends StatefulWidget {
   const ExpandCard({super.key});
   @override
