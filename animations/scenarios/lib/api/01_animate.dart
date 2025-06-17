@@ -77,7 +77,6 @@ import 'package:flutter/material.dart';
 /// }
 /// ```
 /// {@end-tool}
-
 class Animate extends StatelessWidget {
   /// The default duration for the animation if none is specified.
   static const defaultDuration = Duration(milliseconds: 400);
@@ -93,11 +92,17 @@ class Animate extends StatelessWidget {
   /// Defaults to [defaultDuration].
   final Duration duration;
 
-  /// Creates a widget that animates animatable attributes of its child subtree.
+  /// The easing curve to use for this animation.
+  ///
+  /// This curve applies to any animatable attributes within this subtree.
+  final Curve? curve;
+
+  /// Creates a widget that animates animatable attributes in its subtree.
   const Animate({
     super.key,
     required this.child,
     this.duration = defaultDuration,
+    this.curve,
   });
 
   @override
