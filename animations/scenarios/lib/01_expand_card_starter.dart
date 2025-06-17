@@ -47,6 +47,8 @@ class _ExpandCardState extends State<ExpandCard>
   bool selected = false;
 
   double get turns => selected ? 0.5 : 0.0;
+  double get angle => turns * pi;
+
   static const double initialSize = 128.0;
   static const double finalSize = 256.0;
   static const double scaleFactor = finalSize / initialSize;
