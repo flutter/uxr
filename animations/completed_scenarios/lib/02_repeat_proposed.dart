@@ -45,19 +45,18 @@ class _RepeatFadeButtonState extends State<RepeatFadeButton> {
 
   @override
   Widget build(BuildContext context) {
+    var controller = InheritedAnimationController.of(context).controller;
     return FadeTransition(
-      opacity: InheritedAnimationController.of(context).controller,
+      opacity: controller,
       child: ElevatedButton(
         onPressed: () {
           setState(() {
             if (_isRepeating) {
-              InheritedAnimationController.of(context).controller.stop();
+              controller.stop();
               _isRepeating = false;
             } else {
               _isRepeating = true;
-              InheritedAnimationController.of(
-                context,
-              ).controller.repeat(reverse: true);
+              controller.repeat(reverse: true);
             }
           });
         },
