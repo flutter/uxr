@@ -4,10 +4,10 @@
     "title should not exceed 45 characters.",
     "startDate and endDate should follow ISO 8601 standard with a timezone offset."
   ],
-  "uniqueId": "2024-Q2",
-  "title": "Take our survey to help us improve DevTools!",
-  "url": "https://google.qualtrics.com/jfe/form/SV_3UHEq0wkEupmnga",
-  "startDate": "2024-06-18T09:00:00-07:00",
-  "endDate": "2024-07-09T09:00:00-07:00",
-  "minDevToolsVersion": "2.34.3"
+  "uniqueId": "2025-Q3",
+  "title": "Take our 2025 Flutter DevTools user survey!",
+  "url": "https://google.qualtrics.com/jfe/form/SV_0pwWgw9ofHrVBb0",
+  "startDate": "2025-07-30T09:00:00-07:00",
+  "endDate": "2025-08-13T09:00:00-07:00",
+  "minDevToolsVersion": "2.42.0"
 }
