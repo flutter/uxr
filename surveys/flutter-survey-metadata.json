@@ -5,8 +5,8 @@
     "startDate and endDate should follow ISO 8601 standard with a timezone offset."
   ],
   "uniqueId": "2026Q2_1",
-  "title": "Help improve Flutter! Take our Q2 survey.",
-  "url": "https://google.qualtrics.com/jfe/form/SV_3drKjSfjNeLZfq6",
-  "startDate": "2026-06-08T09:00:00-08:00",
-  "endDate": "2026-06-19T17:00:00-08:00"
+  "title": "Help improve Flutter! Take our Q4 survey.",
+  "url": "https://g.dev/flutter/survey-26q4-55c",
+  "startDate": "2026-11-18T09:00:00-08:00",
+  "endDate": "2026-12-02T17:00:00-08:00"
 }
